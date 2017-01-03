@@ -5,7 +5,7 @@ import serialization.action.reply.ReplyAction;
 import websocketecho.ConnectionsRouter;
 import websocketecho.Subscriber;
 
-public class GetAvailableLobbies extends ManagementAction {
+public class GetAvailableLobbiesAction extends ManagementAction {
 
 	@Override
 	public void execute(ConnectionsRouter router, Subscriber wrapper) {
