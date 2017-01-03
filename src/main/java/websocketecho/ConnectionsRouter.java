@@ -27,7 +27,7 @@ public class ConnectionsRouter {
 		ArrayList<String> availableLobbies = new ArrayList<String>();
 		for (Map.Entry<String, ServerInstance> entry : lobbyMap.entrySet()) {
 			ServerInstance instance = entry.getValue();
-			if(!instance.isSmartwatchPresent()){
+			if(instance.isSmartwatchPresent()){
 				availableLobbies.add(entry.getKey());
 			}
 		}
