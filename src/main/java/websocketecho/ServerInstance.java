@@ -4,26 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import serialization.action.Action;
-import serialization.action.game.ConnectedAction;
-import serialization.action.game.DisconnectedAction;
-import serialization.action.game.GameAction;
-import serialization.action.sensors.SensorsAction;
-
-
+import serialization.action.lobby.ConnectedDeviceEvent;
+import serialization.action.lobby.DisconnectedDeviceEvent;
 
 public class ServerInstance {
 	
 	private List<Subscriber> spectator= new ArrayList<Subscriber>();
 	private Subscriber smartwatch;
 	private Subscriber mobile;
-	private Publisher publisher;
-	
-	public ServerInstance(Publisher publisher) {
-		this.publisher=publisher;
-	}
 
 	public void addSmartwatch(Subscriber smartwatch){
 		this.smartwatch = smartwatch;
+		this.broadcastAction(new ConnectedDeviceEvent(SubscriberType.SMARTWATCH));
 	}
 	
 	public boolean isSmartwatchPresent(){
@@ -37,6 +29,7 @@ public class ServerInstance {
 	
 	public void addMobile(Subscriber mobile){
 		this.mobile = mobile;
+		this.broadcastAction(new ConnectedDeviceEvent(SubscriberType.MOBILE));
 	}
 	
 	public boolean isMobilePresent(){
@@ -50,26 +43,20 @@ public class ServerInstance {
 	
 	public void addSpectator(Subscriber subscriber){
 		this.spectator.add(subscriber);
-		this.publisher.onSubscriberAction(subscriber, new ConnectedAction());
+		this.broadcastAction(new ConnectedDeviceEvent(SubscriberType.SPECTATOR));
 	}
 
-	public void removeSpectator(Subscriber subscriber){
+	public void removeSubscriber(Subscriber subscriber){
 		this.spectator.remove(subscriber);
-		this.publisher.onSubscriberAction(subscriber, new DisconnectedAction());
+		this.broadcastAction(new DisconnectedDeviceEvent(SubscriberType.SPECTATOR));
 	}
 	
 	public void broadcastAction(Action action){
 		for (Subscriber subscriber : spectator) {
 			subscriber.sendActionToSubscriber(action);
 		}
-	}
-
-	public void onSubscriberMessage(Subscriber subscriber, GameAction action) {
-		publisher.onSubscriberAction(subscriber,action);
-	}
-
-	public void handleSensorsAction(Subscriber subscriber, SensorsAction action) {
-		publisher.onSensorsAction(subscriber,action);
+		smartwatch.sendActionToSubscriber(action);
+		mobile.sendActionToSubscriber(action);
 	}
 	
 }

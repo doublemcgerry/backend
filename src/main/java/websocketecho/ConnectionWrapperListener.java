@@ -16,7 +16,6 @@ import org.java_websocket.handshake.ServerHandshakeBuilder;
 
 import serialization.StringSerializer;
 import serialization.action.Action;
-import serialization.action.game.GameAction;
 import serialization.action.management.ManagementAction;
 import serialization.action.sensors.SensorsAction;
 
@@ -38,14 +37,8 @@ public class ConnectionWrapperListener implements WebSocketListener {
 	public void onWebsocketMessage(WebSocket conn, String message) {
 		Action action = StringSerializer.getSerializer().fromJson(message, Action.class);
 		ConnectionWrapper wrapper = (ConnectionWrapper) conn;
-		if (action instanceof GameAction) {
-			if (wrapper.getCurrentGameInstance() != null) {
-				wrapper.getCurrentGameInstance().onSubscriberMessage((Subscriber) conn, (GameAction) action);
-			} else {
-				conn.close();
-			}
-		} else if (action instanceof SensorsAction) {
-			wrapper.getCurrentGameInstance().handleSensorsAction((Subscriber) conn,(SensorsAction) action);
+		if (action instanceof SensorsAction) {
+			((SensorsAction) action).execute(wrapper.getCurrentGameInstance());
 		} else if (action instanceof ManagementAction) {
 			_connectionsRouter.handleManagementAction((ConnectionWrapper) conn, (ManagementAction) action);
 		}

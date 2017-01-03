@@ -66,7 +66,7 @@ public class ConnectionWrapper extends WebSocketImpl implements Subscriber{
 	@Override
 	public void removeFromGameInstance() {
 		if (this._gameInstance!=null){
-			this._gameInstance.removeSpectator(this);
+			this._gameInstance.removeSubscriber(this);
 		}
 		this._gameInstance=null;
 	}

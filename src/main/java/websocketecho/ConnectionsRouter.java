@@ -35,9 +35,7 @@ public class ConnectionsRouter {
 	}
 	
 	private void createLobby(Subscriber wrapper, String zone){
-		ServerController controller = new ServerController();
-		ServerInstance gameinstance = new ServerInstance(controller);
-		controller.linkToGameInstance(gameinstance);
+		ServerInstance gameinstance = new ServerInstance();
 		lobbyMap.put(zone, gameinstance);
 	}
 
