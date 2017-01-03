@@ -20,10 +20,10 @@ public class ServerInstance {
 	
 	public boolean isSmartwatchPresent(){
 		if(smartwatch == null){
-			return true;
+			return false;
 		}
 		else{
-			return false;
+			return true;
 		}
 	}
 	
@@ -34,10 +34,10 @@ public class ServerInstance {
 	
 	public boolean isMobilePresent(){
 		if(mobile == null){
-			return true;
+			return false;
 		}
 		else{
-			return false;
+			return true;
 		}
 	}
 	

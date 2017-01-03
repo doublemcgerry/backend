@@ -7,15 +7,15 @@ import websocketecho.SubscriberType;
 public class SmartwatchEnterLobbyAction extends ManagementAction {
 	
 	private static final long serialVersionUID = -3018483622075602666L;
-	private String zone;
+	private String lobby;
 	
-	public SmartwatchEnterLobbyAction(String zone) {
-		this.zone=zone;
+	public SmartwatchEnterLobbyAction(String lobby) {
+		this.lobby=lobby;
 	}
 	
 	@Override
 	public void execute(ConnectionsRouter router, Subscriber wrapper) {
-		System.out.println("Smartwatch " + wrapper.toString() + " asked to change zone to " + this.zone);
-		router.changeLobby(wrapper, zone, SubscriberType.SMARTWATCH);
+		System.out.println("Smartwatch " + wrapper.toString() + " asked to change zone to " + this.lobby);
+		router.changeLobby(wrapper, lobby, SubscriberType.SMARTWATCH);
 	}
 }
