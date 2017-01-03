@@ -35,8 +35,8 @@ public class DiscoveryThread implements Runnable {
 
 				// See if the packet holds the right command (message)
 				String message = new String(packet.getData()).trim();
-				if (message.equals("DISCOVER_FUIFSERVER_REQUEST")) {
-					byte[] sendData = "DISCOVER_FUIFSERVER_RESPONSE".getBytes();
+				if (message.equals("DISCOVER_AUISERVER_REQUEST")) {
+					byte[] sendData = "DISCOVER_AUISERVER_REQUEST".getBytes();
 
 					// Send a response
 					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(),
