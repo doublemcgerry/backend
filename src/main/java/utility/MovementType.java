@@ -1,5 +1,5 @@
 package utility;
 
 public enum MovementType {
-	_GENERICMOVEMENT
+	GENERIC_MOVEMENT
 }
