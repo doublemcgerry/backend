@@ -30,6 +30,7 @@ public class ServerInstance {
 	public void addMobile(Subscriber mobile){
 		this.mobile = mobile;
 		this.broadcastAction(new ConnectedDeviceEvent(SubscriberType.MOBILE));
+		//TODO messaggi nella lobby
 	}
 	
 	public boolean isMobilePresent(){
@@ -55,8 +56,12 @@ public class ServerInstance {
 		for (Subscriber subscriber : spectator) {
 			subscriber.sendActionToSubscriber(action);
 		}
-		smartwatch.sendActionToSubscriber(action);
-		mobile.sendActionToSubscriber(action);
+		if(smartwatch != null){
+			smartwatch.sendActionToSubscriber(action);
+		}
+		if(mobile != null){
+			mobile.sendActionToSubscriber(action);
+		}
 	}
 	
 }

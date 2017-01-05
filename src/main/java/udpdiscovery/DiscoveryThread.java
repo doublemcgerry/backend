@@ -7,10 +7,14 @@ import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import gui.frames.PrimaSchermata;
+import interfaces.WriterInterface;
+
 public class DiscoveryThread implements Runnable {
 
 	private DatagramSocket socket;
 	private boolean stop=false;
+	private WriterInterface writer;
 
 	@Override
 	public void run() {
@@ -21,7 +25,7 @@ public class DiscoveryThread implements Runnable {
 			socket.setBroadcast(true);
 
 			while (!stop) {
-				System.out.println(getClass().getName() + ">>>Ready to receive broadcast packets!");
+				writer.addUDPServerText("I am Ready to receive broadcast packets!");
 
 				// Receive a packet
 				byte[] recvBuf = new byte[15000];
@@ -29,9 +33,8 @@ public class DiscoveryThread implements Runnable {
 				socket.receive(packet);
 
 				// Packet received
-				System.out.println(getClass().getName() + ">>>Discovery packet received from: "
-						+ packet.getAddress().getHostAddress());
-				System.out.println(getClass().getName() + ">>>Packet received; data: " + new String(packet.getData()));
+				writer.addUDPServerText("Discovery packet received from: "+ packet.getAddress().getHostAddress());
+				writer.addUDPServerText("Packet received; data: " + new String(packet.getData()));
 
 				// See if the packet holds the right command (message)
 				String message = new String(packet.getData()).trim();
@@ -42,9 +45,8 @@ public class DiscoveryThread implements Runnable {
 					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(),
 							packet.getPort());
 					socket.send(sendPacket);
-
-					System.out.println(
-							getClass().getName() + ">>>Sent packet to: " + sendPacket.getAddress().getHostAddress());
+					
+					writer.addUDPServerText("Sent packet to: " + sendPacket.getAddress().getHostAddress());
 				}
 			}
 		} catch (IOException ex) {
@@ -52,7 +54,12 @@ public class DiscoveryThread implements Runnable {
 		}
 	}
 	
+	public void setWriter(WriterInterface frame){
+		this.writer=frame;
+	}
+	
 	public void stopThread(){
+		writer.addUDPServerText("I am shutting down");
 		this.stop=true;
 		this.socket.close();
 	}

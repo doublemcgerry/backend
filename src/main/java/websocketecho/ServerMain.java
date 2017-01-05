@@ -6,13 +6,16 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 
 import udpdiscovery.DiscoveryThread;
+import utility.FakeWriter;
 
 public class ServerMain {
 
 	public static void main(String[] args) throws IOException {
 		InetSocketAddress listenAddress = new InetSocketAddress("0.0.0.0", 8091);
 		DiscoveryThread serverThread = DiscoveryThread.getInstance();
-		Server server = new Server(listenAddress);
+		FakeWriter fake = new FakeWriter();
+		Server server = new Server(listenAddress,fake,fake);
+		serverThread.setWriter(fake);
 		server.start();
 		serverThread.run();
 		

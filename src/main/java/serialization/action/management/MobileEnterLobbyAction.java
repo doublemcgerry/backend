@@ -15,7 +15,6 @@ public class MobileEnterLobbyAction extends ManagementAction {
 	
 	@Override
 	public void execute(ConnectionsRouter router, Subscriber wrapper) {
-		System.out.println("Mobile Application" + wrapper.toString() + " asked to change zone to " + this.lobby);
 		router.changeLobby(wrapper, lobby, SubscriberType.MOBILE);
 	}
 

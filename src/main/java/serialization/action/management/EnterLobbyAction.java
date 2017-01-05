@@ -15,7 +15,6 @@ public class EnterLobbyAction extends ManagementAction {
 	
 	@Override
 	public void execute(ConnectionsRouter router, Subscriber wrapper) {
-		System.out.println("Spectator " + wrapper.toString() + " asked to change zone to " + this.lobby);
 		router.changeLobby(wrapper, lobby, SubscriberType.SPECTATOR);
 	}
 }

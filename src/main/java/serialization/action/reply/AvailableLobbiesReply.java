@@ -11,7 +11,7 @@ public class AvailableLobbiesReply extends ReplyAction{
 
 	@Override
 	public void execute(ConnectionsRouter router, Subscriber wrapper) {
-		this.availableLobbies = router.getAvailableLobby();
+		this.availableLobbies = router.getAvailableLobby(wrapper);
 		wrapper.sendActionToSubscriber(this);
 	}
 	
