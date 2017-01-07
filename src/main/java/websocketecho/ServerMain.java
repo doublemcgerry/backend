@@ -1,23 +1,41 @@
 package websocketecho;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
+import fi.iki.elonen.NanoHTTPD;
+import fi.iki.elonen.SimpleWebServer;
 import udpdiscovery.DiscoveryThread;
+import udpdiscovery.UDPDiscoveryServer;
 import utility.FakeWriter;
 
 public class ServerMain {
 
 	public static void main(String[] args) throws IOException {
+		SimpleWebServer ws= new SimpleWebServer("0.0.0.0", 8099, new File("../AUIVRBabylon/"), true);
+		ws.start();
 		InetSocketAddress listenAddress = new InetSocketAddress("0.0.0.0", 8091);
-		DiscoveryThread serverThread = DiscoveryThread.getInstance();
+		UDPDiscoveryServer discoveryServer =new UDPDiscoveryServer(new UDPDiscoveryServer.Callbacks() {
+			
+			@Override
+			public void onServerMessage(String message) {
+				
+			}
+			
+			@Override
+			public void onClientFound(InetAddress address) {
+				
+			}
+		});
 		FakeWriter fake = new FakeWriter();
 		Server server = new Server(listenAddress,fake,fake);
-		serverThread.setWriter(fake);
+		
 		server.start();
-		serverThread.run();
+		discoveryServer.run();
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("Enter command\n");
@@ -27,7 +45,7 @@ public class ServerMain {
 			if ("stop".equals(s)) {
 				try {
 					server.stop();
-					serverThread.stopThread();
+					//serverThread.stopThread();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
