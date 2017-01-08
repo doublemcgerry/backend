@@ -3,6 +3,7 @@ package websocketecho;
 import java.util.ArrayList;
 import java.util.List;
 
+import interfaces.LobbyLoggerInterface;
 import serialization.action.Action;
 import serialization.action.lobby.ConnectedDeviceEvent;
 import serialization.action.lobby.DisconnectedDeviceEvent;
@@ -12,6 +13,11 @@ public class ServerInstance {
 	private List<Subscriber> spectator= new ArrayList<Subscriber>();
 	private Subscriber smartwatch;
 	private Subscriber mobile;
+	private LobbyLoggerInterface log;
+	
+	public ServerInstance(LobbyLoggerInterface log){
+		this.log = log;
+	}
 
 	public void addSmartwatch(Subscriber smartwatch){
 		this.smartwatch = smartwatch;
@@ -62,6 +68,7 @@ public class ServerInstance {
 		if(mobile != null){
 			mobile.sendActionToSubscriber(action);
 		}
+		log.logLobbyActivity(action.toString());
 	}
 	
 }

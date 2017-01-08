@@ -1,23 +1,30 @@
 package utility;
 
-import interfaces.AdderInterface;
-import interfaces.WriterInterface;
+import interfaces.LobbyLoggerInterface;
+import interfaces.LobbyManagerInterface;
+import interfaces.MainServerLoggerInterface;
 
-public class FakeWriter implements WriterInterface, AdderInterface {
+public class FakeWriter implements MainServerLoggerInterface, LobbyManagerInterface, LobbyLoggerInterface {
 
 	@Override
-	public void addNewLobby(String lobbyToAdd) {
+	public LobbyLoggerInterface createNewLobby(String lobbyToAdd) {
 		System.out.println(lobbyToAdd);
+		return this;
 	}
 
 	@Override
-	public void addMainServerText(String text) {
+	public void logMainServerActivity(String text) {
 		System.out.println(text);
 	}
 
 	@Override
-	public void addUDPServerText(String text) {
+	public void logDiscoveryServerActivity(String text) {
 		System.out.println(text);
+	}
+
+	@Override
+	public void logLobbyActivity(String textToLog) {
+		System.out.println(textToLog);
 	}
 
 }

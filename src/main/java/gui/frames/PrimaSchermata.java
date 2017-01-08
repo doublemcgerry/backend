@@ -35,8 +35,8 @@ import javax.swing.border.Border;
 
 import gui.buttons.SimpleButton;
 import gui.listener.MyListener;
-import interfaces.AdderInterface;
-import interfaces.WriterInterface;
+import interfaces.LobbyManagerInterface;
+import interfaces.MainServerLoggerInterface;
 import udpdiscovery.DiscoveryThread;
 import websocketecho.Server;
 
@@ -48,7 +48,7 @@ import websocketecho.Server;
  * @author Andrea
  *
  */
-public class PrimaSchermata extends JFrame implements WriterInterface,AdderInterface{
+public class PrimaSchermata extends JFrame implements MainServerLoggerInterface,LobbyManagerInterface{
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel pannello;
@@ -155,12 +155,12 @@ public class PrimaSchermata extends JFrame implements WriterInterface,AdderInter
 	}
 	
 	@Override
-	public void addMainServerText(String text){
+	public void logMainServerActivity(String text){
 		mainServerTextField.append("\n"+text);
 	}
 	
 	@Override
-	public void addUDPServerText(String text){
+	public void logDiscoveryServerActivity(String text){
 		udpServerTextField.append("\n"+text);
 	}
 	

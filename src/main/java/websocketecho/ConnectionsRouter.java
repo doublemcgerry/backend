@@ -5,19 +5,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import interfaces.AdderInterface;
-import interfaces.WriterInterface;
+import interfaces.LobbyLoggerInterface;
+import interfaces.LobbyManagerInterface;
+import interfaces.MainServerLoggerInterface;
 import serialization.action.management.ManagementAction;
 
 public class ConnectionsRouter {
 	
 	private Map<String,ServerInstance> lobbyMap;
-	private WriterInterface writer;
-	private AdderInterface lobbyAdder;
+	private MainServerLoggerInterface logger;
+	private LobbyManagerInterface lobbyManager;
 
-	public ConnectionsRouter(WriterInterface writerInterface, AdderInterface lobbyAdder) {
-		this.writer = writerInterface;
-		this.lobbyAdder = lobbyAdder;
+	public ConnectionsRouter(MainServerLoggerInterface writerInterface, LobbyManagerInterface lobbyAdder) {
+		this.logger = writerInterface;
+		this.lobbyManager = lobbyAdder;
 		lobbyMap = new HashMap<String, ServerInstance>();
 	}
 
@@ -30,7 +31,7 @@ public class ConnectionsRouter {
 	}
 	
 	public ArrayList<String> getAvailableLobby(Subscriber wrapper){
-		writer.addMainServerText(wrapper.getUUID() + " has requested the list of available lobbies");
+		logger.logMainServerActivity(wrapper.getUUID() + " has requested the list of available lobbies");
 		ArrayList<String> availableLobbies = new ArrayList<String>();
 		for (Map.Entry<String, ServerInstance> entry : lobbyMap.entrySet()) {
 			ServerInstance instance = entry.getValue();
@@ -42,8 +43,9 @@ public class ConnectionsRouter {
 	}
 	
 	private void createLobby(Subscriber wrapper, String zone){
-		writer.addMainServerText(wrapper.getUUID() + " has requested to create a Lobby with name "+ zone);
-		ServerInstance gameinstance = new ServerInstance();
+		logger.logMainServerActivity(wrapper.getUUID() + " has requested to create a Lobby with name "+ zone);
+		LobbyLoggerInterface log = lobbyManager.createNewLobby(zone);
+		ServerInstance gameinstance = new ServerInstance(log);
 		lobbyMap.put(zone, gameinstance);
 	}
 
@@ -53,19 +55,19 @@ public class ConnectionsRouter {
 				if(lobbyMap.containsKey(zone)){
 					ServerInstance instance = lobbyMap.get(zone);
 					instance.addSmartwatch(wrapper);
-					writer.addMainServerText("The SmartWatch "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
+					logger.logMainServerActivity("The SmartWatch "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
 				}
 				else{
 					createLobby(wrapper, zone);
 					this.lobbyMap.get(zone).addSmartwatch(wrapper);
-					writer.addMainServerText("The SmartWatch "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
+					logger.logMainServerActivity("The SmartWatch "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
 				}
 				break;
 			case MOBILE:
 				if(lobbyMap.containsKey(zone)){
 					ServerInstance instance = lobbyMap.get(zone);
 					instance.addMobile(wrapper);
-					writer.addMainServerText("The Mobile Application "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
+					logger.logMainServerActivity("The Mobile Application "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
 				}
 				else{
 					//TODO put error state
@@ -76,7 +78,7 @@ public class ConnectionsRouter {
 				if(lobbyMap.containsKey(zone)){
 					ServerInstance instance = lobbyMap.get(zone);
 					instance.addSpectator(wrapper);
-					writer.addMainServerText("The Spectator "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
+					logger.logMainServerActivity("The Spectator "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
 				}
 				else{
 					//TODO put error state
@@ -91,7 +93,7 @@ public class ConnectionsRouter {
 	public void exitLobby(Subscriber wrapper) {
 		//TODO da sistemare
 		wrapper.removeFromGameInstance();
-		writer.addMainServerText("The Spectator "+ wrapper.getUUID() + " has gone out from the Lobby");
+		logger.logMainServerActivity("The Spectator "+ wrapper.getUUID() + " has gone out from the Lobby");
 	}
 
 }

@@ -5,15 +5,15 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-import interfaces.AdderInterface;
-import interfaces.WriterInterface;
+import interfaces.LobbyManagerInterface;
+import interfaces.MainServerLoggerInterface;
 
 
 public class Server extends WebSocketServer {
 	private ConnectionsRouter _connectionsRouter;
-	WriterInterface writer;
+	MainServerLoggerInterface writer;
 
-	public Server(InetSocketAddress address, WriterInterface writer, AdderInterface lobbyAdder) {
+	public Server(InetSocketAddress address, MainServerLoggerInterface writer, LobbyManagerInterface lobbyAdder) {
 		super(address);
 		this.writer = writer;
 		this._connectionsRouter= new ConnectionsRouter(writer,lobbyAdder);
@@ -26,7 +26,7 @@ public class Server extends WebSocketServer {
 
 	@Override
 	public void run() {
-		this.writer.addMainServerText("Server is Ready to Recieve");
+		this.writer.logMainServerActivity("Server is Ready to Recieve");
 		super.run();
 	}
 
