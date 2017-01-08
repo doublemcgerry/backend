@@ -35,6 +35,7 @@ import javax.swing.border.Border;
 
 import gui.buttons.SimpleButton;
 import gui.listener.MyListener;
+import interfaces.LobbyLoggerInterface;
 import interfaces.LobbyManagerInterface;
 import interfaces.MainServerLoggerInterface;
 import udpdiscovery.DiscoveryThread;
@@ -187,9 +188,11 @@ public class PrimaSchermata extends JFrame implements MainServerLoggerInterface,
 	}
 
 	@Override
-	public void addNewLobby(String lobbyToAdd) {
+	public LobbyLoggerInterface createNewLobby(String lobbyToAdd) {
 		DefaultListModel<String> model = (DefaultListModel<String>) this.list.getModel();
 		model.addElement(lobbyToAdd);
 		list.setModel(model);
+		//TODO da sistemare
+		return null;
 	}
 }
