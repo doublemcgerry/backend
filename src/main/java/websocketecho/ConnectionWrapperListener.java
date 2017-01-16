@@ -57,12 +57,13 @@ public class ConnectionWrapperListener implements WebSocketListener {
 
 	@Override
 	public void onWebsocketClose(WebSocket ws, int code, String reason, boolean remote) {
-		//TODO _connectionsRouter.removeConnection((ConnectionWrapper) ws); 
 		callback.onWebsocketClose(ws, code, reason, remote);
 	}
 
 	@Override
 	public void onWebsocketClosing(WebSocket ws, int code, String reason, boolean remote) {
+		ConnectionWrapper wrapper = (ConnectionWrapper) ws;
+		wrapper.removeFromGameInstance();
 		callback.onWebsocketClosing(ws, code, reason, remote);
 	}
 
