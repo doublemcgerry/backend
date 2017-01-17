@@ -38,7 +38,7 @@ public class ConnectionWrapperListener implements WebSocketListener {
 		Action action = StringSerializer.getSerializer().fromJson(message, Action.class);
 		ConnectionWrapper wrapper = (ConnectionWrapper) conn;
 		if (action instanceof SensorsAction) {
-			((SensorsAction) action).execute(wrapper.getCurrentGameInstance());
+			((SensorsAction) action).execute(wrapper.getCurrentServerInstance());
 		} else if (action instanceof ManagementAction) {
 			_connectionsRouter.handleManagementAction((ConnectionWrapper) conn, (ManagementAction) action);
 		}
@@ -63,7 +63,7 @@ public class ConnectionWrapperListener implements WebSocketListener {
 	@Override
 	public void onWebsocketClosing(WebSocket ws, int code, String reason, boolean remote) {
 		ConnectionWrapper wrapper = (ConnectionWrapper) ws;
-		wrapper.removeFromGameInstance();
+		wrapper.removeFromServerInstance();
 		callback.onWebsocketClosing(ws, code, reason, remote);
 	}
 

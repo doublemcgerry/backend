@@ -8,9 +8,11 @@ import serialization.action.Action;
 public interface Subscriber {
 	void sendActionToSubscriber(Action action);
 	boolean isAlive();
+	void setCurrentServerInstance(ServerInstance serverInstance);
+	void removeFromServerInstance();
+	ServerInstance getCurrentServerInstance();
 	UUID getUUID();
-	void setCurrentGameInstance(ServerInstance gameInstance);
-	void removeFromGameInstance();
-	ServerInstance getCurrentGameInstance();
 	void setUUID(UUID uuid);
+	String getName();
+	void setName(String name);
 }

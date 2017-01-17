@@ -4,17 +4,19 @@ import websocketecho.ConnectionsRouter;
 import websocketecho.Subscriber;
 import websocketecho.SubscriberType;
 
-public class SmartwatchEnterLobbyAction extends ManagementAction {
+public class SmartwatchEnterLobbyAction extends EnterLobbyAction {
 	
 	private static final long serialVersionUID = -3018483622075602666L;
-	private String lobby;
 	
-	public SmartwatchEnterLobbyAction(String lobby) {
-		this.lobby=lobby;
+	public SmartwatchEnterLobbyAction() {
 	}
 	
 	@Override
 	public void execute(ConnectionsRouter router, Subscriber wrapper) {
-		router.changeLobby(wrapper, lobby, SubscriberType.SMARTWATCH);
+		super.execute(router,wrapper);
+		router.changeLobby(wrapper,getLobby(), SubscriberType.SMARTWATCH);
 	}
+	
+	
+	
 }

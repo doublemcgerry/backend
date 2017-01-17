@@ -42,32 +42,32 @@ public class ConnectionsRouter {
 		return availableLobbies;
 	}
 	
-	private void createLobby(Subscriber wrapper, String zone){
-		logger.logMainServerActivity(wrapper.getUUID() + " has requested to create a Lobby with name "+ zone);
-		LobbyLoggerInterface log = lobbyManager.createNewLobby(zone);
+	private void createLobby(Subscriber wrapper, String lobby){
+		logger.logMainServerActivity(wrapper.getName() + " has requested to create a Lobby with name "+ lobby);
+		LobbyLoggerInterface log = lobbyManager.createNewLobby(lobby);
 		ServerInstance gameinstance = new ServerInstance(log);
-		lobbyMap.put(zone, gameinstance);
+		lobbyMap.put(lobby, gameinstance);
 	}
 
-	public void changeLobby(Subscriber wrapper, String zone, SubscriberType type) {
+	public void changeLobby(Subscriber wrapper, String lobby, SubscriberType type) {
 		switch (type) {
 			case SMARTWATCH:
-				if(lobbyMap.containsKey(zone)){
-					ServerInstance instance = lobbyMap.get(zone);
+				if(lobbyMap.containsKey(lobby)){
+					ServerInstance instance = lobbyMap.get(lobby);
 					instance.addSmartwatch(wrapper);
-					logger.logMainServerActivity("The SmartWatch "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
+					logger.logMainServerActivity("The SmartWatch "+ wrapper.getName() + " has entered in the "+ lobby + " Lobby");
 				}
 				else{
-					createLobby(wrapper, zone);
-					this.lobbyMap.get(zone).addSmartwatch(wrapper);
-					logger.logMainServerActivity("The SmartWatch "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
+					createLobby(wrapper, lobby);
+					this.lobbyMap.get(lobby).addSmartwatch(wrapper);
+					logger.logMainServerActivity("The SmartWatch "+ wrapper.getName() + " has entered in the "+ lobby + " Lobby");
 				}
 				break;
 			case MOBILE:
-				if(lobbyMap.containsKey(zone)){
-					ServerInstance instance = lobbyMap.get(zone);
+				if(lobbyMap.containsKey(lobby)){
+					ServerInstance instance = lobbyMap.get(lobby);
 					instance.addMobile(wrapper);
-					logger.logMainServerActivity("The Mobile Application "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
+					logger.logMainServerActivity("The Mobile Application "+ wrapper.getName() + " has entered in the "+ lobby + " Lobby");
 				}
 				else{
 					//TODO put error state
@@ -75,10 +75,10 @@ public class ConnectionsRouter {
 				}
 				break;
 			default:
-				if(lobbyMap.containsKey(zone)){
-					ServerInstance instance = lobbyMap.get(zone);
+				if(lobbyMap.containsKey(lobby)){
+					ServerInstance instance = lobbyMap.get(lobby);
 					instance.addSpectator(wrapper);
-					logger.logMainServerActivity("The Spectator "+ wrapper.getUUID() + " has entered in the "+ zone + " Lobby");
+					logger.logMainServerActivity("The Spectator "+ wrapper.getName() + " has entered in the "+ lobby + " Lobby");
 				}
 				else{
 					//TODO put error state
@@ -87,13 +87,13 @@ public class ConnectionsRouter {
 				break;
 		}
 		
-		wrapper.setCurrentGameInstance(this.lobbyMap.get(zone));
+		wrapper.setCurrentServerInstance(this.lobbyMap.get(lobby));
 	}
 
 	public void exitLobby(Subscriber wrapper) {
 		//TODO da sistemare
-		wrapper.removeFromGameInstance();
-		logger.logMainServerActivity("The Spectator "+ wrapper.getUUID() + " has gone out from the Lobby");
+		wrapper.removeFromServerInstance();
+		logger.logMainServerActivity("The Spectator "+ wrapper.getName() + " has gone out from the Lobby");
 	}
 
 }
