@@ -14,8 +14,9 @@ public class GetAvailableLobbiesAction extends ManagementAction {
 
 	@Override
 	public void execute(ConnectionsRouter router, Subscriber wrapper) {
-		ReplyAction action = new AvailableLobbiesReply();
-		action.execute(router, wrapper);
+		//logger.logMainServerActivity(wrapper.getUUID() + " has requested the list of available lobbies");
+		ReplyAction action = new AvailableLobbiesReply(router.getAvailableLobby());		
+		wrapper.sendActionToSubscriber(action);
 	}
 
 }

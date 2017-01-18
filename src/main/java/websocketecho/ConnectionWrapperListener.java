@@ -53,6 +53,7 @@ public class ConnectionWrapperListener implements WebSocketListener {
 	@Override
 	public void onWebsocketOpen(WebSocket conn, Handshakedata d) {
 		 callback.onWebsocketOpen(conn, d);
+		 this._connectionsRouter.addInWaitingRoom((ConnectionWrapper) conn);
 	}
 
 	@Override

@@ -23,12 +23,12 @@ public class ServerMain {
 			
 			@Override
 			public void onServerMessage(String message) {
-				
+				System.out.println("DS:" + message);
 			}
 			
 			@Override
 			public void onClientFound(InetAddress address) {
-				
+				System.out.println("DS:New Client found at address " + address.toString());
 			}
 		});
 		FakeWriter fake = new FakeWriter();

@@ -21,7 +21,7 @@ public class ServerInstance {
 
 	public void addSmartwatch(Subscriber smartwatch){
 		this.smartwatch = smartwatch;
-		this.broadcastAction(new ConnectedDeviceEvent(SubscriberType.SMARTWATCH));
+		this.broadcastAction(new ConnectedDeviceEvent(smartwatch.getName(), SubscriberType.SMARTWATCH));
 	}
 	
 	public boolean isSmartwatchPresent(){
@@ -35,7 +35,7 @@ public class ServerInstance {
 	
 	public void addMobile(Subscriber mobile){
 		this.mobile = mobile;
-		this.broadcastAction(new ConnectedDeviceEvent(SubscriberType.MOBILE));
+		this.broadcastAction(new ConnectedDeviceEvent(mobile.getName(),SubscriberType.MOBILE));
 		//TODO messaggi nella lobby
 	}
 	
@@ -50,12 +50,12 @@ public class ServerInstance {
 	
 	public void addSpectator(Subscriber subscriber){
 		this.spectator.add(subscriber);
-		this.broadcastAction(new ConnectedDeviceEvent(SubscriberType.SPECTATOR));
+		this.broadcastAction(new ConnectedDeviceEvent(subscriber.getName(),SubscriberType.SPECTATOR));
 	}
 
 	public void removeSubscriber(Subscriber subscriber){
 		this.spectator.remove(subscriber);
-		this.broadcastAction(new DisconnectedDeviceEvent(SubscriberType.SPECTATOR));
+		this.broadcastAction(new DisconnectedDeviceEvent(subscriber.getName(),SubscriberType.SPECTATOR));
 	}
 	
 	public void broadcastAction(Action action){
