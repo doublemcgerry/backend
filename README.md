@@ -1,9 +1,7 @@
 # Gerry
 
 ##### Virtual reality experience integrated with smartwatch
-#
-#
-#
+
 ### Requirements:
 - Eclipse Neon or newer
 - Oracle Java JDK 1.7.x
