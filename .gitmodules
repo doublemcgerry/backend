@@ -1,0 +1,9 @@
+[submodule "Backend-http"]
+	path = Backend-http
+	url = ssh://DoubleMcGerry@doublemcgerry.visualstudio.com:22/Tesi/_git/Backend-http
+[submodule "Backend-discovery"]
+	path = Backend-discovery
+	url = ssh://DoubleMcGerry@doublemcgerry.visualstudio.com:22/Tesi/_git/Backend-discovery
+[submodule "Backend-core"]
+	path = Backend-core
+	url = ssh://DoubleMcGerry@doublemcgerry.visualstudio.com:22/Tesi/_git/Backend-core
