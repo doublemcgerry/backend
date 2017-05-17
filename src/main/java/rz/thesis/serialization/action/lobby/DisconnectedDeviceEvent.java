@@ -13,4 +13,22 @@ public class DisconnectedDeviceEvent extends LobbyEvent {
 		this.type = type;
 		this.sender = sender;
 	}
+
+	public SubscriberType getType() {
+		return type;
+	}
+
+	public void setType(SubscriberType type) {
+		this.type = type;
+	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+	
+	
 }
