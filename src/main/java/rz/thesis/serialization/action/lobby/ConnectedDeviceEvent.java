@@ -7,10 +7,12 @@ public class ConnectedDeviceEvent extends LobbyEvent {
 	private static final long serialVersionUID = 3826952011751893194L;
 	private SubscriberType type;
 	private String sender;
+	private String senderName;
 
-	public ConnectedDeviceEvent(String sender, SubscriberType type) {
+	public ConnectedDeviceEvent(String sender, String senderName, SubscriberType type) {
 		super();
 		this.type = type;
+		this.senderName = senderName;
 		this.sender = sender;
 	}
 
@@ -29,7 +31,5 @@ public class ConnectedDeviceEvent extends LobbyEvent {
 	public void setSender(String sender) {
 		this.sender = sender;
 	}
-	
-	
 
 }

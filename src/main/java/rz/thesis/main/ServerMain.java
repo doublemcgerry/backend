@@ -16,6 +16,7 @@ import rz.thesis.core.modules.discovery.DiscoveryModuleSettings;
 import rz.thesis.core.modules.http.HttpModule;
 import rz.thesis.core.modules.http.HttpModuleSettings;
 import rz.thesis.core.modules.http.MappingsProvider;
+import rz.thesis.core.modules.http.handlers.LoginHttpHandler;
 import rz.thesis.core.options.SoftwareOptionsReader;
 import rz.thesis.core.project.images.ImagesModule;
 import rz.thesis.core.project.security.UserAuthentication;
@@ -72,6 +73,7 @@ public class ServerMain {
 
 		WebSocketFactory websocketFactory = new WebSocketFactory(serverModule);
 		List<Class<? extends MappingsProvider>> handlers = new ArrayList<>();
+		handlers.add(LoginHttpHandler.class);
 		HttpModule httpmodule = new HttpModule(core, new HttpModuleSettings(8010, "../Framework/"), authentication,
 				handlers, websocketFactory);
 		core.addModule(httpmodule);
@@ -96,7 +98,7 @@ class LogAppender extends AppenderSkeleton {
 	@Override
 	protected void append(LoggingEvent event) {
 
-		if (event.getLoggerName().startsWith("rz.thesis.")) {
+		if (event.getLoggerName().startsWith("rz.thesis.") || event.getLoggerName().startsWith("rz.server.")) {
 			System.out.print(DateTime.now().toString("dd-mm-yyyy HH:mm:ss"));
 			System.out.print(":");
 			System.out.print(new String(event.getThreadName()));

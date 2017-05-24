@@ -29,8 +29,8 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	public WebSocket(RZWebsocketsManager manager, UriResource uriResource, Map<String, String> urlParams,
 			IHTTPSession session, ServerModule serverModule) {
 		super(manager, uriResource, urlParams, session);
-		uuid = UUID.randomUUID();
 		router = serverModule.getRouter();
+		router.addInWaitingRoom(this);
 	}
 
 	@Override
