@@ -20,13 +20,12 @@ import rz.thesis.core.options.SoftwareOptionsReader;
 import rz.thesis.core.project.images.ImagesModule;
 import rz.thesis.core.project.security.UserAuthentication;
 import rz.thesis.core.save.SaveModule;
-import rz.thesis.core.websocket.BaseWebsocketFactory;
+import rz.thesis.websocket.WebSocketFactory;
 
 public class ServerMain {
 	private static final Logger LOGGER = Logger.getLogger(ServerMain.class.getName());
 	private Core core;
-	
-	
+
 	public static void main(String[] args) {
 		Logger.getRootLogger().addAppender(new LogAppender());
 		ServerMain main = new ServerMain();
@@ -36,7 +35,7 @@ public class ServerMain {
 		while (sc.hasNext()) {
 			String command = sc.nextLine();
 			if (command.startsWith("convert")) {
-				
+
 			} else if (command.startsWith("quit")) {
 				main.core.stop();
 				break;
@@ -44,14 +43,12 @@ public class ServerMain {
 		}
 		sc.close();
 	}
-	
-	
-	public ServerMain(){
-		
+
+	public ServerMain() {
+
 	}
-	
-	
-	public void initialize(){
+
+	public void initialize() {
 		LOGGER.debug("Initialization");
 		String startDir = System.getProperty("user.dir");
 		File prjsDir = new File(startDir + File.separator + "data");
@@ -66,13 +63,12 @@ public class ServerMain {
 		sor.setValue("projectFolder", prjsDir.getPath());
 		core = new Core(sor, includeDir.getPath(), new LogAppender());
 
-
 		UserAuthentication authentication = new UserAuthentication(core.getModule(SaveModule.class));
 
-		BaseWebsocketFactory websocketFactory = new BaseWebsocketFactory();
+		WebSocketFactory websocketFactory = new WebSocketFactory();
 		List<Class<? extends MappingsProvider>> handlers = new ArrayList<>();
 		HttpModule httpmodule = new HttpModule(core, new HttpModuleSettings(8010, "../Framework/"), authentication,
-				handlers,websocketFactory);
+				handlers, websocketFactory);
 		core.addModule(httpmodule);
 
 		ImagesModule imagesModule = new ImagesModule(core);
@@ -82,8 +78,6 @@ public class ServerMain {
 		core.addModule(discoveryModule);
 		core.start();
 	}
-	
-	
 
 }
 
@@ -107,9 +101,11 @@ class LogAppender extends AppenderSkeleton {
 		}
 	}
 
+	@Override
 	public void close() {
 	}
 
+	@Override
 	public boolean requiresLayout() {
 		return false;
 	}

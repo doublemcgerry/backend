@@ -60,13 +60,13 @@ public class ServerInstance {
 	
 	public void broadcastAction(Action action){
 		for (Subscriber subscriber : spectator) {
-			subscriber.sendActionToSubscriber(action);
+			subscriber.sendAction(action);
 		}
 		if(smartwatch != null){
-			smartwatch.sendActionToSubscriber(action);
+			smartwatch.sendAction(action);
 		}
 		if(mobile != null){
-			mobile.sendActionToSubscriber(action);
+			mobile.sendAction(action);
 		}
 		log.logLobbyActivity(action.toString());
 	}

@@ -6,7 +6,7 @@ import rz.thesis.serialization.action.Action;
 
 
 public interface Subscriber {
-	void sendActionToSubscriber(Action action);
+	void sendAction(Action action);
 	boolean isAlive();
 	void setCurrentServerInstance(ServerInstance serverInstance);
 	void removeFromServerInstance();
