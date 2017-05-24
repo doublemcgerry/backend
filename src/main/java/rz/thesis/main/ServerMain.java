@@ -20,6 +20,8 @@ import rz.thesis.core.options.SoftwareOptionsReader;
 import rz.thesis.core.project.images.ImagesModule;
 import rz.thesis.core.project.security.UserAuthentication;
 import rz.thesis.core.save.SaveModule;
+import rz.thesis.modules.ServerModule;
+import rz.thesis.modules.ServerSettings;
 import rz.thesis.websocket.WebSocketFactory;
 
 public class ServerMain {
@@ -65,7 +67,10 @@ public class ServerMain {
 
 		UserAuthentication authentication = new UserAuthentication(core.getModule(SaveModule.class));
 
-		WebSocketFactory websocketFactory = new WebSocketFactory();
+		ServerModule serverModule = new ServerModule(core, new ServerSettings());
+		core.addModule(serverModule);
+
+		WebSocketFactory websocketFactory = new WebSocketFactory(serverModule);
 		List<Class<? extends MappingsProvider>> handlers = new ArrayList<>();
 		HttpModule httpmodule = new HttpModule(core, new HttpModuleSettings(8010, "../Framework/"), authentication,
 				handlers, websocketFactory);
@@ -76,6 +81,7 @@ public class ServerMain {
 		DiscoveryModuleSettings dmSettings = new DiscoveryModuleSettings(9000, "DISCOVER_SERVICES");
 		DiscoveryModule discoveryModule = new DiscoveryModule(core, dmSettings);
 		core.addModule(discoveryModule);
+
 		core.start();
 	}
 

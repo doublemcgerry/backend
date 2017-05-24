@@ -27,10 +27,10 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	private ConnectionsRouter router;
 
 	public WebSocket(RZWebsocketsManager manager, UriResource uriResource, Map<String, String> urlParams,
-			IHTTPSession session) {
+			IHTTPSession session, ServerModule serverModule) {
 		super(manager, uriResource, urlParams, session);
 		uuid = UUID.randomUUID();
-		router = getCore().getModule(ServerModule.class).getRouter();
+		router = serverModule.getRouter();
 	}
 
 	@Override
