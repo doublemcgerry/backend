@@ -9,6 +9,10 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import rz.thesis.core.Core;
+import rz.thesis.modules.experience.ExperiencesModule;
+import rz.thesis.server.lobby.actors.concrete.MobileUserActor;
+import rz.thesis.server.lobby.actors.concrete.SensorActorConcrete;
+import rz.thesis.server.lobby.actors.concrete.SpectatorActorConcrete;
 import rz.thesis.server.logger.interfaces.LobbyLoggerInterface;
 import rz.thesis.server.logger.interfaces.LobbyManagerInterface;
 import rz.thesis.server.logger.interfaces.MainServerLoggerInterface;
@@ -24,6 +28,7 @@ public class LobbiesManager {
 	private LobbyManagerInterface lobbyManager;
 	private List<Subscriber> waitingRoom;
 	private Core core;
+	private ExperiencesModule experiencesModule;
 
 	public LobbiesManager(Core core) {
 		this.logger = new MainServerLoggerInterface() {
@@ -55,6 +60,7 @@ public class LobbiesManager {
 		};
 		lobbyMap = new HashMap<String, ServerLobby>();
 		waitingRoom = new ArrayList<>();
+		this.experiencesModule = this.core.getModule(ExperiencesModule.class);
 		this.core = core;
 	}
 
@@ -77,9 +83,8 @@ public class LobbiesManager {
 		ArrayList<String> availableLobbies = new ArrayList<String>();
 		for (Map.Entry<String, ServerLobby> entry : lobbyMap.entrySet()) {
 			ServerLobby instance = entry.getValue();
-			if (instance.isSmartwatchPresent()) {
-				availableLobbies.add(entry.getKey());
-			}
+			availableLobbies.add(entry.getKey());
+			
 		}
 		return availableLobbies;
 	}
@@ -97,14 +102,7 @@ public class LobbiesManager {
 		case SENSOR:
 			if (lobbyMap.containsKey(lobby)) {
 				ServerLobby instance = lobbyMap.get(lobby);
-				instance.addSmartwatch(wrapper);
-				logger.logMainServerActivity(
-						"The SmartWatch " + wrapper.getName() + " has entered in the " + lobby + " Lobby");
-				waitingRoom.remove(wrapper);
-			} else {
-				createLobby(wrapper, lobby);
-				this.lobbyMap.get(lobby).addSmartwatch(wrapper);
-				this.broadcastToWaitingRoom(new AvailableLobbiesReply(getAvailableLobby()));
+				instance.addSensor(new SensorActorConcrete(wrapper));
 				logger.logMainServerActivity(
 						"The SmartWatch " + wrapper.getName() + " has entered in the " + lobby + " Lobby");
 				waitingRoom.remove(wrapper);
@@ -113,7 +111,7 @@ public class LobbiesManager {
 		case USER:
 			if (lobbyMap.containsKey(lobby)) {
 				ServerLobby instance = lobbyMap.get(lobby);
-				instance.addMobile(wrapper);
+				instance.addUser(new MobileUserActor(wrapper));
 				logger.logMainServerActivity(
 						"The Mobile Application " + wrapper.getName() + " has entered in the " + lobby + " Lobby");
 				waitingRoom.remove(wrapper);
@@ -125,7 +123,7 @@ public class LobbiesManager {
 		default:
 			if (lobbyMap.containsKey(lobby)) {
 				ServerLobby instance = lobbyMap.get(lobby);
-				instance.addSpectator(wrapper);
+				instance.addSpectator(new SpectatorActorConcrete(wrapper));
 				logger.logMainServerActivity(
 						"The Spectator " + wrapper.getName() + " has entered in the " + lobby + " Lobby");
 				waitingRoom.remove(wrapper);

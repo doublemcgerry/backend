@@ -21,6 +21,8 @@ import rz.thesis.core.options.SoftwareOptionsReader;
 import rz.thesis.core.project.images.ImagesModule;
 import rz.thesis.core.project.security.UserAuthentication;
 import rz.thesis.core.save.SaveModule;
+import rz.thesis.modules.experience.ExperiencesModule;
+import rz.thesis.modules.experience.ExperiencesModuleSettings;
 import rz.thesis.server.modules.ServerModule;
 import rz.thesis.server.modules.ServerSettings;
 import rz.thesis.server.websocket.WebSocketFactory;
@@ -83,6 +85,10 @@ public class ServerMain {
 		DiscoveryModuleSettings dmSettings = new DiscoveryModuleSettings(9000, "DISCOVER_SERVICES");
 		DiscoveryModule discoveryModule = new DiscoveryModule(core, dmSettings);
 		core.addModule(discoveryModule);
+		
+		ExperiencesModuleSettings expModuleSettings = new ExperiencesModuleSettings("experiences.db","expStorage");
+		ExperiencesModule expModule = new ExperiencesModule(core, expModuleSettings);
+		core.addModule(expModule);
 
 		core.start();
 	}
