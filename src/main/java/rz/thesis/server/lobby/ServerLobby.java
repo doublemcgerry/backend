@@ -7,80 +7,107 @@ import org.apache.log4j.Logger;
 
 import rz.thesis.server.lobby.actors.LobbyDevice;
 import rz.thesis.server.lobby.actors.LobbySpectator;
-import rz.thesis.server.lobby.actors.LobbyUserActor;
-import rz.thesis.server.main.ServerMain;
+import rz.thesis.server.lobby.actors.UserActor;
 import rz.thesis.server.serialization.action.Action;
 
 public class ServerLobby {
 	private static final Logger LOGGER = Logger.getLogger(ServerLobby.class.getName());
 	private List<LobbySpectator> spectators = new ArrayList<LobbySpectator>();
 	private List<LobbyDevice> sensors = new ArrayList<LobbyDevice>();
-	private List<LobbyUserActor> users = new ArrayList<LobbyUserActor>();
+	private List<UserActor> users = new ArrayList<UserActor>();
 	private String userName;
 
 	public ServerLobby(String userName) {
-		this.userName=userName;
+		this.userName = userName;
 	}
 
-	public void addSensor(LobbyDevice sensor){
-		synchronized (sensors) {
-			sensors.add(sensor);	
+	/**
+	 * adds the actor to the specific list depending on the base class
+	 * 
+	 * @param actor
+	 *            actor to add to the lobby
+	 */
+	public void addActor(LobbyActor actor) {
+		if (actor instanceof LobbyDevice) {
+			LobbyDevice conv = (LobbyDevice) actor;
+			addSensor(conv);
+		} else if (actor instanceof UserActor) {
+			UserActor conv = (UserActor) actor;
+			addUser(conv);
+		} else if (actor instanceof LobbySpectator) {
+			LobbySpectator conv = (LobbySpectator) actor;
+			addSpectator(conv);
 		}
 	}
-	
-	public void addUser(LobbyUserActor actor){
+
+	private void addSensor(LobbyDevice sensor) {
+		synchronized (sensors) {
+			sensors.add(sensor);
+		}
+	}
+
+	private void addUser(UserActor actor) {
 		synchronized (users) {
 			users.add(actor);
 		}
-		
+
 	}
-	
-	public void addSpectator(LobbySpectator actor){
+
+	private void addSpectator(LobbySpectator actor) {
 		synchronized (spectators) {
 			spectators.add(actor);
-		}		
+		}
 	}
-	
-	public void removeSubscriber(Subscriber wrapper){
+
+	/**
+	 * Remove subscriber from the lobby (every list of actors will be parsed)
+	 * 
+	 * @param wrapper
+	 *            subscriber linked to the actor that must be eliminated
+	 */
+	public void removeSubscriber(Subscriber wrapper) {
 		synchronized (sensors) {
-			for (int i = spectators.size()-1; i >0 ; i--) {
-				if (sensors.get(i).isWrapper(wrapper)){
+			for (int i = spectators.size() - 1; i > 0; i--) {
+				if (sensors.get(i).isWrapper(wrapper)) {
 					sensors.remove(i);
 				}
 			}
 		}
 		synchronized (users) {
-			for (int i = users.size()-1; i >0 ; i--) {
-				if (users.get(i).isWrapper(wrapper)){
+			for (int i = users.size() - 1; i > 0; i--) {
+				if (users.get(i).isWrapper(wrapper)) {
 					users.remove(i);
 				}
 			}
 		}
 		synchronized (sensors) {
-			for (int i = spectators.size()-1; i >0 ; i--) {
-				if (spectators.get(i).isWrapper(wrapper)){
+			for (int i = spectators.size() - 1; i > 0; i--) {
+				if (spectators.get(i).isWrapper(wrapper)) {
 					spectators.remove(i);
 				}
 			}
 		}
-		
+
 	}
 
-	
-
+	/**
+	 * broadcasts the action to every actor in the lobby
+	 * 
+	 * @param action
+	 */
 	public void broadcastAction(Action action) {
 		synchronized (sensors) {
-			for (int i = spectators.size()-1; i >0 ; i--) {
+			for (int i = spectators.size() - 1; i > 0; i--) {
 				try {
 					sensors.get(i).sendAction(action);
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
-				
+
 			}
 		}
 		synchronized (users) {
-			for (int i = users.size()-1; i >0 ; i--) {
+			for (int i = users.size() - 1; i > 0; i--) {
 				try {
 					users.get(i).sendAction(action);
 				} catch (Exception e) {
@@ -89,7 +116,7 @@ public class ServerLobby {
 			}
 		}
 		synchronized (sensors) {
-			for (int i = spectators.size()-1; i >0 ; i--) {
+			for (int i = spectators.size() - 1; i > 0; i--) {
 				try {
 					users.get(i).sendAction(action);
 				} catch (Exception e) {

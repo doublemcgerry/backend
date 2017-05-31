@@ -2,21 +2,19 @@ package rz.thesis.server.serialization.action.management;
 
 import rz.thesis.server.lobby.LobbiesManager;
 import rz.thesis.server.lobby.Subscriber;
-import rz.thesis.server.lobby.SubscriberType;
+import rz.thesis.server.lobby.actors.concrete.SpectatorConcrete;
 
-public class SpectatorEnterLobbyAction extends EnterLobbyAction {
-	
+public class SpectatorAnnounceAction extends ActorAnnounceAction {
+
 	private static final long serialVersionUID = -3018483622075602666L;
-	
-	public SpectatorEnterLobbyAction() {
+
+	public SpectatorAnnounceAction() {
 	}
-	
+
 	@Override
 	public void execute(LobbiesManager router, Subscriber wrapper) {
-		super.execute(router,wrapper);
-		router.changeLobby(wrapper,getLobby(), SubscriberType.SPECTATOR);
+		SpectatorConcrete actor = new SpectatorConcrete(wrapper);
+		router.addLobbyActorToWaitingRoom(actor);
 	}
-	
-	
-	
+
 }
