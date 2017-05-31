@@ -2,6 +2,8 @@ package rz.thesis.server.lobby;
 
 import java.util.UUID;
 
+import rz.thesis.core.modules.http.HttpServerSession;
+import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.server.serialization.action.Action;
 
 public abstract class LobbyActor implements Subscriber {
@@ -70,6 +72,16 @@ public abstract class LobbyActor implements Subscriber {
 	 */
 	public boolean isWrapper(Subscriber wrapper){
 		return this.subscriber.equals(wrapper);
+	}
+
+	@Override
+	public HttpSessionsManager getSessionsManager() {
+		return this.subscriber.getSessionsManager();
+	}
+
+	@Override
+	public HttpServerSession getServerSession() {
+		return this.subscriber.getServerSession();
 	}
 	
 	

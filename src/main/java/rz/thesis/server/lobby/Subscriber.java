@@ -2,6 +2,8 @@ package rz.thesis.server.lobby;
 
 import java.util.UUID;
 
+import rz.thesis.core.modules.http.HttpServerSession;
+import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.server.serialization.action.Action;
 
 
@@ -13,6 +15,6 @@ public interface Subscriber {
 	ServerLobby getCurrentServerInstance();
 	UUID getUUID();
 	void setUUID(UUID uuid);
-	String getName();
-	void setName(String name);
+	HttpSessionsManager getSessionsManager();
+	HttpServerSession getServerSession();
 }

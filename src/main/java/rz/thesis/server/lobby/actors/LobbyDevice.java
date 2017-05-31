@@ -8,14 +8,15 @@ import rz.thesis.server.lobby.LobbyActor;
 import rz.thesis.server.lobby.Subscriber;
 import rz.thesis.server.sensors.SensorType;
 
-public abstract class SensorActor extends LobbyActor {
-	public SensorActor(Subscriber subscriber) {
+public abstract class LobbyDevice extends LobbyActor {
+	public LobbyDevice(Subscriber subscriber,List<SensorType> sensorTypes) {
 		super(subscriber);
+		this.sensorTypes = sensorTypes;
 	}
 	private List<SensorType> sensorTypes;
 	private Map<SensorType,List<SensorDataListener>> listeners;
-	protected abstract void startSensorRead(SensorType type);
-	protected abstract void stopSensorRead(SensorType type);
+	protected abstract void startSensorDataStream(SensorType type);
+	protected abstract void stopSensorDataStream(SensorType type);
 	protected void addSensorDataListener(SensorType type, SensorDataListener listener){
 		if (!listeners.containsKey(type)){
 			listeners.put(type, new ArrayList<SensorDataListener>());

@@ -9,6 +9,8 @@ import org.nanohttpd.protocols.http.IHTTPSession;
 import org.nanohttpd.protocols.websockets.WebSocketFrame;
 import org.nanohttpd.router.RouterNanoHTTPD.UriResource;
 
+import rz.thesis.core.modules.http.HttpServerSession;
+import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.core.websocket.RZWebSocket;
 import rz.thesis.core.websocket.RZWebsocketsManager;
 import rz.thesis.server.lobby.LobbiesManager;
@@ -23,14 +25,16 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	private ServerLobby instance;
 	private static final Logger LOGGER = Logger.getLogger(WebSocket.class.getName());
 	private UUID uuid;
-	private String name;
 	private LobbiesManager router;
+	private HttpSessionsManager sessionsManager;
+	private HttpServerSession serverSession;
 
 	public WebSocket(RZWebsocketsManager manager, UriResource uriResource, Map<String, String> urlParams,
-			IHTTPSession session, ServerModule serverModule) {
+			IHTTPSession session, HttpServerSession serverSession, ServerModule serverModule) {
 		super(manager, uriResource, urlParams, session);
-		router = serverModule.getRouter();
-		router.addInWaitingRoom(this);
+		this.sessionsManager= uriResource.initParameter(4, HttpSessionsManager.class);
+		this.router = serverModule.getRouter();
+		this.serverSession=serverSession;
 	}
 
 	@Override
@@ -78,19 +82,23 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	}
 
 	@Override
-	public String getName() {
-		return "".equals(name) ? name : "Para Culo";
-	}
-
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
 	protected void onMessage(WebSocketFrame arg0) {
 		Action action = StringSerializer.getSerializer().fromJson(arg0.getTextPayload(), Action.class);
 		router.handleAction(this, action);
+	}	
+
+	@Override
+	public HttpSessionsManager getSessionsManager() {
+		return this.sessionsManager;
 	}
+
+	@Override
+	public HttpServerSession getServerSession() {
+		return this.serverSession;
+	}
+	
+
+	
+	
 
 }

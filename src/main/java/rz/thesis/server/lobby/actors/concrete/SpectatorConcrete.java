@@ -1,11 +1,11 @@
 package rz.thesis.server.lobby.actors.concrete;
 
 import rz.thesis.server.lobby.Subscriber;
-import rz.thesis.server.lobby.actors.SpectatorActor;
+import rz.thesis.server.lobby.actors.LobbySpectator;
 
-public class SpectatorActorConcrete extends SpectatorActor {
+public class SpectatorConcrete extends LobbySpectator {
 
-	public SpectatorActorConcrete(Subscriber subscriber) {
+	public SpectatorConcrete(Subscriber subscriber) {
 		super(subscriber);
 	}
 

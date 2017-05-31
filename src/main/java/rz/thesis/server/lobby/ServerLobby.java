@@ -5,39 +5,37 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import rz.thesis.server.lobby.actors.SensorActor;
-import rz.thesis.server.lobby.actors.SpectatorActor;
-import rz.thesis.server.lobby.actors.UserActor;
-import rz.thesis.server.logger.interfaces.LobbyLoggerInterface;
+import rz.thesis.server.lobby.actors.LobbyDevice;
+import rz.thesis.server.lobby.actors.LobbySpectator;
+import rz.thesis.server.lobby.actors.LobbyUserActor;
 import rz.thesis.server.main.ServerMain;
 import rz.thesis.server.serialization.action.Action;
 
 public class ServerLobby {
 	private static final Logger LOGGER = Logger.getLogger(ServerLobby.class.getName());
-	private List<SpectatorActor> spectators = new ArrayList<SpectatorActor>();
-	private List<SensorActor> sensors = new ArrayList<SensorActor>();
-	private List<UserActor> users = new ArrayList<UserActor>();
-	private LobbyLoggerInterface log;
-	
+	private List<LobbySpectator> spectators = new ArrayList<LobbySpectator>();
+	private List<LobbyDevice> sensors = new ArrayList<LobbyDevice>();
+	private List<LobbyUserActor> users = new ArrayList<LobbyUserActor>();
+	private String userName;
 
-	public ServerLobby(LobbyLoggerInterface log) {
-		this.log = log;
+	public ServerLobby(String userName) {
+		this.userName=userName;
 	}
 
-	public void addSensor(SensorActor sensor){
+	public void addSensor(LobbyDevice sensor){
 		synchronized (sensors) {
 			sensors.add(sensor);	
 		}
 	}
 	
-	public void addUser(UserActor actor){
+	public void addUser(LobbyUserActor actor){
 		synchronized (users) {
 			users.add(actor);
 		}
 		
 	}
 	
-	public void addSpectator(SpectatorActor actor){
+	public void addSpectator(LobbySpectator actor){
 		synchronized (spectators) {
 			spectators.add(actor);
 		}		
@@ -99,7 +97,7 @@ public class ServerLobby {
 				}
 			}
 		}
-		log.logLobbyActivity(action.toString());
+		LOGGER.debug(action.toString());
 	}
 
 }
