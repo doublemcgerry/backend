@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.nanohttpd.protocols.http.IHTTPSession;
+import org.nanohttpd.protocols.websockets.CloseCode;
 import org.nanohttpd.protocols.websockets.WebSocketFrame;
 import org.nanohttpd.router.RouterNanoHTTPD.UriResource;
 
@@ -32,9 +33,15 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	public WebSocket(RZWebsocketsManager manager, UriResource uriResource, Map<String, String> urlParams,
 			IHTTPSession session, HttpServerSession serverSession, ServerModule serverModule) {
 		super(manager, uriResource, urlParams, session);
-		this.sessionsManager= uriResource.initParameter(4, HttpSessionsManager.class);
+		this.sessionsManager = uriResource.initParameter(1, HttpSessionsManager.class);
 		this.router = serverModule.getRouter();
-		this.serverSession=serverSession;
+		this.serverSession = serverSession;
+	}
+
+	@Override
+	protected void onClose(CloseCode code, String reason, boolean initiatedByRemote) {
+		super.onClose(code, reason, initiatedByRemote);
+		removeFromServerInstance();
 	}
 
 	@Override
@@ -61,8 +68,6 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	public void removeFromServerInstance() {
 		if (instance != null) {
 			this.instance.removeSubscriber(this);
-		} else {
-			throw new RuntimeException("The instance is null");
 		}
 	}
 
@@ -85,7 +90,7 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	protected void onMessage(WebSocketFrame arg0) {
 		Action action = StringSerializer.getSerializer().fromJson(arg0.getTextPayload(), Action.class);
 		router.handleAction(this, action);
-	}	
+	}
 
 	@Override
 	public HttpSessionsManager getSessionsManager() {
@@ -96,9 +101,5 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	public HttpServerSession getServerSession() {
 		return this.serverSession;
 	}
-	
-
-	
-	
 
 }

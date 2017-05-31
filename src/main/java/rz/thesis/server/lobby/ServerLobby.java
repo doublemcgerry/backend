@@ -30,12 +30,15 @@ public class ServerLobby {
 	public void addActor(LobbyActor actor) {
 		if (actor instanceof LobbyDevice) {
 			LobbyDevice conv = (LobbyDevice) actor;
+			actor.setCurrentServerInstance(this);
 			addSensor(conv);
 		} else if (actor instanceof UserActor) {
 			UserActor conv = (UserActor) actor;
+			actor.setCurrentServerInstance(this);
 			addUser(conv);
 		} else if (actor instanceof LobbySpectator) {
 			LobbySpectator conv = (LobbySpectator) actor;
+			actor.setCurrentServerInstance(this);
 			addSpectator(conv);
 		}
 	}
@@ -66,24 +69,24 @@ public class ServerLobby {
 	 *            subscriber linked to the actor that must be eliminated
 	 */
 	public void removeSubscriber(Subscriber wrapper) {
-		synchronized (sensors) {
-			for (int i = spectators.size() - 1; i > 0; i--) {
-				if (sensors.get(i).isWrapper(wrapper)) {
-					sensors.remove(i);
+		synchronized (spectators) {
+			for (int i = spectators.size() - 1; i >= 0; i--) {
+				if (spectators.get(i).isWrapper(wrapper)) {
+					spectators.remove(i);
 				}
 			}
 		}
 		synchronized (users) {
-			for (int i = users.size() - 1; i > 0; i--) {
+			for (int i = users.size() - 1; i >= 0; i--) {
 				if (users.get(i).isWrapper(wrapper)) {
 					users.remove(i);
 				}
 			}
 		}
 		synchronized (sensors) {
-			for (int i = spectators.size() - 1; i > 0; i--) {
-				if (spectators.get(i).isWrapper(wrapper)) {
-					spectators.remove(i);
+			for (int i = sensors.size() - 1; i >= 0; i--) {
+				if (sensors.get(i).isWrapper(wrapper)) {
+					sensors.remove(i);
 				}
 			}
 		}
@@ -97,7 +100,7 @@ public class ServerLobby {
 	 */
 	public void broadcastAction(Action action) {
 		synchronized (sensors) {
-			for (int i = spectators.size() - 1; i > 0; i--) {
+			for (int i = sensors.size() - 1; i >= 0; i--) {
 				try {
 					sensors.get(i).sendAction(action);
 				} catch (Exception e) {
@@ -107,7 +110,7 @@ public class ServerLobby {
 			}
 		}
 		synchronized (users) {
-			for (int i = users.size() - 1; i > 0; i--) {
+			for (int i = users.size() - 1; i >= 0; i--) {
 				try {
 					users.get(i).sendAction(action);
 				} catch (Exception e) {
@@ -115,10 +118,10 @@ public class ServerLobby {
 				}
 			}
 		}
-		synchronized (sensors) {
-			for (int i = spectators.size() - 1; i > 0; i--) {
+		synchronized (spectators) {
+			for (int i = spectators.size() - 1; i >= 0; i--) {
 				try {
-					users.get(i).sendAction(action);
+					spectators.get(i).sendAction(action);
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}

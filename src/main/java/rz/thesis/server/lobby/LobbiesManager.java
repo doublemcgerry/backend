@@ -10,6 +10,7 @@ import rz.thesis.core.Core;
 import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.server.serialization.action.Action;
+import rz.thesis.server.serialization.action.auth.PairingConfirmationAction;
 import rz.thesis.server.serialization.action.auth.SendTokenAction;
 import rz.thesis.server.serialization.action.management.ManagementAction;
 
@@ -34,6 +35,7 @@ public class LobbiesManager {
 	public LobbiesManager(Core core) {
 		lobbyMap = new HashMap<>();
 		waitingRoom = new HashMap<>();
+		this.core = core;
 		this.experiencesModule = this.core.getModule(ExperiencesModule.class);
 		this.core = core;
 	}
@@ -63,7 +65,6 @@ public class LobbiesManager {
 			while (waitingRoom.containsKey(token)) {
 				token = getToken(4);
 			}
-
 			waitingRoom.put(token, actor);
 		}
 		actor.sendAction(new SendTokenAction(token));
@@ -98,19 +99,30 @@ public class LobbiesManager {
 	 * @param deviceKey
 	 *            the key of the device to associate to the account
 	 */
-	public void authenticate(Subscriber authenticator, String deviceKey) {
+	public void authenticate(final Subscriber authenticator, String deviceKey) {
 		if (authenticator.getServerSession().isAuthenticated()) {
 			String username = authenticator.getServerSession().getUsername();
 			synchronized (waitingRoom) {
 				if (waitingRoom.containsKey(deviceKey)) {
-					LobbyActor actor = waitingRoom.get(deviceKey);
+					final LobbyActor actor = waitingRoom.get(deviceKey);
 					HttpSessionsManager.authenticateSession(actor.getServerSession(), username);
 					waitingRoom.remove(deviceKey);
 					synchronized (lobbyMap) {
-						if (lobbyMap.containsKey(authenticator.getServerSession().getUsername())) {
-							lobbyMap.get(authenticator.getServerSession().getUsername()).addActor(actor);
+						if (!lobbyMap.containsKey(username)) {
+							lobbyMap.put(username, new ServerLobby(username));
 						}
+						lobbyMap.get(username).addActor(actor);
 					}
+					final PairingConfirmationAction confirmation = new PairingConfirmationAction(deviceKey, username);
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							authenticator.sendAction(confirmation);
+							actor.sendAction(confirmation);
+
+						}
+					}).start();
+
 				}
 			}
 
