@@ -20,4 +20,8 @@ public abstract class ActorAnnounceAction extends ManagementAction {
 		this.name = name;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 }
