@@ -7,10 +7,10 @@ import rz.thesis.server.serialization.action.management.ManagementAction;
 public class SendCodeAction extends ManagementAction {
 	private static final long serialVersionUID = 1353808040784186537L;
 
-	private String token;
+	private String code;
 
-	public SendCodeAction(String token) {
-		this.token=token;
+	public SendCodeAction(String code) {
+		this.code=code;
 	}
 
 	@Override
@@ -18,7 +18,7 @@ public class SendCodeAction extends ManagementAction {
 		
 	}
 
-	public String getToken() {
-		return token;
+	public String getCode() {
+		return code;
 	}
 }
