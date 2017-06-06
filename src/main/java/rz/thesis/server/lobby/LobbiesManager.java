@@ -11,7 +11,7 @@ import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.server.serialization.action.Action;
 import rz.thesis.server.serialization.action.auth.PairingConfirmationAction;
-import rz.thesis.server.serialization.action.auth.SendTokenAction;
+import rz.thesis.server.serialization.action.auth.SendCodeAction;
 import rz.thesis.server.serialization.action.management.ManagementAction;
 
 public class LobbiesManager {
@@ -67,7 +67,7 @@ public class LobbiesManager {
 			}
 			waitingRoom.put(token, actor);
 		}
-		actor.sendAction(new SendTokenAction(token));
+		actor.sendAction(new SendCodeAction(token));
 	}
 
 	/**

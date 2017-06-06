@@ -4,12 +4,12 @@ import rz.thesis.server.lobby.LobbiesManager;
 import rz.thesis.server.lobby.Subscriber;
 import rz.thesis.server.serialization.action.management.ManagementAction;
 
-public class SendTokenAction extends ManagementAction {
+public class SendCodeAction extends ManagementAction {
 	private static final long serialVersionUID = 1353808040784186537L;
 
 	private String token;
 
-	public SendTokenAction(String token) {
+	public SendCodeAction(String token) {
 		this.token=token;
 	}
 
@@ -21,7 +21,4 @@ public class SendTokenAction extends ManagementAction {
 	public String getToken() {
 		return token;
 	}
-	
-	
-
 }
