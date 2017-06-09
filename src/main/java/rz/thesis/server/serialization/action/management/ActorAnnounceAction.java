@@ -10,6 +10,9 @@ package rz.thesis.server.serialization.action.management;
 public abstract class ActorAnnounceAction extends ManagementAction {
 
 	private static final long serialVersionUID = 6722305545748319370L;
+	private int major;
+	private int minor;
+	private int revision;
 
 	private String name;
 
@@ -24,4 +27,15 @@ public abstract class ActorAnnounceAction extends ManagementAction {
 		return name;
 	}
 
+	public int getMajor() {
+		return major;
+	}
+
+	public int getMinor() {
+		return minor;
+	}
+
+	public int getRevision() {
+		return revision;
+	}
 }
