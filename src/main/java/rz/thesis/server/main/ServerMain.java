@@ -23,6 +23,7 @@ import rz.thesis.core.project.security.UserAuthentication;
 import rz.thesis.core.save.SaveModule;
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.modules.experience.ExperiencesModuleSettings;
+import rz.thesis.server.devices.DeviceDefinitionsHandler;
 import rz.thesis.server.modules.ServerModule;
 import rz.thesis.server.modules.ServerSettings;
 import rz.thesis.server.websocket.WebSocketFactory;
@@ -76,6 +77,7 @@ public class ServerMain {
 		WebSocketFactory websocketFactory = new WebSocketFactory(serverModule);
 		List<Class<? extends MappingsProvider>> handlers = new ArrayList<>();
 		handlers.add(LoginHttpHandler.class);
+		handlers.add(DeviceDefinitionsHandler.class);
 		HttpModule httpmodule = new HttpModule(core, new HttpModuleSettings(8010, "../Framework/"), authentication,
 				handlers, websocketFactory);
 		core.addModule(httpmodule);
@@ -85,8 +87,8 @@ public class ServerMain {
 		DiscoveryModuleSettings dmSettings = new DiscoveryModuleSettings(9000, "DISCOVER_SERVICES");
 		DiscoveryModule discoveryModule = new DiscoveryModule(core, dmSettings);
 		core.addModule(discoveryModule);
-		
-		ExperiencesModuleSettings expModuleSettings = new ExperiencesModuleSettings("experiences.db","expStorage");
+
+		ExperiencesModuleSettings expModuleSettings = new ExperiencesModuleSettings("experiences.db", "expStorage");
 		ExperiencesModule expModule = new ExperiencesModule(core, expModuleSettings);
 		core.addModule(expModule);
 
