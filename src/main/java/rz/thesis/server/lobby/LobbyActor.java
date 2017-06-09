@@ -9,7 +9,7 @@ import rz.thesis.server.serialization.action.Action;
 public abstract class LobbyActor implements Subscriber {
 	protected UUID id;
 	protected String name;
-	private Subscriber subscriber;
+	protected Subscriber subscriber;
 
 	public LobbyActor(Subscriber subscriber) {
 		this.subscriber = subscriber;
@@ -32,8 +32,8 @@ public abstract class LobbyActor implements Subscriber {
 	}
 
 	@Override
-	public void sendAction(Action action) {
-		this.subscriber.sendAction(action);
+	public void sendAction(Subscriber subscriber, Action action) {
+		this.subscriber.sendAction(subscriber, action);
 	}
 
 	@Override
@@ -65,12 +65,14 @@ public abstract class LobbyActor implements Subscriber {
 	public void setUUID(UUID uuid) {
 		this.subscriber.setUUID(uuid);
 	}
+
 	/***
 	 * Returns whether or not this actor refers to the provided wrapper
+	 * 
 	 * @param wrapper
 	 * @return
 	 */
-	public boolean isWrapper(Subscriber wrapper){
+	public boolean isWrapper(Subscriber wrapper) {
 		return this.subscriber.equals(wrapper);
 	}
 
@@ -83,7 +85,20 @@ public abstract class LobbyActor implements Subscriber {
 	public HttpServerSession getServerSession() {
 		return this.subscriber.getServerSession();
 	}
-	
-	
+
+	@Override
+	public void handleAction(Subscriber subscriber, Action action) {
+		this.subscriber.handleAction(subscriber, action);
+	}
+
+	@Override
+	public void setLobbyManager(LobbiesManagerInterface lobbyManagerInterface) {
+		this.subscriber.setLobbyManager(lobbyManagerInterface);
+	}
+
+	@Override
+	public LobbiesManagerInterface getLobbyManager() {
+		return this.subscriber.getLobbyManager();
+	}
 
 }

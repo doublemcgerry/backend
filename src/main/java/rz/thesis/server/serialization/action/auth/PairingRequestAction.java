@@ -1,6 +1,7 @@
 package rz.thesis.server.serialization.action.auth;
 
-import rz.thesis.server.lobby.LobbiesManager;
+import rz.thesis.server.lobby.AuthenticationInformation;
+import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.Subscriber;
 import rz.thesis.server.serialization.action.management.ManagementAction;
 
@@ -9,8 +10,21 @@ public class PairingRequestAction extends ManagementAction {
 	private String deviceKey;
 
 	@Override
-	public void execute(LobbiesManager lobbyManager, Subscriber wrapper) {
-		lobbyManager.authenticate(wrapper, deviceKey);
+	public void execute(LobbiesManagerInterface lobbyManager, Subscriber wrapper) {
+		final AuthenticationInformation info = lobbyManager.authenticate(wrapper, deviceKey);
+		if (info != null) {
+			lobbyManager.addActorToLobby(info.getUsername(), info.getDevice());
+			final PairingConfirmationAction confirmation = new PairingConfirmationAction(deviceKey, info.getUsername());
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					info.getAuthenticator().sendAction(info.getAuthenticator(), confirmation);
+					info.getDevice().sendAction(info.getDevice(), confirmation);
+
+				}
+			}).start();
+		}
+
 	}
-	
+
 }

@@ -14,7 +14,7 @@ import rz.thesis.core.modules.http.HttpServerSession;
 import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.core.websocket.RZWebSocket;
 import rz.thesis.core.websocket.RZWebsocketsManager;
-import rz.thesis.server.lobby.LobbiesManager;
+import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.lobby.Subscriber;
 import rz.thesis.server.modules.ServerModule;
@@ -26,7 +26,7 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	private ServerLobby instance;
 	private static final Logger LOGGER = Logger.getLogger(WebSocket.class.getName());
 	private UUID uuid;
-	private LobbiesManager router;
+	private LobbiesManagerInterface router;
 	private HttpSessionsManager sessionsManager;
 	private HttpServerSession serverSession;
 
@@ -45,7 +45,7 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	}
 
 	@Override
-	public void sendAction(Action action) {
+	public void sendAction(Subscriber subscriber, Action action) {
 		String serialized = StringSerializer.getSerializer().toJson(action, Action.class);
 		try {
 			super.send(serialized);
@@ -89,6 +89,11 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	@Override
 	protected void onMessage(WebSocketFrame arg0) {
 		Action action = StringSerializer.getSerializer().fromJson(arg0.getTextPayload(), Action.class);
+		this.handleAction(this, action);
+	}
+
+	@Override
+	public void handleAction(Subscriber subscriber, Action action) {
 		router.handleAction(this, action);
 	}
 
@@ -100,6 +105,16 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	@Override
 	public HttpServerSession getServerSession() {
 		return this.serverSession;
+	}
+
+	@Override
+	public void setLobbyManager(LobbiesManagerInterface lobbyManagerInterface) {
+		this.router = lobbyManagerInterface;
+	}
+
+	@Override
+	public LobbiesManagerInterface getLobbyManager() {
+		return this.router;
 	}
 
 }

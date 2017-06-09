@@ -1,6 +1,6 @@
 package rz.thesis.server.serialization.action.management;
 
-import rz.thesis.server.lobby.LobbiesManager;
+import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.Subscriber;
 import rz.thesis.server.lobby.actors.concrete.MobileScreenActor;
 
@@ -22,7 +22,7 @@ public class MobileScreenAnnounceAction extends ActorAnnounceAction {
 	}
 
 	@Override
-	public void execute(LobbiesManager router, Subscriber wrapper) {
+	public void execute(LobbiesManagerInterface router, Subscriber wrapper) {
 		MobileScreenActor actor = new MobileScreenActor(wrapper);
 		router.addLobbyActorToWaitingRoom(actor);
 	}

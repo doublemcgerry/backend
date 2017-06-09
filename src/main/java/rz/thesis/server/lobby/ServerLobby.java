@@ -102,7 +102,7 @@ public class ServerLobby {
 		synchronized (sensors) {
 			for (int i = sensors.size() - 1; i >= 0; i--) {
 				try {
-					sensors.get(i).sendAction(action);
+					sensors.get(i).sendAction(sensors.get(i), action);
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
@@ -112,7 +112,7 @@ public class ServerLobby {
 		synchronized (users) {
 			for (int i = users.size() - 1; i >= 0; i--) {
 				try {
-					users.get(i).sendAction(action);
+					users.get(i).sendAction(users.get(i), action);
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}
@@ -121,7 +121,7 @@ public class ServerLobby {
 		synchronized (spectators) {
 			for (int i = spectators.size() - 1; i >= 0; i--) {
 				try {
-					spectators.get(i).sendAction(action);
+					spectators.get(i).sendAction(spectators.get(i), action);
 				} catch (Exception e) {
 					LOGGER.error(e);
 				}

@@ -1,6 +1,6 @@
 package rz.thesis.server.serialization.action.management;
 
-import rz.thesis.server.lobby.LobbiesManager;
+import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.Subscriber;
 import rz.thesis.server.lobby.actors.concrete.SpectatorConcrete;
 
@@ -12,7 +12,7 @@ public class SpectatorAnnounceAction extends ActorAnnounceAction {
 	}
 
 	@Override
-	public void execute(LobbiesManager router, Subscriber wrapper) {
+	public void execute(LobbiesManagerInterface router, Subscriber wrapper) {
 		SpectatorConcrete actor = new SpectatorConcrete(wrapper);
 		router.addLobbyActorToWaitingRoom(actor);
 	}
