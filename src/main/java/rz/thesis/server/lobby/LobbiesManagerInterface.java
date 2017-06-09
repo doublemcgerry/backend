@@ -19,6 +19,6 @@ public interface LobbiesManagerInterface {
 
 	void addActorToLobby(String lobbyName, LobbyActor actor);
 
-	void addLobbyActorToWaitingRoom(LobbyActor actor);
+	String addLobbyActorToWaitingRoom(LobbyActor actor);
 
 }

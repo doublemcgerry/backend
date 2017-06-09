@@ -6,8 +6,6 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-import rz.thesis.server.serialization.action.auth.SendCodeAction;
-
 public class LobbiesContainer {
 
 	private static final Logger LOGGER = Logger.getLogger(LobbiesContainer.class.getName());
@@ -29,7 +27,7 @@ public class LobbiesContainer {
 		this.waitingRoom = new HashMap<>();
 	}
 
-	public void addLobbyActorToWaitingRoom(LobbyActor actor) {
+	public String addLobbyActorToWaitingRoom(LobbyActor actor) {
 		String token = getToken(4);
 		synchronized (waitingRoom) {
 			while (waitingRoom.containsKey(token)) {
@@ -37,7 +35,7 @@ public class LobbiesContainer {
 			}
 			waitingRoom.put(token, actor);
 		}
-		actor.sendAction(actor, new SendCodeAction(token));
+		return token;
 	}
 
 	public void createLobby(Subscriber userActor) {

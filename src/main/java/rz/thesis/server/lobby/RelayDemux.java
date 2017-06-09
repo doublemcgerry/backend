@@ -127,8 +127,8 @@ public class RelayDemux extends LobbyActor {
 		}
 
 		@Override
-		public void addLobbyActorToWaitingRoom(LobbyActor actor) {
-			lobbiesManager.addLobbyActorToWaitingRoom(actor);
+		public String addLobbyActorToWaitingRoom(LobbyActor actor) {
+			return lobbiesManager.addLobbyActorToWaitingRoom(actor);
 		}
 
 	}

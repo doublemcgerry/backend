@@ -99,8 +99,8 @@ public class LobbiesManager implements LobbiesManagerInterface {
 	}
 
 	@Override
-	public void addLobbyActorToWaitingRoom(LobbyActor actor) {
-		this.container.addLobbyActorToWaitingRoom(actor);
+	public String addLobbyActorToWaitingRoom(LobbyActor actor) {
+		return this.container.addLobbyActorToWaitingRoom(actor);
 	}
 
 }

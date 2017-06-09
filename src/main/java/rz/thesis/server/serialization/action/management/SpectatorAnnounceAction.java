@@ -3,6 +3,7 @@ package rz.thesis.server.serialization.action.management;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.Subscriber;
 import rz.thesis.server.lobby.actors.concrete.SpectatorConcrete;
+import rz.thesis.server.serialization.action.auth.SendCodeAction;
 
 public class SpectatorAnnounceAction extends ActorAnnounceAction {
 
@@ -14,7 +15,8 @@ public class SpectatorAnnounceAction extends ActorAnnounceAction {
 	@Override
 	public void execute(LobbiesManagerInterface router, Subscriber wrapper) {
 		SpectatorConcrete actor = new SpectatorConcrete(wrapper);
-		router.addLobbyActorToWaitingRoom(actor);
+		String token = router.addLobbyActorToWaitingRoom(actor);
+		wrapper.sendAction(wrapper, new SendCodeAction(token));
 	}
 
 }
