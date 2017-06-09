@@ -6,7 +6,7 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-import rz.thesis.server.serialization.action.auth.SendTokenAction;
+import rz.thesis.server.serialization.action.auth.SendCodeAction;
 
 public class LobbiesContainer {
 
@@ -37,7 +37,7 @@ public class LobbiesContainer {
 			}
 			waitingRoom.put(token, actor);
 		}
-		actor.sendAction(actor, new SendTokenAction(token));
+		actor.sendAction(actor, new SendCodeAction(token));
 	}
 
 	public void createLobby(Subscriber userActor) {

@@ -9,13 +9,8 @@ public class SendCodeAction extends ManagementAction {
 
 	private String code;
 
-<<<<<<< HEAD:src/main/java/rz/thesis/server/serialization/action/auth/SendTokenAction.java
-	public SendTokenAction(String token) {
-		this.token = token;
-=======
 	public SendCodeAction(String code) {
-		this.code=code;
->>>>>>> SecondSeason:src/main/java/rz/thesis/server/serialization/action/auth/SendCodeAction.java
+		this.code = code;
 	}
 
 	@Override
@@ -26,8 +21,4 @@ public class SendCodeAction extends ManagementAction {
 	public String getCode() {
 		return code;
 	}
-<<<<<<< HEAD:src/main/java/rz/thesis/server/serialization/action/auth/SendTokenAction.java
-
-=======
->>>>>>> SecondSeason:src/main/java/rz/thesis/server/serialization/action/auth/SendCodeAction.java
 }
