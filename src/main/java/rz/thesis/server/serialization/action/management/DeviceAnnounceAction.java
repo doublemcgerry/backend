@@ -6,10 +6,6 @@ import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.Subscriber;
 import rz.thesis.server.lobby.actors.concrete.DeviceConcrete;
 import rz.thesis.server.sensors.SensorType;
-<<<<<<< Updated upstream
-import rz.thesis.server.serialization.action.auth.AuthCodeAction;
-=======
->>>>>>> Stashed changes
 
 public class DeviceAnnounceAction extends ActorAnnounceAction {
 
@@ -23,12 +19,7 @@ public class DeviceAnnounceAction extends ActorAnnounceAction {
 	@Override
 	public void execute(LobbiesManagerInterface router, Subscriber wrapper) {
 		DeviceConcrete actor = new DeviceConcrete(wrapper, sensorTypes);
-<<<<<<< Updated upstream
-		String token = router.addLobbyActorToWaitingRoom(actor);
-		wrapper.sendAction(wrapper, new AuthCodeAction(token));
-=======
 		router.addActorToLobby(wrapper.getServerSession().getUsername(), actor);
->>>>>>> Stashed changes
 	}
 
 }
