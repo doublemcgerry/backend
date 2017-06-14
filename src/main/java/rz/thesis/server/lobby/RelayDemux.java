@@ -122,13 +122,8 @@ public class RelayDemux extends LobbyActor {
 		}
 
 		@Override
-		public AuthenticationInformation authenticate(Subscriber authenticator, String deviceKey) {
-			return lobbiesManager.authenticate(authenticator, deviceKey);
-		}
-
-		@Override
-		public String addLobbyActorToWaitingRoom(LobbyActor actor) {
-			return lobbiesManager.addLobbyActorToWaitingRoom(actor);
+		public LobbiesAuthenticationInterface getAuthenticator() {
+			return lobbiesManager.getAuthenticator();
 		}
 
 	}

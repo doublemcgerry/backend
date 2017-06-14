@@ -11,15 +11,16 @@ public class PairingRequestAction extends ManagementAction {
 
 	@Override
 	public void execute(LobbiesManagerInterface lobbyManager, Subscriber wrapper) {
-		final AuthenticationInformation info = lobbyManager.authenticate(wrapper, deviceKey);
+		final AuthenticationInformation info = lobbyManager.getAuthenticator().authenticate(wrapper, deviceKey);
 		if (info != null) {
-			lobbyManager.addActorToLobby(info.getUsername(), info.getDevice());
-			final PairingConfirmationAction confirmation = new PairingConfirmationAction(deviceKey, info.getUsername());
+			lobbyManager.getAuthenticator().removeFromWaitingRoom(deviceKey);
+			final PairingConfirmationAction confirmation = new PairingConfirmationAction(deviceKey, info.getUsername(),
+					info.getServerSession().getId());
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
 					info.getAuthenticator().sendAction(info.getAuthenticator(), confirmation);
-					info.getDevice().sendAction(info.getDevice(), confirmation);
+					info.getDeviceSubscriber().sendAction(info.getDeviceSubscriber(), confirmation);
 
 				}
 			}).start();

@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import rz.thesis.core.Core;
-import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.server.serialization.action.Action;
 import rz.thesis.server.serialization.action.management.ManagementAction;
@@ -23,11 +22,14 @@ public class LobbiesManager implements LobbiesManagerInterface {
 
 	private LobbiesContainer container;
 
+	private LobbiesAuthenticator authenticator;
+
 	public LobbiesManager(Core core) {
 		this.container = new LobbiesContainer();
 		this.core = core;
 		this.experiencesModule = this.core.getModule(ExperiencesModule.class);
 		this.core = core;
+		this.authenticator = new LobbiesAuthenticator();
 	}
 
 	@Override
@@ -44,29 +46,8 @@ public class LobbiesManager implements LobbiesManagerInterface {
 	}
 
 	@Override
-	public AuthenticationInformation authenticate(final Subscriber authenticator, String deviceKey) {
-		if (authenticator.getServerSession().isAuthenticated()) {
-			String username = authenticator.getServerSession().getUsername();
-			synchronized (container.getWaitingRoom()) {
-				if (container.getWaitingRoom().containsKey(deviceKey)) {
-					final LobbyActor actor = container.getWaitingRoom().get(deviceKey);
-					HttpSessionsManager.authenticateSession(actor.getServerSession(), username);
-					LobbyActor authenticatedActor = container.getWaitingRoom().remove(deviceKey);
-
-					return new AuthenticationInformation(username, deviceKey, authenticatedActor, authenticator);
-				}
-			}
-
-		} else {
-			throw new RuntimeException("no authentication, no party");
-		}
-		return null;
-
-	}
-
-	@Override
 	public void broadcastToWaitingRoom(Action action) {
-		for (Map.Entry<String, LobbyActor> subscriber : container.getWaitingRoom().entrySet()) {
+		for (Map.Entry<String, Subscriber> subscriber : authenticator.getWaitingRoom().entrySet()) {
 			try {
 				subscriber.getValue().sendAction(subscriber.getValue(), action);
 			} catch (Exception e) {
@@ -99,8 +80,8 @@ public class LobbiesManager implements LobbiesManagerInterface {
 	}
 
 	@Override
-	public String addLobbyActorToWaitingRoom(LobbyActor actor) {
-		return this.container.addLobbyActorToWaitingRoom(actor);
+	public LobbiesAuthenticationInterface getAuthenticator() {
+		return this.authenticator;
 	}
 
 }

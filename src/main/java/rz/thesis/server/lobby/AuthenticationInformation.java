@@ -1,17 +1,22 @@
 package rz.thesis.server.lobby;
 
+import rz.thesis.core.modules.http.HttpServerSession;
+
 public class AuthenticationInformation {
 	private String username;
 	private String deviceKey;
-	private LobbyActor device;
+	private HttpServerSession serverSession;
+	private Subscriber device;
 	private Subscriber authenticator;
 
-	public AuthenticationInformation(String username, String deviceKey, LobbyActor device, Subscriber authenticator) {
+	public AuthenticationInformation(String username, String deviceKey, Subscriber authenticatedSubscriber,
+			Subscriber authenticator, HttpServerSession httpServerSession) {
 		super();
 		this.username = username;
 		this.deviceKey = deviceKey;
-		this.device = device;
+		this.device = authenticatedSubscriber;
 		this.authenticator = authenticator;
+		this.serverSession = httpServerSession;
 	}
 
 	public String getUsername() {
@@ -22,12 +27,16 @@ public class AuthenticationInformation {
 		return deviceKey;
 	}
 
-	public LobbyActor getDevice() {
+	public Subscriber getDeviceSubscriber() {
 		return device;
 	}
 
 	public Subscriber getAuthenticator() {
 		return authenticator;
+	}
+
+	public HttpServerSession getServerSession() {
+		return serverSession;
 	}
 
 }

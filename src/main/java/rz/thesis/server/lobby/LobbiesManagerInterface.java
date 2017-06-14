@@ -9,8 +9,6 @@ public interface LobbiesManagerInterface {
 
 	void handleManagementAction(Subscriber wrapper, ManagementAction action);
 
-	AuthenticationInformation authenticate(Subscriber authenticator, String deviceKey);
-
 	void broadcastToWaitingRoom(Action action);
 
 	void addRelay(RelayDemux relayDemux);
@@ -19,6 +17,6 @@ public interface LobbiesManagerInterface {
 
 	void addActorToLobby(String lobbyName, LobbyActor actor);
 
-	String addLobbyActorToWaitingRoom(LobbyActor actor);
+	LobbiesAuthenticationInterface getAuthenticator();
 
 }
