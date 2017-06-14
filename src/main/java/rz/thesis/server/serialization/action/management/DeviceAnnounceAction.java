@@ -6,7 +6,7 @@ import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.Subscriber;
 import rz.thesis.server.lobby.actors.concrete.DeviceConcrete;
 import rz.thesis.server.sensors.SensorType;
-import rz.thesis.server.serialization.action.auth.SendCodeAction;
+import rz.thesis.server.serialization.action.auth.AuthCodeAction;
 
 public class DeviceAnnounceAction extends ActorAnnounceAction {
 
@@ -21,7 +21,7 @@ public class DeviceAnnounceAction extends ActorAnnounceAction {
 	public void execute(LobbiesManagerInterface router, Subscriber wrapper) {
 		DeviceConcrete actor = new DeviceConcrete(wrapper, sensorTypes);
 		String token = router.addLobbyActorToWaitingRoom(actor);
-		wrapper.sendAction(wrapper, new SendCodeAction(token));
+		wrapper.sendAction(wrapper, new AuthCodeAction(token));
 	}
 
 }
