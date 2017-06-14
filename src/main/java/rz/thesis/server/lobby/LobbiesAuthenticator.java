@@ -46,15 +46,10 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 	}
 
 	@Override
-	public String addLobbyActorToWaitingRoom(Subscriber actor) {
-		String token = getToken(4);
+	public void addLobbyActorToWaitingRoom(String token, Subscriber actor) {
 		synchronized (waitingRoom) {
-			while (waitingRoom.containsKey(token)) {
-				token = getToken(4);
-			}
 			waitingRoom.put(token, actor);
 		}
-		return token;
 	}
 
 	@Override
@@ -74,7 +69,7 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 	@Override
 	public Subscriber removeFromWaitingRoom(String token) {
 		synchronized (waitingRoom) {
-			return waitingRoom.remove(waitingRoom);
+			return waitingRoom.remove(token);
 		}
 	}
 
@@ -95,6 +90,12 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 
 	@Override
 	public String generateNewToken() {
-		return getToken(4);
+		String token = getToken(4);
+		synchronized (waitingRoom) {
+			while (waitingRoom.containsKey(token)) {
+				token = getToken(4);
+			}
+		}
+		return token;
 	}
 }

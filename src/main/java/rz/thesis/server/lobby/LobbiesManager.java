@@ -89,9 +89,11 @@ public class LobbiesManager implements LobbiesManagerInterface {
 	@Override
 	public void onSubscriberCreated(Subscriber subscriber) {
 		if (!subscriber.getServerSession().isAuthenticated()) {
-			AuthCodeAction codeaction = new AuthCodeAction(
-					subscriber.getLobbyManager().getAuthenticator().generateNewToken());
+			String token = subscriber.getLobbyManager().getAuthenticator().generateNewToken();
+			AuthCodeAction codeaction = new AuthCodeAction(token);
+			subscriber.getLobbyManager().getAuthenticator().addLobbyActorToWaitingRoom(token, subscriber);
 			subscriber.sendAction(subscriber, codeaction);
+
 		} else {
 			AnnounceDemandAction announceDemand = new AnnounceDemandAction();
 			subscriber.sendAction(subscriber, announceDemand);

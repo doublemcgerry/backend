@@ -6,7 +6,7 @@ public interface LobbiesAuthenticationInterface {
 
 	AuthenticationInformation authenticate(Subscriber authenticator, String deviceKey);
 
-	String addLobbyActorToWaitingRoom(Subscriber actor);
+	void addLobbyActorToWaitingRoom(String token, Subscriber actor);
 
 	boolean containsTokenInWaitingRoom(String token);
 
