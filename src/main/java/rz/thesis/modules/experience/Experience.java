@@ -2,28 +2,28 @@ package rz.thesis.modules.experience;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.UUID;
 
 import com.google.gson.stream.JsonReader;
 
 import rz.thesis.core.modules.http.handlers.Serializer;
-import rz.thesis.server.lobby.ExperienceId;
 
 public class Experience {
 	private ExperienceDefinitionParameters parameters = null;
 
-	private ExperienceId id;
+	private UUID id;
 	private String dataFilename;
 	private String infoFilename;
 	private String baseExperiencePath;
 
-	public Experience(String baseExperiencePath, ExperienceId id, String dataFilename, String infoFilename) {
+	public Experience(String baseExperiencePath, UUID id, String dataFilename, String infoFilename) {
 		this.baseExperiencePath = baseExperiencePath;
 		this.id = id;
 		this.dataFilename = dataFilename;
 		this.infoFilename = infoFilename;
 	}
 
-	public ExperienceId getId() {
+	public UUID getId() {
 		return id;
 	}
 

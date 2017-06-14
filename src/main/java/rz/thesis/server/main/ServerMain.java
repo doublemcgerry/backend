@@ -23,6 +23,7 @@ import rz.thesis.core.project.security.UserAuthentication;
 import rz.thesis.core.save.SaveModule;
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.modules.experience.ExperiencesModuleSettings;
+import rz.thesis.modules.experience.handlers.ExperienceHandler;
 import rz.thesis.server.devices.DeviceDefinitionsHandler;
 import rz.thesis.server.modules.ServerModule;
 import rz.thesis.server.modules.ServerSettings;
@@ -78,6 +79,7 @@ public class ServerMain {
 		List<Class<? extends MappingsProvider>> handlers = new ArrayList<>();
 		handlers.add(LoginHttpHandler.class);
 		handlers.add(DeviceDefinitionsHandler.class);
+		handlers.add(ExperienceHandler.class);
 		HttpModule httpmodule = new HttpModule(core, new HttpModuleSettings(8010, "../Framework/"), authentication,
 				handlers, websocketFactory);
 		core.addModule(httpmodule);

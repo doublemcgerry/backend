@@ -1,9 +1,9 @@
 package rz.thesis.modules.experience;
 
 import java.util.List;
+import java.util.UUID;
 
 import rz.thesis.core.Core;
-import rz.thesis.server.lobby.ExperienceId;
 
 public class ExperiencesController {
 	private ExperienceModuleDBHelper db;
@@ -12,11 +12,11 @@ public class ExperiencesController {
 		this.db = new ExperienceModuleDBHelper(core.getProjectFolder(), settings);
 	}
 
-	public Experience getExperience(int userId, ExperienceId id) {
+	public Experience getExperience(int userId, UUID id) {
 		return this.db.retrieveExperience(userId, id);
 	}
 
-	public boolean containsExperienceId(int userId, ExperienceId id) {
+	public boolean containsExperienceId(int userId, UUID id) {
 		return this.db.containsExperience(userId, id);
 	}
 

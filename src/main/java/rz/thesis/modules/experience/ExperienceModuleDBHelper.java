@@ -9,10 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
-
-import rz.thesis.server.lobby.ExperienceId;
 
 /**
  * this class enables the communication with the experiences db
@@ -91,9 +90,9 @@ public class ExperienceModuleDBHelper {
 	 *            id of the experience to retrieve from the db
 	 * @return the experience object if found, null if not found
 	 */
-	public Experience retrieveExperience(int userId, ExperienceId id) {
+	public Experience retrieveExperience(int userId, UUID id) {
 
-		String sql = "SELECT id FROM experiences"; // TODO also check
+		String sql = "SELECT * FROM experiences"; // TODO also check
 													// permissions
 		try {
 			PreparedStatement stmt = this.DBConnection.prepareStatement(sql);
@@ -118,7 +117,7 @@ public class ExperienceModuleDBHelper {
 	 *            id of the experience to check the presence
 	 * @return true if the user has access to the experience, false otherwise
 	 */
-	public boolean containsExperience(int userId, ExperienceId id) {
+	public boolean containsExperience(int userId, UUID id) {
 		return retrieveExperience(userId, id) == null;
 		// TODO migliorare questa evitando di chiamare retrieve experience
 	}
@@ -132,18 +131,17 @@ public class ExperienceModuleDBHelper {
 	 */
 	public List<Experience> getExperiencesList(int userId) {
 		List<Experience> retList = new ArrayList<>();
-		String sql = "SELECT id FROM experiences"; // TODO also check
+		String sql = "SELECT * FROM experiences"; // TODO also check
 													// permissions
 		try {
 			PreparedStatement stmt = this.DBConnection.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
-			while (!rs.isAfterLast()) {
-				ExperienceId id = (ExperienceId.fromString(rs.getString(1)));
+			while (rs.next()) {
+				UUID id = (UUID.fromString(rs.getString(1)));
 				String dataFilename = rs.getString(2);
 				String infoFilename = rs.getString(3);
 				retList.add(
 						new Experience(projectPath + "/" + experiencesStorageLocation, id, dataFilename, infoFilename));
-				rs.next();
 			}
 		} catch (SQLException e) {
 			LOGGER.error(e);
