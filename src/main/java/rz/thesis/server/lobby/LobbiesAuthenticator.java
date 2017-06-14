@@ -92,4 +92,9 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 		}
 		return token.toString();
 	}
+
+	@Override
+	public String generateNewToken() {
+		return getToken(4);
+	}
 }

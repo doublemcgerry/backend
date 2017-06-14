@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import rz.thesis.core.Core;
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.server.serialization.action.Action;
+import rz.thesis.server.serialization.action.auth.AnnounceDemandAction;
+import rz.thesis.server.serialization.action.auth.AuthCodeAction;
 import rz.thesis.server.serialization.action.management.ManagementAction;
 
 public class LobbiesManager implements LobbiesManagerInterface {
@@ -82,6 +84,23 @@ public class LobbiesManager implements LobbiesManagerInterface {
 	@Override
 	public LobbiesAuthenticationInterface getAuthenticator() {
 		return this.authenticator;
+	}
+
+	@Override
+	public void onSubscriberCreated(Subscriber subscriber) {
+		if (!subscriber.getServerSession().isAuthenticated()) {
+			AuthCodeAction codeaction = new AuthCodeAction(
+					subscriber.getLobbyManager().getAuthenticator().generateNewToken());
+			subscriber.sendAction(subscriber, codeaction);
+		} else {
+			AnnounceDemandAction announceDemand = new AnnounceDemandAction();
+			subscriber.sendAction(subscriber, announceDemand);
+		}
+	}
+
+	@Override
+	public void onSubscriberClosed(Subscriber subscriber) {
+
 	}
 
 }

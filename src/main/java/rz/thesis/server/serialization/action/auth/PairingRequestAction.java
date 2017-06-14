@@ -16,12 +16,13 @@ public class PairingRequestAction extends ManagementAction {
 			lobbyManager.getAuthenticator().removeFromWaitingRoom(deviceKey);
 			final PairingConfirmationAction confirmation = new PairingConfirmationAction(deviceKey, info.getUsername(),
 					info.getServerSession().getId());
+			final AnnounceDemandAction demandAction = new AnnounceDemandAction();
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
 					info.getAuthenticator().sendAction(info.getAuthenticator(), confirmation);
 					info.getDeviceSubscriber().sendAction(info.getDeviceSubscriber(), confirmation);
-
+					info.getDeviceSubscriber().sendAction(info.getDeviceSubscriber(), demandAction);
 				}
 			}).start();
 		}

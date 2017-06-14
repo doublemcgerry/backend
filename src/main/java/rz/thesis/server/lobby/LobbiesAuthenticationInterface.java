@@ -14,4 +14,6 @@ public interface LobbiesAuthenticationInterface {
 
 	Subscriber removeFromWaitingRoom(String token);
 
+	String generateNewToken();
+
 }

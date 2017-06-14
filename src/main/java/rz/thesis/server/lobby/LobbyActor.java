@@ -48,12 +48,12 @@ public abstract class LobbyActor implements Subscriber {
 
 	@Override
 	public void removeFromServerInstance() {
-		this.removeFromServerInstance();
+		this.subscriber.removeFromServerInstance();
 	}
 
 	@Override
 	public ServerLobby getCurrentServerInstance() {
-		return this.getCurrentServerInstance();
+		return this.subscriber.getCurrentServerInstance();
 	}
 
 	@Override

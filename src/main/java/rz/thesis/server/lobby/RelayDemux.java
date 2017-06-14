@@ -126,6 +126,17 @@ public class RelayDemux extends LobbyActor {
 			return lobbiesManager.getAuthenticator();
 		}
 
+		@Override
+		public void onSubscriberCreated(Subscriber subscriber) {
+			lobbiesManager.onSubscriberCreated(subscriber);
+		}
+
+		@Override
+		public void onSubscriberClosed(Subscriber subscriber) {
+			// TODO Auto-generated method stub
+
+		}
+
 	}
 
 }

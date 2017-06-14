@@ -19,4 +19,8 @@ public interface LobbiesManagerInterface {
 
 	LobbiesAuthenticationInterface getAuthenticator();
 
+	void onSubscriberCreated(Subscriber subscriber);
+
+	void onSubscriberClosed(Subscriber subscriber);
+
 }

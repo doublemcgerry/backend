@@ -26,7 +26,7 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	private ServerLobby instance;
 	private static final Logger LOGGER = Logger.getLogger(WebSocket.class.getName());
 	private UUID uuid;
-	private LobbiesManagerInterface router;
+	private LobbiesManagerInterface lobbyManager;
 	private HttpSessionsManager sessionsManager;
 	private HttpServerSession serverSession;
 
@@ -34,14 +34,21 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 			IHTTPSession session, HttpServerSession serverSession, ServerModule serverModule) {
 		super(manager, uriResource, urlParams, session);
 		this.sessionsManager = uriResource.initParameter(1, HttpSessionsManager.class);
-		this.router = serverModule.getRouter();
+		this.lobbyManager = serverModule.getRouter();
 		this.serverSession = serverSession;
+	}
+
+	@Override
+	protected void onOpen() {
+		super.onOpen();
+		this.lobbyManager.onSubscriberCreated(this);
 	}
 
 	@Override
 	protected void onClose(CloseCode code, String reason, boolean initiatedByRemote) {
 		super.onClose(code, reason, initiatedByRemote);
 		removeFromServerInstance();
+		this.lobbyManager.onSubscriberClosed(this);
 	}
 
 	@Override
@@ -94,7 +101,7 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 
 	@Override
 	public void handleAction(Subscriber subscriber, Action action) {
-		router.handleAction(this, action);
+		lobbyManager.handleAction(this, action);
 	}
 
 	@Override
@@ -109,12 +116,12 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 
 	@Override
 	public void setLobbyManager(LobbiesManagerInterface lobbyManagerInterface) {
-		this.router = lobbyManagerInterface;
+		this.lobbyManager = lobbyManagerInterface;
 	}
 
 	@Override
 	public LobbiesManagerInterface getLobbyManager() {
-		return this.router;
+		return this.lobbyManager;
 	}
 
 }
