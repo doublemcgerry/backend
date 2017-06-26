@@ -1,7 +1,7 @@
 package rz.thesis.server.serialization.action.management;
 
 import rz.thesis.server.lobby.LobbiesManagerInterface;
-import rz.thesis.server.lobby.Subscriber;
+import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.lobby.actors.concrete.SpectatorConcrete;
 
 public class SpectatorAnnounceAction extends ActorAnnounceAction {
@@ -12,9 +12,10 @@ public class SpectatorAnnounceAction extends ActorAnnounceAction {
 	}
 
 	@Override
-	public void execute(LobbiesManagerInterface router, Subscriber wrapper) {
-		SpectatorConcrete actor = new SpectatorConcrete(wrapper);
-		router.addActorToLobby(wrapper.getServerSession().getUsername(), actor);
+	public void execute(LobbiesManagerInterface router, VirtualActor actor) {
+		SpectatorConcrete spectatorActor = new SpectatorConcrete(actor);
+		actor.setLobbyActor(spectatorActor);
+		router.addActorToLobby(actor.getUserName(), actor);
 	}
 
 }

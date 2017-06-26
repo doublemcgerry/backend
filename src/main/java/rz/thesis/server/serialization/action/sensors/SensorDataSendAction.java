@@ -1,5 +1,7 @@
 package rz.thesis.server.serialization.action.sensors;
 
+import rz.thesis.server.lobby.LobbiesManagerInterface;
+import rz.thesis.server.lobby.LobbyActor;
 import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.utility.SensorData;
 
@@ -10,13 +12,13 @@ public class SensorDataSendAction extends SensorsAction {
 	private String sender;
 
 	@Override
-	public void execute(ServerLobby instance) {
-		instance.broadcastAction(this);
+	public String toString() {
+		return sender + " has sent a new SensorDataSendAction [data=" + data + "]";
 	}
 
 	@Override
-	public String toString() {
-		return sender + " has sent a new SensorDataSendAction [data=" + data + "]";
+	public void execute(LobbiesManagerInterface lobbyManager, ServerLobby lobby, LobbyActor actor) {
+		lobby.broadcastAction(this);
 	}
 
 }

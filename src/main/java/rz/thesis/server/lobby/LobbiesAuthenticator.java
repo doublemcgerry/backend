@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import rz.thesis.core.modules.http.HttpSessionsManager;
+import rz.thesis.server.lobby.actors.VirtualActor;
+import rz.thesis.server.serialization.action.Action;
 
 public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 	/**
@@ -12,30 +13,22 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 	 * the key is the pairing token, the value is the actor that is associated
 	 * to the device
 	 */
-	private Map<String, Subscriber> waitingRoom;
+	private Map<String, VirtualActor> waitingRoom;
 
 	public LobbiesAuthenticator() {
 		this.waitingRoom = new HashMap<>();
 	}
 
 	@Override
-	public boolean isAuthenticated(Subscriber subscriber) {
-		return subscriber.getServerSession().isAuthenticated();
-	}
-
-	@Override
-	public AuthenticationInformation authenticate(final Subscriber authenticator, String deviceKey) {
+	public AuthenticationInformation authenticate(final Tunnel authenticator, String deviceKey) {
 
 		if (authenticator.getServerSession().isAuthenticated()) {
 			String username = authenticator.getServerSession().getUsername();
 
 			if (containsTokenInWaitingRoom(deviceKey)) {
-				final Subscriber sub = retrieveFromWaitingRoom(deviceKey);
-				HttpSessionsManager.authenticateSession(sub.getServerSession(), username);
-				Subscriber authenticatedSubscriber = removeFromWaitingRoom(deviceKey);
-
-				return new AuthenticationInformation(username, deviceKey, authenticatedSubscriber, authenticator,
-						authenticatedSubscriber.getServerSession());
+				final VirtualActor sub = retrieveFromWaitingRoom(deviceKey);
+				VirtualActor authenticatedActor = removeFromWaitingRoom(deviceKey);
+				return new AuthenticationInformation(username, deviceKey, authenticator, authenticatedActor);
 			}
 
 		} else {
@@ -46,7 +39,7 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 	}
 
 	@Override
-	public void addLobbyActorToWaitingRoom(String token, Subscriber actor) {
+	public void addActorToWaitingRoom(String token, VirtualActor actor) {
 		synchronized (waitingRoom) {
 			waitingRoom.put(token, actor);
 		}
@@ -60,20 +53,27 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 	}
 
 	@Override
-	public Subscriber retrieveFromWaitingRoom(String token) {
+	public VirtualActor retrieveFromWaitingRoom(String token) {
 		synchronized (waitingRoom) {
 			return waitingRoom.get(token);
 		}
 	}
 
 	@Override
-	public Subscriber removeFromWaitingRoom(String token) {
+	public VirtualActor removeFromWaitingRoom(String token) {
 		synchronized (waitingRoom) {
 			return waitingRoom.remove(token);
 		}
 	}
 
-	public Map<String, Subscriber> getWaitingRoom() {
+	@Override
+	public void broadcastToWaitingRoom(Action action) {
+		for (Map.Entry<String, VirtualActor> vActorEntry : this.waitingRoom.entrySet()) {
+			vActorEntry.getValue().sendActionToRemote(action);
+		}
+	}
+
+	public Map<String, VirtualActor> getWaitingRoom() {
 		return waitingRoom;
 	}
 
@@ -98,4 +98,5 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 		}
 		return token;
 	}
+
 }

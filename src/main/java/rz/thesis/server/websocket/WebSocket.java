@@ -1,12 +1,12 @@
 package rz.thesis.server.websocket;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.nanohttpd.protocols.http.IHTTPSession;
-import org.nanohttpd.protocols.websockets.CloseCode;
 import org.nanohttpd.protocols.websockets.WebSocketFrame;
 import org.nanohttpd.router.RouterNanoHTTPD.UriResource;
 
@@ -15,44 +15,32 @@ import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.core.websocket.RZWebSocket;
 import rz.thesis.core.websocket.RZWebsocketsManager;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
-import rz.thesis.server.lobby.ServerLobby;
-import rz.thesis.server.lobby.Subscriber;
+import rz.thesis.server.lobby.Tunnel;
+import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.modules.ServerModule;
 import rz.thesis.server.serialization.action.Action;
 import rz.thesis.server.utility.StringSerializer;
 
-public class WebSocket extends RZWebSocket implements Subscriber {
+public class WebSocket extends RZWebSocket implements Tunnel {
 
-	private ServerLobby instance;
 	private static final Logger LOGGER = Logger.getLogger(WebSocket.class.getName());
 	private UUID uuid;
 	private LobbiesManagerInterface lobbyManager;
 	private HttpSessionsManager sessionsManager;
 	private HttpServerSession serverSession;
+	private Map<UUID, VirtualActor> virtualActors;
 
 	public WebSocket(RZWebsocketsManager manager, UriResource uriResource, Map<String, String> urlParams,
 			IHTTPSession session, HttpServerSession serverSession, ServerModule serverModule) {
 		super(manager, uriResource, urlParams, session);
+		this.virtualActors = new HashMap<>();
 		this.sessionsManager = uriResource.initParameter(1, HttpSessionsManager.class);
 		this.lobbyManager = serverModule.getRouter();
 		this.serverSession = serverSession;
 	}
 
 	@Override
-	protected void onOpen() {
-		super.onOpen();
-		this.lobbyManager.onSubscriberCreated(this);
-	}
-
-	@Override
-	protected void onClose(CloseCode code, String reason, boolean initiatedByRemote) {
-		super.onClose(code, reason, initiatedByRemote);
-		removeFromServerInstance();
-		this.lobbyManager.onSubscriberClosed(this);
-	}
-
-	@Override
-	public void sendAction(Subscriber subscriber, Action action) {
+	public void sendAction(Action action) {
 		String serialized = StringSerializer.getSerializer().toJson(action, Action.class);
 		try {
 			super.send(serialized);
@@ -64,23 +52,6 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	@Override
 	public boolean isAlive() {
 		return this.isOpen();
-	}
-
-	@Override
-	public void setCurrentServerInstance(ServerLobby serverInstance) {
-		this.instance = serverInstance;
-	}
-
-	@Override
-	public void removeFromServerInstance() {
-		if (instance != null) {
-			this.instance.removeSubscriber(this);
-		}
-	}
-
-	@Override
-	public ServerLobby getCurrentServerInstance() {
-		return this.instance;
 	}
 
 	@Override
@@ -96,12 +67,19 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	@Override
 	protected void onMessage(WebSocketFrame arg0) {
 		Action action = StringSerializer.getSerializer().fromJson(arg0.getTextPayload(), Action.class);
-		this.handleAction(this, action);
+		VirtualActor actor;
+		if (!containsActor(action.getDeviceSession())) {
+			actor = new VirtualActor(action.getDeviceSession(), this);
+			this.addActor(actor);
+		} else {
+			actor = getActorFromActorSession(action.getDeviceSession());
+		}
+		this.handleAction(actor, action);
 	}
 
 	@Override
-	public void handleAction(Subscriber subscriber, Action action) {
-		lobbyManager.handleAction(this, action);
+	public void handleAction(VirtualActor actor, Action action) {
+		lobbyManager.handleAction(actor, action);
 	}
 
 	@Override
@@ -122,6 +100,54 @@ public class WebSocket extends RZWebSocket implements Subscriber {
 	@Override
 	public LobbiesManagerInterface getLobbyManager() {
 		return this.lobbyManager;
+	}
+
+	@Override
+	public void addActor(VirtualActor actor) {
+		this.virtualActors.put(actor.getActorSession(), actor);
+	}
+
+	@Override
+	public void removeActor(VirtualActor actor) {
+		this.removeActor(actor.getActorSession());
+	}
+
+	@Override
+	public void removeActor(UUID deviceSession) {
+		this.virtualActors.remove(deviceSession);
+	}
+
+	@Override
+	public Map<UUID, VirtualActor> getActors() {
+		return this.virtualActors;
+	}
+
+	@Override
+	public void sendAction(UUID deviceSession, UUID source, UUID destination, Action action) {
+		action.setDeviceSession(deviceSession);
+		action.setSource(source);
+		action.setDestination(destination);
+		this.sendAction(action);
+	}
+
+	@Override
+	public VirtualActor getActorFromActorSession(UUID actorSession) {
+		for (Map.Entry<UUID, VirtualActor> lobbyActor : virtualActors.entrySet()) {
+			if (actorSession.equals(lobbyActor.getValue().getActorSession())) {
+				return lobbyActor.getValue();
+			}
+		}
+		throw new RuntimeException("no actor found for this session id");
+	}
+
+	@Override
+	public boolean containsActor(UUID actorSession) {
+		for (Map.Entry<UUID, VirtualActor> lobbyActor : virtualActors.entrySet()) {
+			if (actorSession.equals(lobbyActor.getValue().getActorSession())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

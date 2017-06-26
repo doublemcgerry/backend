@@ -2,15 +2,14 @@ package rz.thesis.server.lobby;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import rz.thesis.core.Core;
 import rz.thesis.modules.experience.ExperiencesModule;
+import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.serialization.action.Action;
-import rz.thesis.server.serialization.action.auth.AnnounceDemandAction;
-import rz.thesis.server.serialization.action.auth.AuthCodeAction;
+import rz.thesis.server.serialization.action.lobby.LobbyAction;
 import rz.thesis.server.serialization.action.management.ManagementAction;
 
 public class LobbiesManager implements LobbiesManagerInterface {
@@ -35,40 +34,16 @@ public class LobbiesManager implements LobbiesManagerInterface {
 	}
 
 	@Override
-	public void handleAction(Subscriber wrapper, Action action) {
+	public void handleAction(VirtualActor actor, Action action) {
 		if (action instanceof ManagementAction) {
 			ManagementAction manag_action = (ManagementAction) action;
-			wrapper.getLobbyManager().handleManagementAction(wrapper, manag_action);
+			handleManagementAction(actor, manag_action);
 		}
-	}
-
-	@Override
-	public void handleManagementAction(Subscriber wrapper, ManagementAction action) {
-		action.execute(wrapper.getLobbyManager(), wrapper);
-	}
-
-	@Override
-	public void broadcastToWaitingRoom(Action action) {
-		for (Map.Entry<String, Subscriber> subscriber : authenticator.getWaitingRoom().entrySet()) {
-			try {
-				subscriber.getValue().sendAction(subscriber.getValue(), action);
-			} catch (Exception e) {
-				LOGGER.debug("Error while sending to subscriber:" + e.getMessage());
+		if (action instanceof LobbyAction) {
+			LobbyAction lobbyAction = (LobbyAction) action;
+			if (actor.hasLobbyActor()) {
+				lobbyAction.execute(this, actor.getLobbyActor().getLobby(), actor);
 			}
-		}
-	}
-
-	@Override
-	public void addRelay(RelayDemux relayDemux) {
-		synchronized (relays) {
-			relays.add(relayDemux);
-		}
-	}
-
-	@Override
-	public void removeRelay(RelayDemux relayDemux) {
-		synchronized (relays) {
-			relays.remove(relayDemux);
 		}
 	}
 
@@ -77,32 +52,23 @@ public class LobbiesManager implements LobbiesManagerInterface {
 	}
 
 	@Override
-	public void addActorToLobby(String lobbyName, LobbyActor actor) {
-		this.container.addActorToLobby(lobbyName, actor);
-	}
-
-	@Override
 	public LobbiesAuthenticationInterface getAuthenticator() {
 		return this.authenticator;
 	}
 
 	@Override
-	public void onSubscriberCreated(Subscriber subscriber) {
-		if (!subscriber.getServerSession().isAuthenticated()) {
-			String token = subscriber.getLobbyManager().getAuthenticator().generateNewToken();
-			AuthCodeAction codeaction = new AuthCodeAction(token);
-			subscriber.getLobbyManager().getAuthenticator().addLobbyActorToWaitingRoom(token, subscriber);
-			subscriber.sendAction(subscriber, codeaction);
-
-		} else {
-			AnnounceDemandAction announceDemand = new AnnounceDemandAction();
-			subscriber.sendAction(subscriber, announceDemand);
-		}
+	public void handleManagementAction(VirtualActor actor, ManagementAction action) {
+		action.execute(this, actor);
 	}
 
 	@Override
-	public void onSubscriberClosed(Subscriber subscriber) {
+	public void broadcastToWaitingRoom(Action action) {
+		this.authenticator.broadcastToWaitingRoom(action);
+	}
 
+	@Override
+	public void addActorToLobby(String lobbyName, VirtualActor actor) {
+		this.container.addActorToLobby(lobbyName, actor);
 	}
 
 }

@@ -3,7 +3,7 @@ package rz.thesis.server.serialization.action.reply;
 import java.util.ArrayList;
 
 import rz.thesis.server.lobby.LobbiesManagerInterface;
-import rz.thesis.server.lobby.Subscriber;
+import rz.thesis.server.lobby.Tunnel;
 
 public class AvailableLobbiesReply extends ReplyAction {
 	private static final long serialVersionUID = -1017610169916616951L;
@@ -14,7 +14,7 @@ public class AvailableLobbiesReply extends ReplyAction {
 	}
 
 	@Override
-	public void execute(LobbiesManagerInterface router, Subscriber wrapper) {
+	public void execute(LobbiesManagerInterface router, Tunnel wrapper) {
 	}
 
 }

@@ -1,7 +1,7 @@
 package rz.thesis.server.serialization.action.auth;
 
 import rz.thesis.server.lobby.LobbiesManagerInterface;
-import rz.thesis.server.lobby.Subscriber;
+import rz.thesis.server.lobby.Tunnel;
 import rz.thesis.server.serialization.action.management.ManagementAction;
 
 public class PairingConfirmationAction extends ManagementAction {
@@ -18,7 +18,7 @@ public class PairingConfirmationAction extends ManagementAction {
 	}
 
 	@Override
-	public void execute(LobbiesManagerInterface lobbyManager, Subscriber wrapper) {
+	public void execute(LobbiesManagerInterface lobbyManager, Tunnel wrapper) {
 
 	}
 

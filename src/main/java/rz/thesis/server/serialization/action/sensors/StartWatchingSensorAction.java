@@ -1,5 +1,7 @@
 package rz.thesis.server.serialization.action.sensors;
 
+import rz.thesis.server.lobby.LobbiesManagerInterface;
+import rz.thesis.server.lobby.LobbyActor;
 import rz.thesis.server.lobby.ServerLobby;
 
 public class StartWatchingSensorAction extends SensorsAction {
@@ -10,12 +12,12 @@ public class StartWatchingSensorAction extends SensorsAction {
 
 	@Override
 	public String toString() {
-		return sender +"has sent a new StartWatchingSensorAction at timestamp=" + timestamp;
+		return sender + "has sent a new StartWatchingSensorAction at timestamp=" + timestamp;
 	}
 
 	@Override
-	public void execute(ServerLobby instance) {
-		instance.broadcastAction(this);
+	public void execute(LobbiesManagerInterface lobbyManager, ServerLobby lobby, LobbyActor actor) {
+		lobby.broadcastAction(this);
 	}
 
 }

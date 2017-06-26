@@ -3,7 +3,7 @@ package rz.thesis.server.serialization.action.management;
 import java.util.List;
 
 import rz.thesis.server.lobby.LobbiesManagerInterface;
-import rz.thesis.server.lobby.Subscriber;
+import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.lobby.actors.concrete.DeviceConcrete;
 import rz.thesis.server.sensors.SensorType;
 
@@ -17,9 +17,10 @@ public class DeviceAnnounceAction extends ActorAnnounceAction {
 	}
 
 	@Override
-	public void execute(LobbiesManagerInterface router, Subscriber wrapper) {
-		DeviceConcrete actor = new DeviceConcrete(wrapper, sensorTypes);
-		router.addActorToLobby(wrapper.getServerSession().getUsername(), actor);
+	public void execute(LobbiesManagerInterface router, VirtualActor actor) {
+		DeviceConcrete deviceActor = new DeviceConcrete(actor, sensorTypes);
+		actor.setLobbyActor(deviceActor);
+		router.addActorToLobby(actor.getUserName(), actor);
 	}
 
 }

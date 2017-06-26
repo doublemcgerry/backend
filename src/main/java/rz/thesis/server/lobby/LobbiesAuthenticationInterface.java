@@ -1,18 +1,21 @@
 package rz.thesis.server.lobby;
 
+import rz.thesis.server.lobby.actors.VirtualActor;
+import rz.thesis.server.serialization.action.Action;
+
 public interface LobbiesAuthenticationInterface {
 
-	boolean isAuthenticated(Subscriber subscriber);
+	AuthenticationInformation authenticate(Tunnel authenticator, String deviceKey);
 
-	AuthenticationInformation authenticate(Subscriber authenticator, String deviceKey);
-
-	void addLobbyActorToWaitingRoom(String token, Subscriber actor);
+	void addActorToWaitingRoom(String token, VirtualActor actor);
 
 	boolean containsTokenInWaitingRoom(String token);
 
-	Subscriber retrieveFromWaitingRoom(String token);
+	VirtualActor retrieveFromWaitingRoom(String token);
 
-	Subscriber removeFromWaitingRoom(String token);
+	VirtualActor removeFromWaitingRoom(String token);
+
+	void broadcastToWaitingRoom(Action action);
 
 	String generateNewToken();
 

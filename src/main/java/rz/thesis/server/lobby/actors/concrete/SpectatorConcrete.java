@@ -1,12 +1,12 @@
 package rz.thesis.server.lobby.actors.concrete;
 
-import rz.thesis.server.lobby.Subscriber;
 import rz.thesis.server.lobby.actors.LobbySpectator;
+import rz.thesis.server.lobby.actors.VirtualActor;
 
 public class SpectatorConcrete extends LobbySpectator {
 
-	public SpectatorConcrete(Subscriber subscriber) {
-		super(subscriber);
+	public SpectatorConcrete(VirtualActor wrapper) {
+		super(wrapper);
 	}
 
 }

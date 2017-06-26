@@ -1,104 +1,21 @@
 package rz.thesis.server.lobby;
 
-import java.util.UUID;
+import rz.thesis.server.lobby.actors.VirtualActor;
 
-import rz.thesis.core.modules.http.HttpServerSession;
-import rz.thesis.core.modules.http.HttpSessionsManager;
-import rz.thesis.server.serialization.action.Action;
+public abstract class LobbyActor {
+	protected ServerLobby lobby;
+	private VirtualActor virtualActor;
 
-public abstract class LobbyActor implements Subscriber {
-	protected UUID id;
-	protected String name;
-	protected Subscriber subscriber;
-
-	public LobbyActor(Subscriber subscriber) {
-		this.subscriber = subscriber;
+	public LobbyActor(VirtualActor actor) {
+		this.virtualActor = actor;
 	}
 
-	public UUID getId() {
-		return id;
+	public ServerLobby getLobby() {
+		return lobby;
 	}
 
-	public void setId(UUID id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public void sendAction(Subscriber subscriber, Action action) {
-		this.subscriber.sendAction(subscriber, action);
-	}
-
-	@Override
-	public boolean isAlive() {
-		return this.subscriber.isAlive();
-	}
-
-	@Override
-	public void setCurrentServerInstance(ServerLobby serverInstance) {
-		this.subscriber.setCurrentServerInstance(serverInstance);
-	}
-
-	@Override
-	public void removeFromServerInstance() {
-		this.subscriber.removeFromServerInstance();
-	}
-
-	@Override
-	public ServerLobby getCurrentServerInstance() {
-		return this.subscriber.getCurrentServerInstance();
-	}
-
-	@Override
-	public UUID getUUID() {
-		return this.subscriber.getUUID();
-	}
-
-	@Override
-	public void setUUID(UUID uuid) {
-		this.subscriber.setUUID(uuid);
-	}
-
-	/***
-	 * Returns whether or not this actor refers to the provided wrapper
-	 * 
-	 * @param wrapper
-	 * @return
-	 */
-	public boolean isWrapper(Subscriber wrapper) {
-		return this.subscriber.equals(wrapper);
-	}
-
-	@Override
-	public HttpSessionsManager getSessionsManager() {
-		return this.subscriber.getSessionsManager();
-	}
-
-	@Override
-	public HttpServerSession getServerSession() {
-		return this.subscriber.getServerSession();
-	}
-
-	@Override
-	public void handleAction(Subscriber subscriber, Action action) {
-		this.subscriber.handleAction(subscriber, action);
-	}
-
-	@Override
-	public void setLobbyManager(LobbiesManagerInterface lobbyManagerInterface) {
-		this.subscriber.setLobbyManager(lobbyManagerInterface);
-	}
-
-	@Override
-	public LobbiesManagerInterface getLobbyManager() {
-		return this.subscriber.getLobbyManager();
+	public void setLobby(ServerLobby lobby) {
+		this.lobby = lobby;
 	}
 
 }
