@@ -1,20 +1,21 @@
 package rz.thesis.server.lobby;
 
+import rz.thesis.core.modules.http.HttpServerSession;
 import rz.thesis.server.lobby.actors.VirtualActor;
 
 public class AuthenticationInformation {
 	private String username;
 	private String deviceKey;
 	private VirtualActor actor;
-	private Tunnel authenticator;
+	private HttpServerSession session;
 
-	public AuthenticationInformation(String username, String deviceKey, Tunnel authenticator,
+	public AuthenticationInformation(String username, String deviceKey, HttpServerSession session,
 			VirtualActor authenticatedActor) {
 		super();
 		this.username = username;
 		this.deviceKey = deviceKey;
 		this.actor = authenticatedActor;
-		this.authenticator = authenticator;
+		this.session = session;
 	}
 
 	public String getUsername() {
@@ -25,8 +26,8 @@ public class AuthenticationInformation {
 		return deviceKey;
 	}
 
-	public Tunnel getAuthenticator() {
-		return authenticator;
+	public HttpServerSession getServerSession() {
+		return session;
 	}
 
 	public VirtualActor getactor() {

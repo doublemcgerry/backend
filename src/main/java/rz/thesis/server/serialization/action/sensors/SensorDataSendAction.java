@@ -1,8 +1,8 @@
 package rz.thesis.server.serialization.action.sensors;
 
 import rz.thesis.server.lobby.LobbiesManagerInterface;
-import rz.thesis.server.lobby.LobbyActor;
 import rz.thesis.server.lobby.ServerLobby;
+import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.utility.SensorData;
 
 public class SensorDataSendAction extends SensorsAction {
@@ -17,7 +17,7 @@ public class SensorDataSendAction extends SensorsAction {
 	}
 
 	@Override
-	public void execute(LobbiesManagerInterface lobbyManager, ServerLobby lobby, LobbyActor actor) {
+	public void execute(LobbiesManagerInterface lobbyManager, ServerLobby lobby, VirtualActor actor) {
 		lobby.broadcastAction(this);
 	}
 

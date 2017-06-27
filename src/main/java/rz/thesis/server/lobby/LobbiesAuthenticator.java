@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import rz.thesis.core.modules.http.HttpServerSession;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.serialization.action.Action;
 
@@ -20,22 +21,20 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 	}
 
 	@Override
-	public AuthenticationInformation authenticate(final Tunnel authenticator, String deviceKey) {
-
-		if (authenticator.getServerSession().isAuthenticated()) {
-			String username = authenticator.getServerSession().getUsername();
+	public AuthenticationInformation authenticate(HttpServerSession session, String deviceKey) {
+		if (session.isAuthenticated()) {
+			String username = session.getUsername();
 
 			if (containsTokenInWaitingRoom(deviceKey)) {
 				final VirtualActor sub = retrieveFromWaitingRoom(deviceKey);
 				VirtualActor authenticatedActor = removeFromWaitingRoom(deviceKey);
-				return new AuthenticationInformation(username, deviceKey, authenticator, authenticatedActor);
+				return new AuthenticationInformation(username, deviceKey, session, authenticatedActor);
 			}
 
 		} else {
 			throw new RuntimeException("no authentication, no party");
 		}
 		return null;
-
 	}
 
 	@Override
@@ -97,6 +96,18 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 			}
 		}
 		return token;
+	}
+
+	@Override
+	public void removeFromWaitingRoom(VirtualActor value) {
+		synchronized (waitingRoom) {
+			for (Map.Entry<String, VirtualActor> vActorEntry : this.waitingRoom.entrySet()) {
+				if (vActorEntry.getValue() == value) {
+					this.waitingRoom.remove(vActorEntry.getKey());
+					return;
+				}
+			}
+		}
 	}
 
 }

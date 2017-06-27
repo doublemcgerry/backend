@@ -9,7 +9,6 @@ public abstract class Action implements Serializable {
 	private static final UUID BROADCAST_DESTINATION = UUID.fromString("635ef93e-dc73-4276-aee7-4960347c1081");
 	private static final UUID LOCAL_LOBBY = UUID.fromString("c8329626-b1b0-443b-8ea6-480a6b1b4025");
 
-	protected UUID deviceSession = null;
 	protected UUID source = LOCAL_LOBBY;
 	protected UUID destination = LOCAL_LOBBY;
 
@@ -31,14 +30,6 @@ public abstract class Action implements Serializable {
 
 	public void setDestination(UUID destinationId) {
 		this.destination = destinationId;
-	}
-
-	public UUID getDeviceSession() {
-		return deviceSession;
-	}
-
-	public void setDeviceSession(UUID deviceSession) {
-		this.deviceSession = deviceSession;
 	}
 
 }

@@ -9,24 +9,24 @@ import rz.thesis.server.lobby.Tunnel;
 import rz.thesis.server.serialization.action.Action;
 
 public class VirtualActor {
-	private UUID actorSession;
+	private UUID address;
 	private String userName;
 	private Map<String, Object> sessionInfo;
 	private Tunnel tunnel;
 	private LobbyActor actor;
 
 	public VirtualActor(UUID actorSession, Tunnel tunnel) {
-		this.actorSession = actorSession;
+		this.address = actorSession;
 		this.tunnel = tunnel;
 		this.sessionInfo = new HashMap<>();
 	}
 
-	public UUID getActorSession() {
-		return actorSession;
+	public UUID getAddress() {
+		return address;
 	}
 
 	public void sendActionToRemote(Action action) {
-		action.setDeviceSession(actorSession);
+		action.setDestination(address);
 		tunnel.sendAction(action);
 	}
 

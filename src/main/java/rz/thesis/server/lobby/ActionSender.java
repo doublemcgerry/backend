@@ -8,5 +8,5 @@ public interface ActionSender {
 
 	void sendAction(Action action);
 
-	void sendAction(UUID deviceSession, UUID source, UUID destination, Action action);
+	void sendAction(UUID source, UUID destination, Action action);
 }

@@ -25,7 +25,7 @@ public class ServerLobby {
 	 *            actor to add to the lobby
 	 */
 	public void addActor(VirtualActor actor) {
-		this.actors.put(actor.getActorSession(), actor);
+		this.actors.put(actor.getAddress(), actor);
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class ServerLobby {
 	 *            actor to remove from the lobby
 	 */
 	public void removeActor(VirtualActor actor) {
-		this.actors.remove(actor.getActorSession());
+		this.actors.remove(actor.getAddress());
 	}
 
 	/**

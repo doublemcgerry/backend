@@ -27,6 +27,7 @@ import rz.thesis.modules.experience.handlers.ExperienceHandler;
 import rz.thesis.server.devices.DeviceDefinitionsHandler;
 import rz.thesis.server.modules.ServerModule;
 import rz.thesis.server.modules.ServerSettings;
+import rz.thesis.server.modules.http.handlers.PairingHandler;
 import rz.thesis.server.websocket.WebSocketFactory;
 
 public class ServerMain {
@@ -80,6 +81,7 @@ public class ServerMain {
 		handlers.add(LoginHttpHandler.class);
 		handlers.add(DeviceDefinitionsHandler.class);
 		handlers.add(ExperienceHandler.class);
+		handlers.add(PairingHandler.class);
 		HttpModule httpmodule = new HttpModule(core, new HttpModuleSettings(8010, "../Framework/"), authentication,
 				handlers, websocketFactory);
 		core.addModule(httpmodule);

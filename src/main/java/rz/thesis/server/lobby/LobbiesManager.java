@@ -1,8 +1,5 @@
 package rz.thesis.server.lobby;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
 import rz.thesis.core.Core;
@@ -18,8 +15,6 @@ public class LobbiesManager implements LobbiesManagerInterface {
 
 	private Core core;
 	private ExperiencesModule experiencesModule;
-
-	private List<RelayDemux> relays = new ArrayList<>();
 
 	private LobbiesContainer container;
 

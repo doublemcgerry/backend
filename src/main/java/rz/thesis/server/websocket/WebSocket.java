@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.nanohttpd.protocols.http.IHTTPSession;
+import org.nanohttpd.protocols.websockets.CloseCode;
 import org.nanohttpd.protocols.websockets.WebSocketFrame;
 import org.nanohttpd.router.RouterNanoHTTPD.UriResource;
 
@@ -15,6 +16,7 @@ import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.core.websocket.RZWebSocket;
 import rz.thesis.core.websocket.RZWebsocketsManager;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
+import rz.thesis.server.lobby.LobbyActor;
 import rz.thesis.server.lobby.Tunnel;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.modules.ServerModule;
@@ -37,6 +39,20 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 		this.sessionsManager = uriResource.initParameter(1, HttpSessionsManager.class);
 		this.lobbyManager = serverModule.getRouter();
 		this.serverSession = serverSession;
+	}
+
+	@Override
+	protected void onClose(CloseCode code, String reason, boolean initiatedByRemote) {
+		super.onClose(code, reason, initiatedByRemote);
+		for (Map.Entry<UUID, VirtualActor> virtualActor : virtualActors.entrySet()) {
+			if (virtualActor.getValue().hasLobbyActor()) {
+				LobbyActor actor = virtualActor.getValue().getLobbyActor();
+				actor.getLobby().removeActor(virtualActor.getValue());
+			} else {
+				lobbyManager.getAuthenticator().removeFromWaitingRoom(virtualActor.getValue());
+			}
+		}
+		this.virtualActors.clear();
 	}
 
 	@Override
@@ -67,12 +83,12 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 	@Override
 	protected void onMessage(WebSocketFrame arg0) {
 		Action action = StringSerializer.getSerializer().fromJson(arg0.getTextPayload(), Action.class);
-		VirtualActor actor;
-		if (!containsActor(action.getDeviceSession())) {
-			actor = new VirtualActor(action.getDeviceSession(), this);
+		VirtualActor actor; // todo uniqueness of the source
+		if (!containsActor(action.getSource())) {
+			actor = new VirtualActor(action.getSource(), this);
 			this.addActor(actor);
 		} else {
-			actor = getActorFromActorSession(action.getDeviceSession());
+			actor = getActorFromActorSession(action.getSource());
 		}
 		this.handleAction(actor, action);
 	}
@@ -104,12 +120,12 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 
 	@Override
 	public void addActor(VirtualActor actor) {
-		this.virtualActors.put(actor.getActorSession(), actor);
+		this.virtualActors.put(actor.getAddress(), actor);
 	}
 
 	@Override
 	public void removeActor(VirtualActor actor) {
-		this.removeActor(actor.getActorSession());
+		this.removeActor(actor.getAddress());
 	}
 
 	@Override
@@ -123,8 +139,7 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 	}
 
 	@Override
-	public void sendAction(UUID deviceSession, UUID source, UUID destination, Action action) {
-		action.setDeviceSession(deviceSession);
+	public void sendAction(UUID source, UUID destination, Action action) {
 		action.setSource(source);
 		action.setDestination(destination);
 		this.sendAction(action);
@@ -133,7 +148,7 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 	@Override
 	public VirtualActor getActorFromActorSession(UUID actorSession) {
 		for (Map.Entry<UUID, VirtualActor> lobbyActor : virtualActors.entrySet()) {
-			if (actorSession.equals(lobbyActor.getValue().getActorSession())) {
+			if (actorSession.equals(lobbyActor.getValue().getAddress())) {
 				return lobbyActor.getValue();
 			}
 		}
@@ -143,7 +158,7 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 	@Override
 	public boolean containsActor(UUID actorSession) {
 		for (Map.Entry<UUID, VirtualActor> lobbyActor : virtualActors.entrySet()) {
-			if (actorSession.equals(lobbyActor.getValue().getActorSession())) {
+			if (actorSession.equals(lobbyActor.getValue().getAddress())) {
 				return true;
 			}
 		}
