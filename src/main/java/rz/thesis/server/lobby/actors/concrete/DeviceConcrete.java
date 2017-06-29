@@ -24,4 +24,14 @@ public class DeviceConcrete extends LobbyDevice {
 
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		for (SensorType sensorType : sensorTypes) {
+			builder.append(sensorType.toString());
+			builder.append(" ");
+		}
+		return super.toString() + " sensorTypes: " + builder.toString();
+	}
+
 }

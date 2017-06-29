@@ -13,8 +13,8 @@ public abstract class LobbyDevice extends LobbyActor {
 		this.sensorTypes = sensorTypes;
 	}
 
-	private List<SensorType> sensorTypes;
-	private Map<SensorType, List<SensorDataListener>> listeners;
+	protected List<SensorType> sensorTypes;
+	protected Map<SensorType, List<SensorDataListener>> listeners;
 
 	protected abstract void startSensorDataStream(SensorType type);
 
