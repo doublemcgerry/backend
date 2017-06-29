@@ -158,4 +158,36 @@ public class ServerLobby {
 		return this.devicesStatus;
 	}
 
+	/**
+	 * returns true if the experience is selected but the sensors slots are not
+	 * completely full
+	 * 
+	 * @return
+	 */
+	public boolean isExperienceInitiating() {
+		return this.currentExperience != null && this.devicesStatus != null && !this.devicesStatus.isReady();
+	}
+
+	/**
+	 * returns true if the lobby has an experience currently associated
+	 * 
+	 * @return
+	 */
+	public boolean isExperienceSelected() {
+		return this.currentExperience != null;
+	}
+
+	/**
+	 * returns true is the experience is currently running
+	 * 
+	 * @return
+	 */
+	public boolean isExperienceRunning() {
+		return this.currentExperience != null && this.devicesStatus != null && this.devicesStatus.isReady();
+	}
+
+	public ExperienceDevicesStatus getDeviceStatus() {
+		return this.devicesStatus;
+	}
+
 }

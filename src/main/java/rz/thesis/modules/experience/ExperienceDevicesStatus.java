@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import rz.thesis.server.sensors.SensorType;
 
+//TODO maximum numbers check
 public class ExperienceDevicesStatus {
 
 	private List<UUID> screens = new ArrayList<>();
@@ -18,6 +19,9 @@ public class ExperienceDevicesStatus {
 	public ExperienceDevicesStatus(ExperienceDefinitionParameters params) {
 		this.neededSensors = params.getRequiredSensors();
 		this.maxScreens = params.getMaxUsersCount();
+		for (Map.Entry<SensorType, Integer> neededSensorsEntry : neededSensors.entrySet()) {
+			sensors.put(neededSensorsEntry.getKey(), new ArrayList<UUID>());
+		}
 	}
 
 	public int getMaxScreens() {
@@ -56,6 +60,22 @@ public class ExperienceDevicesStatus {
 
 	public void removeScreen(UUID screen) {
 		this.screens.remove(screen);
+	}
+
+	public boolean isReady() {
+		if (screens.size() != maxScreens) {
+			return false;
+		}
+		for (Map.Entry<SensorType, Integer> neededSensorsEntry : neededSensors.entrySet()) {
+			if (!sensors.containsKey(neededSensorsEntry.getKey())) {
+				return false;
+			}
+			if (sensors.get(neededSensorsEntry.getKey()).size() != neededSensorsEntry.getValue()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }
