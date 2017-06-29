@@ -6,13 +6,16 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import rz.thesis.modules.experience.Experience;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.serialization.action.lobby.LobbyAction;
+import rz.thesis.server.serialization.action.lobby.LobbyEvent;
 
 public class ServerLobby {
 	private static final Logger LOGGER = Logger.getLogger(ServerLobby.class.getName());
 	private Map<UUID, VirtualActor> actors = new HashMap<>();
 	private String userName;
+	private Experience currentExperience;
 
 	public ServerLobby(String userName) {
 		this.userName = userName;
@@ -115,6 +118,20 @@ public class ServerLobby {
 		LOGGER.debug(lobbyAction.toString());
 	}
 
+	/**
+	 * broadcasts the action to every actor in the lobby
+	 * 
+	 * @param action
+	 */
+	public void broadcastEvent(LobbyEvent lobbyEvent) {
+		synchronized (actors) {
+			for (Map.Entry<UUID, VirtualActor> vActorEntry : actors.entrySet()) {
+				vActorEntry.getValue().sendActionToRemote(lobbyEvent);
+			}
+		}
+		LOGGER.debug(lobbyEvent.toString());
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -126,6 +143,10 @@ public class ServerLobby {
 			}
 		}
 		return builder.toString();
+	}
+
+	public void initiateExperience(Experience experience) {
+		this.currentExperience = experience;
 	}
 
 }

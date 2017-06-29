@@ -38,7 +38,7 @@ public class LobbiesManager implements LobbiesManagerInterface {
 		if (action instanceof LobbyAction) {
 			LobbyAction lobbyAction = (LobbyAction) action;
 			if (actor.hasLobbyActor()) {
-				lobbyAction.execute(this, actor.getLobby(), actor);
+				lobbyAction.execute(this, experiencesModule, actor.getLobby(), actor);
 			}
 		}
 	}
