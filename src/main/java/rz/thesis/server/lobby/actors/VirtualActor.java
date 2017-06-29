@@ -4,12 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
+
 import rz.thesis.server.lobby.LobbyActor;
 import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.lobby.Tunnel;
 import rz.thesis.server.serialization.action.Action;
 
 public class VirtualActor {
+
+	private static final Logger LOGGER = Logger.getLogger(VirtualActor.class.getName());
 	private UUID address;
 	private String userName;
 	private Map<String, Object> sessionInfo;
@@ -30,6 +34,7 @@ public class VirtualActor {
 	public void sendActionToRemote(Action action) {
 		action.setDestination(address);
 		tunnel.sendAction(action);
+		LOGGER.debug("<--- sent action:" + action.toString() + " to actor " + address.toString());
 	}
 
 	public boolean hasLobbyActor() {

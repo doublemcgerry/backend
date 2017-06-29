@@ -30,6 +30,7 @@ public class LobbiesManager implements LobbiesManagerInterface {
 
 	@Override
 	public void handleAction(VirtualActor actor, Action action) {
+		LOGGER.debug("--->received action:" + action.toString() + " from actor " + actor.getAddress().toString());
 		if (action instanceof ManagementAction) {
 			ManagementAction manag_action = (ManagementAction) action;
 			handleManagementAction(actor, manag_action);

@@ -32,4 +32,10 @@ public abstract class Action implements Serializable {
 		this.destination = destinationId;
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + " source:" + (source == null ? "nosource" : source.toString())
+				+ " destination:" + (destination == null ? "nodestination" : destination.toString());
+	}
+
 }
