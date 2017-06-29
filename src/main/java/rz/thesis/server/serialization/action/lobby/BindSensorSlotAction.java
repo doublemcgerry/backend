@@ -17,9 +17,11 @@ public class BindSensorSlotAction extends LobbyAction {
 	        VirtualActor actor) {
 		if (lobby.isExperienceInitiating()) {
 			ExperienceDevicesStatus devicesStatus = lobby.getDeviceStatus();
-			lobby.getDeviceStatus().addSensor(type, actor.getAddress());
-			ExperienceStatusChangeEvent changeEvent = new ExperienceStatusChangeEvent(devicesStatus);
-			lobby.broadcastEvent(changeEvent);
+			if (devicesStatus.canAddSensor(type)) {
+				lobby.getDeviceStatus().addSensor(type, actor.getAddress());
+				ExperienceStatusChangeEvent changeEvent = new ExperienceStatusChangeEvent(devicesStatus);
+				lobby.broadcastEvent(changeEvent);
+			}
 		}
 	}
 

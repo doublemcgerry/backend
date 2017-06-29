@@ -47,6 +47,15 @@ public class ExperienceDevicesStatus {
 		this.sensors.get(type).add(address);
 	}
 
+	public boolean canAddSensor(SensorType type) {
+		if (!this.neededSensors.containsKey(type)) {
+			return false;
+		} else {
+			return this.sensors.get(type).size() < this.neededSensors.get(type);
+		}
+
+	}
+
 	public void removeSensor(SensorType type, UUID address) {
 		if (!this.sensors.containsKey(type)) {
 			return;
