@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import rz.thesis.server.lobby.LobbyActor;
+import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.lobby.Tunnel;
 import rz.thesis.server.serialization.action.Action;
 
@@ -14,6 +15,7 @@ public class VirtualActor {
 	private Map<String, Object> sessionInfo;
 	private Tunnel tunnel;
 	private LobbyActor actor;
+	private ServerLobby lobby;
 
 	public VirtualActor(UUID actorSession, Tunnel tunnel) {
 		this.address = actorSession;
@@ -60,6 +62,14 @@ public class VirtualActor {
 
 	public Tunnel getTunnel() {
 		return tunnel;
+	}
+
+	public ServerLobby getLobby() {
+		return lobby;
+	}
+
+	public void setLobby(ServerLobby lobby) {
+		this.lobby = lobby;
 	}
 
 }

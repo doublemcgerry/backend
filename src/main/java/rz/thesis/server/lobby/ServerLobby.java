@@ -26,6 +26,7 @@ public class ServerLobby {
 	 */
 	public void addActor(VirtualActor actor) {
 		this.actors.put(actor.getAddress(), actor);
+		actor.setLobby(this);
 	}
 
 	/**
@@ -36,6 +37,7 @@ public class ServerLobby {
 	 */
 	public void removeActor(VirtualActor actor) {
 		this.actors.remove(actor.getAddress());
+		actor.setLobby(null);
 	}
 
 	/**

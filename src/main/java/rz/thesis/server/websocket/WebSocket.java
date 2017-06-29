@@ -16,7 +16,6 @@ import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.core.websocket.RZWebSocket;
 import rz.thesis.core.websocket.RZWebsocketsManager;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
-import rz.thesis.server.lobby.LobbyActor;
 import rz.thesis.server.lobby.Tunnel;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.modules.ServerModule;
@@ -46,8 +45,7 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 		super.onClose(code, reason, initiatedByRemote);
 		for (Map.Entry<UUID, VirtualActor> virtualActor : virtualActors.entrySet()) {
 			if (virtualActor.getValue().hasLobbyActor()) {
-				LobbyActor actor = virtualActor.getValue().getLobbyActor();
-				actor.getLobby().removeActor(virtualActor.getValue());
+				virtualActor.getValue().getLobby().removeActor(virtualActor.getValue());
 			} else {
 				lobbyManager.getAuthenticator().removeFromWaitingRoom(virtualActor.getValue());
 			}
