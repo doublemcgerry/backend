@@ -1,10 +1,9 @@
 package rz.thesis.server.serialization.action.lobby;
 
-import java.io.FileNotFoundException;
 import java.util.UUID;
 
 import rz.thesis.modules.experience.Experience;
-import rz.thesis.modules.experience.ExperienceDefinitionParameters;
+import rz.thesis.modules.experience.ExperienceDevicesStatus;
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.ServerLobby;
@@ -20,15 +19,9 @@ public class SelectExperienceAction extends LobbyAction {
 	        VirtualActor actor) {
 		if (actor.hasLobbyActor() && actor.getLobbyActor() instanceof MobileScreenActor) {
 			Experience exp = experiencesModule.getController().getExperience(0, experienceId);
-			lobby.initiateExperience(exp);
-			ExperienceDefinitionParameters params = null;
-			try {
-				params = exp.getParameters();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			lobby.broadcastEvent(new SelectedExperienceEvent(params));
+			ExperienceDevicesStatus status = lobby.initiateExperience(exp);
+			status.addScreen(actor.getAddress());
+			lobby.broadcastEvent(new SelectedExperienceEvent(status));
 		}
 	}
 

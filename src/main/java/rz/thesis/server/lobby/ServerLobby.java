@@ -1,5 +1,6 @@
 package rz.thesis.server.lobby;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -7,6 +8,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import rz.thesis.modules.experience.Experience;
+import rz.thesis.modules.experience.ExperienceDevicesStatus;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.serialization.action.lobby.LobbyAction;
 import rz.thesis.server.serialization.action.lobby.LobbyEvent;
@@ -16,6 +18,7 @@ public class ServerLobby {
 	private Map<UUID, VirtualActor> actors = new HashMap<>();
 	private String userName;
 	private Experience currentExperience;
+	private ExperienceDevicesStatus devicesStatus;
 
 	public ServerLobby(String userName) {
 		this.userName = userName;
@@ -145,8 +148,14 @@ public class ServerLobby {
 		return builder.toString();
 	}
 
-	public void initiateExperience(Experience experience) {
+	public ExperienceDevicesStatus initiateExperience(Experience experience) {
 		this.currentExperience = experience;
+		try {
+			this.devicesStatus = new ExperienceDevicesStatus(experience.getParameters());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return this.devicesStatus;
 	}
 
 }

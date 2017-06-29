@@ -1,12 +1,12 @@
 package rz.thesis.server.serialization.action.lobby;
 
-import rz.thesis.modules.experience.ExperienceDefinitionParameters;
+import rz.thesis.modules.experience.ExperienceDevicesStatus;
 
 public class SelectedExperienceEvent extends LobbyEvent {
 	private static final long serialVersionUID = -7363529515015050795L;
-	ExperienceDefinitionParameters info;
+	ExperienceDevicesStatus status;
 
-	public SelectedExperienceEvent(ExperienceDefinitionParameters params) {
-		this.info = params;
+	public SelectedExperienceEvent(ExperienceDevicesStatus status) {
+		this.status = status;
 	}
 }
