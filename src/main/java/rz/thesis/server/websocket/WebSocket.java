@@ -45,7 +45,7 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 		super.onClose(code, reason, initiatedByRemote);
 		for (Map.Entry<UUID, VirtualActor> virtualActor : virtualActors.entrySet()) {
 			if (virtualActor.getValue().hasLobbyActor()) {
-				virtualActor.getValue().getLobby().removeActor(virtualActor.getValue());
+				virtualActor.getValue().getLobby().disconnectActor(virtualActor.getValue());
 			} else {
 				lobbyManager.getAuthenticator().removeFromWaitingRoom(virtualActor.getValue());
 			}

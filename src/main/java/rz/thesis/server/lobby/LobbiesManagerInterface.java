@@ -16,4 +16,6 @@ public interface LobbiesManagerInterface {
 
 	LobbiesAuthenticationInterface getAuthenticator();
 
+	boolean reconnectToLobby(String lobby, VirtualActor actor);
+
 }

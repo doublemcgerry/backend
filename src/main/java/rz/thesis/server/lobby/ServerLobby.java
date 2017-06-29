@@ -24,9 +24,45 @@ public class ServerLobby {
 	 * @param actor
 	 *            actor to add to the lobby
 	 */
-	public void addActor(VirtualActor actor) {
-		this.actors.put(actor.getAddress(), actor);
-		actor.setLobby(this);
+	public boolean addActor(VirtualActor actor) {
+		if (containsAddress(actor.getAddress())) {
+			LOGGER.debug("trying to reconnect actor :" + actor.getAddress().toString() + " to lobby:" + userName);
+			return reconnectActor(actor);
+		} else {
+			LOGGER.debug("Added actor :" + actor.getAddress().toString() + " to lobby:" + userName);
+			this.actors.put(actor.getAddress(), actor);
+			actor.setLobby(this);
+			return true;
+		}
+	}
+
+	private boolean containsAddress(UUID address) {
+		return this.actors.containsKey(address);
+	}
+
+	/**
+	 * reconnects the actor to the lobby
+	 * 
+	 * @param newactor
+	 */
+	public boolean reconnectActor(VirtualActor newactor) {
+		if (this.actors.containsKey(newactor.getAddress())) {
+			VirtualActor oldActor = this.actors.get(newactor.getAddress());
+			if (oldActor.isDisconnected()) {
+				oldActor.addInfoToNewActor(newactor);
+				this.actors.put(newactor.getAddress(), newactor);
+				LOGGER.debug("reconnected actor:" + newactor.getAddress() + " to lobby: " + userName);
+				return true;
+			} else {
+				LOGGER.debug("actor reconnection not possible for :" + newactor.getAddress()
+						+ " because old actor was not disconnected");
+			}
+
+		} else {
+			LOGGER.debug("actor reconnection not possible for :" + newactor.getAddress()
+					+ " no actor with that address is present");
+		}
+		return false;
 	}
 
 	/**
@@ -38,6 +74,16 @@ public class ServerLobby {
 	public void removeActor(VirtualActor actor) {
 		this.actors.remove(actor.getAddress());
 		actor.setLobby(null);
+	}
+
+	/**
+	 * sets the actor as disconnected
+	 * 
+	 * @param actor
+	 *            actor to set as disconnected
+	 */
+	public void disconnectActor(VirtualActor actor) {
+		this.actors.get(actor.getAddress()).disconnect();
 	}
 
 	/**

@@ -3,6 +3,7 @@ package rz.thesis.server.serialization.action.management;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.lobby.actors.concrete.MobileScreenActor;
+import rz.thesis.server.serialization.action.lobby.SuccesfulConnectionEvent;
 
 /**
  * this class is the action that every mobile screen sends to the server to
@@ -26,6 +27,7 @@ public class MobileScreenAnnounceAction extends ActorAnnounceAction {
 		MobileScreenActor mobileactor = new MobileScreenActor(actor);
 		actor.setLobbyActor(mobileactor);
 		router.addActorToLobby(actor.getUserName(), actor);
+		actor.sendActionToRemote(new SuccesfulConnectionEvent(actor.getUserName()));
 	}
 
 }

@@ -44,12 +44,12 @@ public class LobbiesContainer {
 	 * @param actor
 	 *            actor to insert into the lobby
 	 */
-	public void addActorToLobby(String lobbyName, VirtualActor actor) {
+	public boolean addActorToLobby(String lobbyName, VirtualActor actor) {
 		synchronized (lobbyMap) {
 			if (!this.lobbyMap.containsKey(lobbyName)) {
 				this.createLobby(lobbyName);
 			}
-			this.lobbyMap.get(lobbyName).addActor(actor);
+			return this.lobbyMap.get(lobbyName).addActor(actor);
 		}
 	}
 
@@ -66,6 +66,20 @@ public class LobbiesContainer {
 			if (this.lobbyMap.containsKey(lobbyName)) {
 				this.lobbyMap.get(lobbyName).removeActor(actor);
 			}
+		}
+	}
+
+	/**
+	 * searches the list of lobbies for the provided lobby name
+	 * 
+	 * @param lobby
+	 *            name of the lobby to search
+	 * @return true if a lobby with the name provided is present, false
+	 *         otherwise
+	 */
+	public boolean containsLobby(String lobby) {
+		synchronized (lobbyMap) {
+			return this.lobbyMap.containsKey(lobby);
 		}
 	}
 

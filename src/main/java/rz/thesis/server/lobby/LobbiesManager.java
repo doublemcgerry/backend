@@ -67,4 +67,13 @@ public class LobbiesManager implements LobbiesManagerInterface {
 		this.container.addActorToLobby(lobbyName, actor);
 	}
 
+	@Override
+	public boolean reconnectToLobby(String lobby, VirtualActor actor) {
+		if (this.container.containsLobby(lobby)) {
+			this.container.addActorToLobby(lobby, actor);
+			return true;
+		}
+		return false;
+	}
+
 }

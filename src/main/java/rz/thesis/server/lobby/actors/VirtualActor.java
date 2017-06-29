@@ -77,4 +77,24 @@ public class VirtualActor {
 		this.lobby = lobby;
 	}
 
+	public void disconnect() {
+		this.tunnel = null;
+	}
+
+	public boolean isDisconnected() {
+		return this.tunnel == null;
+	}
+
+	/**
+	 * sets the info from this actor to the provided new actor
+	 * 
+	 * @param newActor
+	 */
+	public void addInfoToNewActor(VirtualActor newActor) {
+		newActor.userName = userName;
+		newActor.sessionInfo = sessionInfo;
+		newActor.actor = actor;
+		newActor.lobby = lobby;
+	}
+
 }

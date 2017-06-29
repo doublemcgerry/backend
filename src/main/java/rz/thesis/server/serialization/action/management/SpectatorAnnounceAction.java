@@ -3,6 +3,7 @@ package rz.thesis.server.serialization.action.management;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.lobby.actors.concrete.SpectatorConcrete;
+import rz.thesis.server.serialization.action.lobby.SuccesfulConnectionEvent;
 
 public class SpectatorAnnounceAction extends ActorAnnounceAction {
 
@@ -16,6 +17,7 @@ public class SpectatorAnnounceAction extends ActorAnnounceAction {
 		SpectatorConcrete spectatorActor = new SpectatorConcrete(actor);
 		actor.setLobbyActor(spectatorActor);
 		router.addActorToLobby(actor.getUserName(), actor);
+		actor.sendActionToRemote(new SuccesfulConnectionEvent(actor.getUserName()));
 	}
 
 }
