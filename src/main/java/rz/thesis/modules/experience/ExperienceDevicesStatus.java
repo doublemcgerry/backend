@@ -87,4 +87,18 @@ public class ExperienceDevicesStatus {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Screens (count:" + screens.size() + ")");
+		for (UUID uuid : screens) {
+			builder.append(uuid.toString() + "\n");
+		}
+		for (Map.Entry<SensorType, Integer> neededSensorsEntry : neededSensors.entrySet()) {
+			builder.append(neededSensorsEntry.getKey().toString() + " "
+			        + sensors.get(neededSensorsEntry.getKey()).size() + "/" + neededSensorsEntry.getValue() + "\n");
+		}
+		return builder.toString();
+	}
+
 }

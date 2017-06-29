@@ -145,6 +145,11 @@ public class ServerLobby {
 				builder.append("\n");
 			}
 		}
+		builder.append("\n");
+		if (this.devicesStatus != null) {
+			builder.append("experience status\n");
+			builder.append(this.devicesStatus.toString());
+		}
 		return builder.toString();
 	}
 
