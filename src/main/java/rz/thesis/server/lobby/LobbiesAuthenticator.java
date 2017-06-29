@@ -77,7 +77,7 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 	}
 
 	private static final Random random = new Random();
-	private static final String CHARS = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ234567890";
+	private static final String CHARS = "ABCDEFGHJKLMNOPQRSTUVWXYZ23456789";
 
 	private static String getToken(int length) {
 		StringBuilder token = new StringBuilder(length);
