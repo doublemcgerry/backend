@@ -36,14 +36,12 @@ public class Experience {
 	}
 
 	public ExperienceDefinitionParameters getParameters() throws FileNotFoundException {
-		synchronized (parameters) {
-			if (parameters == null) {
-				FileReader reader = new FileReader(baseExperiencePath + "/" + infoFilename);
-				JsonReader jsonReader = new JsonReader(reader);
-				this.parameters = Serializer.getSerialiser().fromJson(jsonReader, ExperienceDefinitionParameters.class);
-			}
-			return this.parameters;
+		if (parameters == null) {
+			FileReader reader = new FileReader(baseExperiencePath + "/" + infoFilename);
+			JsonReader jsonReader = new JsonReader(reader);
+			this.parameters = Serializer.getSerialiser().fromJson(jsonReader, ExperienceDefinitionParameters.class);
 		}
+		return this.parameters;
 	}
 
 }
