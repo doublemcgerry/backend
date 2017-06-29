@@ -4,12 +4,12 @@ import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.lobby.actors.VirtualActor;
 
-public class SuccesfulConnectionEvent extends LobbyAction {
+public class SuccessfulConnectionEvent extends LobbyAction {
 	private static final long serialVersionUID = 8229417269965927669L;
 
 	private String lobby;
 
-	public SuccesfulConnectionEvent(String lobby) {
+	public SuccessfulConnectionEvent(String lobby) {
 		this.lobby = lobby;
 	}
 

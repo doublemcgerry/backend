@@ -2,7 +2,7 @@ package rz.thesis.server.serialization.action.auth;
 
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.actors.VirtualActor;
-import rz.thesis.server.serialization.action.lobby.SuccesfulConnectionEvent;
+import rz.thesis.server.serialization.action.lobby.SuccessfulConnectionEvent;
 import rz.thesis.server.serialization.action.management.ManagementAction;
 
 public class ReconnectAction extends ManagementAction {
@@ -14,7 +14,7 @@ public class ReconnectAction extends ManagementAction {
 	public void execute(LobbiesManagerInterface lobbyManager, VirtualActor actor) {
 		boolean reconnected = lobbyManager.reconnectToLobby(lobby, actor);
 		if (reconnected) {
-			SuccesfulConnectionEvent successConnEvent = new SuccesfulConnectionEvent(lobby);
+			SuccessfulConnectionEvent successConnEvent = new SuccessfulConnectionEvent(lobby);
 			actor.sendActionToRemote(successConnEvent);
 		}
 	}
