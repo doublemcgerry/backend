@@ -18,4 +18,6 @@ public interface LobbiesManagerInterface {
 
 	boolean reconnectToLobby(String lobby, VirtualActor actor);
 
+	public String getLobbiesStatus();
+
 }

@@ -76,4 +76,8 @@ public class LobbiesManager implements LobbiesManagerInterface {
 		return false;
 	}
 
+	@Override
+	public String getLobbiesStatus() {
+		return this.container.getLobbyStatus();
+	}
 }

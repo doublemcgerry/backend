@@ -97,4 +97,10 @@ public class VirtualActor {
 		newActor.lobby = lobby;
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + " address:" + this.address.toString() + " connected:"
+		        + !this.isDisconnected() + (actor == null ? "" : (" type:" + actor.getClass().getSimpleName()));
+	}
+
 }

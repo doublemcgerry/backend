@@ -83,4 +83,16 @@ public class LobbiesContainer {
 		}
 	}
 
+	public String getLobbyStatus() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("lobbies: (count:" + this.lobbyMap.size() + "):\n");
+		synchronized (lobbyMap) {
+			for (Map.Entry<String, ServerLobby> lobbyEntry : this.lobbyMap.entrySet()) {
+				builder.append(lobbyEntry.getValue().toString());
+				builder.append("\n");
+			}
+		}
+		return builder.toString();
+	}
+
 }

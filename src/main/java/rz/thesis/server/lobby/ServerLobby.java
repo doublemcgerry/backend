@@ -55,12 +55,12 @@ public class ServerLobby {
 				return true;
 			} else {
 				LOGGER.debug("actor reconnection not possible for :" + newactor.getAddress()
-						+ " because old actor was not disconnected");
+				        + " because old actor was not disconnected");
 			}
 
 		} else {
 			LOGGER.debug("actor reconnection not possible for :" + newactor.getAddress()
-					+ " no actor with that address is present");
+			        + " no actor with that address is present");
 		}
 		return false;
 	}
@@ -113,6 +113,19 @@ public class ServerLobby {
 			}
 		}
 		LOGGER.debug(lobbyAction.toString());
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Lobby: " + userName + ":\n");
+		synchronized (actors) {
+			for (Map.Entry<UUID, VirtualActor> vActorEntry : actors.entrySet()) {
+				builder.append(vActorEntry.getValue().toString());
+				builder.append("\n");
+			}
+		}
+		return builder.toString();
 	}
 
 }
