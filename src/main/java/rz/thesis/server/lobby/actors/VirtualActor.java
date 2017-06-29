@@ -33,8 +33,15 @@ public class VirtualActor {
 
 	public void sendActionToRemote(Action action) {
 		action.setDestination(address);
-		tunnel.sendAction(action);
-		LOGGER.debug("<--- sent action:" + action.toString() + " to actor " + address.toString());
+		if (tunnel != null) {
+			tunnel.sendAction(action);
+			LOGGER.debug("<--- sent action:" + action.toString() + " to actor " + address.toString());
+		} else {
+			tunnel.sendAction(action);
+			LOGGER.debug(
+			        "ERROR : sending action to closed tunnel:" + action.toString() + " to actor " + address.toString());
+		}
+
 	}
 
 	public boolean hasLobbyActor() {
