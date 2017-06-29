@@ -1,5 +1,6 @@
 package rz.thesis.server.serialization.action.sensors;
 
+import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.lobby.actors.VirtualActor;
@@ -16,7 +17,8 @@ public class StartWatchingSensorAction extends SensorsAction {
 	}
 
 	@Override
-	public void execute(LobbiesManagerInterface lobbyManager, ServerLobby lobby, VirtualActor actor) {
+	public void execute(LobbiesManagerInterface lobbyManager, ExperiencesModule expModule, ServerLobby lobby,
+	        VirtualActor actor) {
 		lobby.broadcastAction(this);
 	}
 
