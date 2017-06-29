@@ -12,6 +12,7 @@ import rz.thesis.core.modules.http.HttpServerSession;
 import rz.thesis.core.modules.http.HttpSessionsManager;
 import rz.thesis.core.modules.http.MappingsProvider;
 import rz.thesis.core.modules.http.handlers.CommandHandler;
+import rz.thesis.core.modules.http.handlers.IndexHandler;
 import rz.thesis.core.modules.http.handlers.JsonResponse;
 import rz.thesis.core.modules.http.handlers.Serializer;
 import rz.thesis.core.modules.http.handlers.WebVisHTTPD;
@@ -66,6 +67,21 @@ public class PairingHandler extends MappingsProvider {
 		@Override
 		public void addMappings(HttpServer server) {
 			server.addMapping("/pairing/request/:code", this.getClass());
+		}
+
+	}
+
+	public static class PairingIndex extends IndexHandler {
+
+		@Override
+		public String onIndexFilenameRequested() {
+			return "pairing.html";
+		}
+
+		@Override
+		public String onIndexMappingRequested() {
+			// TODO Auto-generated method stub
+			return "/pairing";
 		}
 
 	}
