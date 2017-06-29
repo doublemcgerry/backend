@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.nanohttpd.protocols.http.IHTTPSession;
 import org.nanohttpd.protocols.http.response.Response;
+import org.nanohttpd.protocols.http.response.Status;
 import org.nanohttpd.router.RouterNanoHTTPD.UriResource;
 
 import rz.thesis.core.Core;
@@ -43,6 +44,9 @@ public class PairingHandler extends MappingsProvider {
 				String deviceKey = urlParams.get("code");
 				final AuthenticationInformation info = lobbiesManager.getAuthenticator().authenticate(serverSession,
 						deviceKey);
+				if (info == null) {
+					return null;
+				}
 				lobbiesManager.getAuthenticator().removeFromWaitingRoom(deviceKey);
 				info.getactor().authenticate(info.getUsername());
 				final PairingConfirmationAction confirmation = new PairingConfirmationAction(deviceKey,
@@ -59,7 +63,7 @@ public class PairingHandler extends MappingsProvider {
 				resp.put("code", deviceKey);
 				resp.put("address", info.getactor().getAddress());
 				resp.put("username", info.getUsername());
-				return WebVisHTTPD.newFixedLengthResponse(Serializer.serialize(resp));
+				return WebVisHTTPD.newFixedLengthResponse(Status.OK, "application/json", Serializer.serialize(resp));
 			}
 			return null;
 		}
@@ -82,6 +86,21 @@ public class PairingHandler extends MappingsProvider {
 		public String onIndexMappingRequested() {
 			// TODO Auto-generated method stub
 			return "/pairing";
+		}
+
+	}
+
+	public static class PairingRequestIndex extends IndexHandler {
+
+		@Override
+		public String onIndexFilenameRequested() {
+			return "admin.html";
+		}
+
+		@Override
+		public String onIndexMappingRequested() {
+			// TODO Auto-generated method stub
+			return "/pairing/manual";
 		}
 
 	}
