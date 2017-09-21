@@ -14,7 +14,7 @@ public abstract class ActorAnnounceAction extends ManagementAction {
 	private int minor;
 	private int revision;
 
-	private String name;
+	protected String name;
 
 	public ActorAnnounceAction() {
 	}

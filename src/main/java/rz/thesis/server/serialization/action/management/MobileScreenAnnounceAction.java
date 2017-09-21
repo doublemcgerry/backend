@@ -3,6 +3,7 @@ package rz.thesis.server.serialization.action.management;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.lobby.actors.concrete.MobileScreenActor;
+import rz.thesis.server.serialization.action.lobby.ConnectedDeviceEvent;
 import rz.thesis.server.serialization.action.lobby.SuccessfulConnectionEvent;
 
 /**
@@ -17,7 +18,7 @@ import rz.thesis.server.serialization.action.lobby.SuccessfulConnectionEvent;
 public class MobileScreenAnnounceAction extends ActorAnnounceAction {
 
 	private static final long serialVersionUID = 2202061539670703277L;
-
+	
 	public MobileScreenAnnounceAction() {
 
 	}
@@ -28,6 +29,7 @@ public class MobileScreenAnnounceAction extends ActorAnnounceAction {
 		actor.setLobbyActor(mobileactor);
 		router.addActorToLobby(actor.getUserName(), actor);
 		actor.sendActionToRemote(new SuccessfulConnectionEvent(actor.getUserName()));
+		router.broadcastToWaitingRoom(new ConnectedDeviceEvent(actor.getUserName(), name, mobileactor.getActorType(), mobileactor.getSupportedSensors()));
 	}
 
 }

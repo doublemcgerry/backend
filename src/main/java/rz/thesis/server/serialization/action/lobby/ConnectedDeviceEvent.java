@@ -1,19 +1,24 @@
 package rz.thesis.server.serialization.action.lobby;
 
+import java.util.List;
+
 import rz.thesis.server.lobby.SubscriberType;
+import rz.thesis.server.sensors.SensorType;
 
 public class ConnectedDeviceEvent extends LobbyEvent {
 
 	private static final long serialVersionUID = 3826952011751893194L;
 	private SubscriberType type;
-	private String sender;
-	private String senderName;
+	private List<SensorType> sensorTypes;
+	private String lobbyName;
+	private String deviceName;
 
-	public ConnectedDeviceEvent(String sender, String senderName, SubscriberType type) {
+	public ConnectedDeviceEvent(String lobbyName, String deviceName, SubscriberType type, List<SensorType> sensorTypes) {
 		super();
 		this.type = type;
-		this.senderName = senderName;
-		this.sender = sender;
+		this.deviceName = deviceName;
+		this.lobbyName = lobbyName;
+		this.sensorTypes = sensorTypes;
 	}
 
 	public SubscriberType getType() {
@@ -24,12 +29,12 @@ public class ConnectedDeviceEvent extends LobbyEvent {
 		this.type = type;
 	}
 
-	public String getSender() {
-		return sender;
+	public String getLobbyName() {
+		return lobbyName;
 	}
 
-	public void setSender(String sender) {
-		this.sender = sender;
+	public void setLobbyName(String lobbyName) {
+		this.lobbyName = lobbyName;
 	}
 
 }

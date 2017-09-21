@@ -3,20 +3,26 @@ package rz.thesis.server.lobby.actors.concrete;
 import java.util.ArrayList;
 import java.util.List;
 
+import rz.thesis.server.lobby.LobbyActor;
 import rz.thesis.server.lobby.SubscriberType;
-import rz.thesis.server.lobby.actors.LobbySpectator;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.sensors.SensorType;
 
-public class SpectatorConcrete extends LobbySpectator {
+/***
+ * This class represent the concrete Actor for the experience administrator
+ * 
+ * @author lollo
+ *
+ */
+public class AdminConcrete extends LobbyActor {
 
-	public SpectatorConcrete(VirtualActor wrapper) {
-		super(wrapper);
+	public AdminConcrete(VirtualActor actor) {
+		super(actor);
 	}
 
 	@Override
 	public SubscriberType getActorType() {
-		return SubscriberType.SPECTATOR;
+		return SubscriberType.USER;
 	}
 
 	@Override
