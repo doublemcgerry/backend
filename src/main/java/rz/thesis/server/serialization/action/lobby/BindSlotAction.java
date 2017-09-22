@@ -1,5 +1,7 @@
 package rz.thesis.server.serialization.action.lobby;
 
+import java.util.UUID;
+
 import rz.thesis.modules.experience.ExperienceDevicesStatus;
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
@@ -7,9 +9,9 @@ import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.sensors.SensorType;
 
-public class BindSensorSlotAction extends LobbyAction {
+public class BindSlotAction extends LobbyAction {
 	private static final long serialVersionUID = 1212827102979125738L;
-
+	private UUID address;
 	private SensorType type;
 
 	@Override
@@ -18,7 +20,7 @@ public class BindSensorSlotAction extends LobbyAction {
 		if (lobby.isExperienceInitiating()) {
 			ExperienceDevicesStatus devicesStatus = lobby.getDeviceStatus();
 			if (devicesStatus.canAddSensor(type)) {
-				lobby.getDeviceStatus().addSensor(type, actor.getAddress());
+				lobby.getDeviceStatus().addSensor(type, this.address);
 				ExperienceStatusChangeEvent changeEvent = new ExperienceStatusChangeEvent(devicesStatus);
 				lobby.broadcastEvent(changeEvent);
 			}
