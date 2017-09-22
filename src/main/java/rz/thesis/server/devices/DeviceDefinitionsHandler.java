@@ -37,15 +37,19 @@ public class DeviceDefinitionsHandler extends MappingsProvider {
 			if (id != null) {
 				Core core = uriResource.initParameter(0, Core.class);
 				File fileobj = new File(core.getProjectFolder() + "/drivers/", id);
-				FileInputStream file = null;
-				try {
-					file = new FileInputStream(fileobj);
-				} catch (FileNotFoundException e) {
-					return null;
+				if (fileobj.exists()) {
+					FileInputStream file = null;
+					try {
+						file = new FileInputStream(fileobj);
+					} catch (FileNotFoundException e) {
+
+					}
+					return WebVisHTTPD.newChunkedResponse(Status.OK, "application/json", file);
+				} else {
+					return WebVisHTTPD.newFixedLengthResponse(Status.NOT_FOUND, "text/plain", "ucc'è");
 				}
-				return WebVisHTTPD.newChunkedResponse(Status.OK, "application/json", file);
 			} else {
-				return null;
+				return WebVisHTTPD.newFixedLengthResponse(Status.NOT_FOUND, "text/plain", "ucc'è");
 			}
 
 		}
