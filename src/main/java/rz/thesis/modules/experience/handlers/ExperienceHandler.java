@@ -21,6 +21,12 @@ import rz.thesis.modules.experience.ExperiencesModule;
 
 public class ExperienceHandler extends MappingsProvider {
 	public static class ExperiencesList extends CommandHandler {
+		private static final int[] REQUIRED_PERMISSIONS = {};
+
+		@Override
+		protected int[] getRequiredPermissions() {
+			return REQUIRED_PERMISSIONS;
+		}
 
 		@Override
 		protected Response onPost(UriResource uriResource, Map<String, String> urlParams, IHTTPSession session) {
@@ -47,10 +53,15 @@ public class ExperienceHandler extends MappingsProvider {
 	}
 
 	public static class ExperienceParametersRetrieve extends CommandHandler {
+		private static final int[] REQUIRED_PERMISSIONS = {};
+
+		@Override
+		protected int[] getRequiredPermissions() {
+			return REQUIRED_PERMISSIONS;
+		}
 
 		@Override
 		protected Response onPost(UriResource uriResource, Map<String, String> urlParams, IHTTPSession session) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

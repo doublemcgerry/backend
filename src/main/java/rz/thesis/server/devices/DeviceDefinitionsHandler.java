@@ -18,6 +18,12 @@ import rz.thesis.core.modules.http.handlers.WebVisHTTPD;
 
 public class DeviceDefinitionsHandler extends MappingsProvider {
 	public static class DownloadDefinition extends CommandHandler {
+		private static final int[] REQUIRED_PERMISSIONS = {};
+
+		@Override
+		protected int[] getRequiredPermissions() {
+			return REQUIRED_PERMISSIONS;
+		}
 
 		@Override
 		protected Response onPost(UriResource uriResource, Map<String, String> urlParams, IHTTPSession session) {
@@ -27,7 +33,7 @@ public class DeviceDefinitionsHandler extends MappingsProvider {
 		@Override
 		protected Response onGet(UriResource uriResource, Map<String, String> urlParams, IHTTPSession session) {
 			String id = urlParams.get("id"); // TODO remove path trasversal
-												// attack
+			                                 // attack
 			if (id != null) {
 				Core core = uriResource.initParameter(0, Core.class);
 				File fileobj = new File(core.getProjectFolder() + "/drivers/", id);

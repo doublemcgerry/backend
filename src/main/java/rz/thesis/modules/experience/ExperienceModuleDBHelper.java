@@ -40,17 +40,17 @@ public class ExperienceModuleDBHelper {
 		this.experiencesDBFilename = settings.getDBFilename();
 		this.experiencesStorageLocation = settings.getStorageFolder();
 		this.projectPath = projectPath;
-		String absoluteDBPath = projectPath + "/" + experiencesDBFilename;
+		String absoluteDBPath = projectPath + File.separatorChar + experiencesDBFilename;
 		String url = "jdbc:sqlite:" + absoluteDBPath;
 		if (!new File(absoluteDBPath).exists()) {
 			try {
 				this.DBConnection = DriverManager.getConnection(url);
 				String createExperiencesTableSql = "CREATE TABLE IF NOT EXISTS experiences ( id text PRIMARY KEY,"
-						+ " dataFilename text, infoFilename text)";
+				        + " dataFilename text, infoFilename text)";
 				Statement stmt = this.DBConnection.createStatement();
 				stmt.execute(createExperiencesTableSql);
 				String createAssociationsTableSql = "CREATE TABLE IF NOT EXISTS associations ( userId INTEGER PRIMARY KEY,"
-						+ " experienceId text)";
+				        + " experienceId text)";
 				stmt.execute(createAssociationsTableSql);
 			} catch (SQLException e) {
 				LOGGER.error(e);
@@ -93,19 +93,33 @@ public class ExperienceModuleDBHelper {
 	public Experience retrieveExperience(int userId, UUID id) {
 
 		String sql = "SELECT * FROM experiences"; // TODO also check
-													// permissions
+		                                          // permissions
 		try {
 			PreparedStatement stmt = this.DBConnection.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
 			while (!rs.isAfterLast()) {
 				String dataFilename = rs.getString(2);
 				String infoFilename = rs.getString(3);
-				return new Experience(projectPath + "/" + experiencesStorageLocation, id, dataFilename, infoFilename);
+				long dataTimestamp = getTimestampFromFilename(projectPath + File.separatorChar
+				        + experiencesStorageLocation + File.separatorChar + dataFilename);
+				long infoTimestamp = getTimestampFromFilename(projectPath + File.separatorChar
+				        + experiencesStorageLocation + File.separatorChar + infoFilename);
+				return new Experience(projectPath + File.separatorChar + experiencesStorageLocation, id, dataFilename,
+				        infoFilename, dataTimestamp, infoTimestamp);
 			}
 		} catch (SQLException e) {
 			LOGGER.error(e);
 		}
 		return null;
+	}
+
+	private long getTimestampFromFilename(String filename) {
+		File file = new File(filename);
+		if (file.exists()) {
+			return file.lastModified();
+		} else {
+			return -1L;
+		}
 	}
 
 	/**
@@ -132,7 +146,7 @@ public class ExperienceModuleDBHelper {
 	public List<Experience> getExperiencesList(int userId) {
 		List<Experience> retList = new ArrayList<>();
 		String sql = "SELECT * FROM experiences"; // TODO also check
-													// permissions
+		                                          // permissions
 		try {
 			PreparedStatement stmt = this.DBConnection.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
@@ -140,8 +154,12 @@ public class ExperienceModuleDBHelper {
 				UUID id = (UUID.fromString(rs.getString(1)));
 				String dataFilename = rs.getString(2);
 				String infoFilename = rs.getString(3);
-				retList.add(
-						new Experience(projectPath + "/" + experiencesStorageLocation, id, dataFilename, infoFilename));
+				long dataTimestamp = getTimestampFromFilename(projectPath + File.separatorChar
+				        + experiencesStorageLocation + File.separatorChar + dataFilename);
+				long infoTimestamp = getTimestampFromFilename(projectPath + File.separatorChar
+				        + experiencesStorageLocation + File.separatorChar + infoFilename);
+				retList.add(new Experience(projectPath + File.separatorChar + experiencesStorageLocation, id,
+				        dataFilename, infoFilename, dataTimestamp, infoTimestamp));
 			}
 		} catch (SQLException e) {
 			LOGGER.error(e);

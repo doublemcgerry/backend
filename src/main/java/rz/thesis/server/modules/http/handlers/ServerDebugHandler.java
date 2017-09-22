@@ -16,6 +16,12 @@ import rz.thesis.server.modules.ServerModule;
 
 public class ServerDebugHandler extends MappingsProvider {
 	public static class getLobbiesStatus extends CommandHandler {
+		private static final int[] REQUIRED_PERMISSIONS = {};
+
+		@Override
+		protected int[] getRequiredPermissions() {
+			return REQUIRED_PERMISSIONS;
+		}
 
 		@Override
 		protected Response onPost(UriResource uriResource, Map<String, String> urlParams, IHTTPSession session) {

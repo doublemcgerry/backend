@@ -13,14 +13,20 @@ public class Experience {
 
 	private UUID id;
 	private String dataFilename;
+	private long dataTimestamp;
 	private String infoFilename;
-	private String baseExperiencePath;
+	private long infoTimestamp;
+	private transient String baseExperiencePath;
 
-	public Experience(String baseExperiencePath, UUID id, String dataFilename, String infoFilename) {
+	public Experience(String baseExperiencePath, UUID id, String dataFilename, String infoFilename, long dataTimestamp,
+	        long infoTimestamp) {
 		this.baseExperiencePath = baseExperiencePath;
 		this.id = id;
 		this.dataFilename = dataFilename;
 		this.infoFilename = infoFilename;
+		this.dataTimestamp = dataTimestamp;
+		this.infoTimestamp = infoTimestamp;
+
 	}
 
 	public UUID getId() {
@@ -33,6 +39,14 @@ public class Experience {
 
 	public String getInfoFilename() {
 		return infoFilename;
+	}
+
+	public long getDataTimestamp() {
+		return dataTimestamp;
+	}
+
+	public long getInfoTimestamp() {
+		return infoTimestamp;
 	}
 
 	public ExperienceDefinitionParameters getParameters() throws FileNotFoundException {

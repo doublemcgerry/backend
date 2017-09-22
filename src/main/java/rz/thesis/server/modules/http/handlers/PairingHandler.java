@@ -26,6 +26,12 @@ import rz.thesis.server.serialization.action.auth.PairingConfirmationAction;
 public class PairingHandler extends MappingsProvider {
 
 	public static class PairingRequestCommand extends CommandHandler {
+		private static final int[] REQUIRED_PERMISSIONS = {};
+
+		@Override
+		protected int[] getRequiredPermissions() {
+			return REQUIRED_PERMISSIONS;
+		}
 
 		@Override
 		protected Response onPost(UriResource uriResource, Map<String, String> urlParams, IHTTPSession session) {
@@ -43,14 +49,14 @@ public class PairingHandler extends MappingsProvider {
 				LobbiesManagerInterface lobbiesManager = module.getRouter();
 				String deviceKey = urlParams.get("code");
 				final AuthenticationInformation info = lobbiesManager.getAuthenticator().authenticate(serverSession,
-						deviceKey);
+				        deviceKey);
 				if (info == null) {
 					return null;
 				}
 				lobbiesManager.getAuthenticator().removeFromWaitingRoom(deviceKey);
 				info.getactor().authenticate(info.getUsername());
 				final PairingConfirmationAction confirmation = new PairingConfirmationAction(deviceKey,
-						info.getUsername(), info.getactor().getAddress().toString());
+				        info.getUsername(), info.getactor().getAddress().toString());
 				final AnnounceDemandAction demandAction = new AnnounceDemandAction();
 				new Thread(new Runnable() {
 					@Override
@@ -76,6 +82,12 @@ public class PairingHandler extends MappingsProvider {
 	}
 
 	public static class PairingIndex extends IndexHandler {
+		private static final int[] REQUIRED_PERMISSIONS = new int[] {};
+
+		@Override
+		public int[] getRequiredPermissions() {
+			return REQUIRED_PERMISSIONS;
+		}
 
 		@Override
 		public String onIndexFilenameRequested() {
@@ -84,13 +96,18 @@ public class PairingHandler extends MappingsProvider {
 
 		@Override
 		public String onIndexMappingRequested() {
-			// TODO Auto-generated method stub
 			return "/pairing";
 		}
 
 	}
 
 	public static class PairingRequestIndex extends IndexHandler {
+		private static final int[] REQUIRED_PERMISSIONS = new int[] {};
+
+		@Override
+		public int[] getRequiredPermissions() {
+			return REQUIRED_PERMISSIONS;
+		}
 
 		@Override
 		public String onIndexFilenameRequested() {
@@ -99,7 +116,6 @@ public class PairingHandler extends MappingsProvider {
 
 		@Override
 		public String onIndexMappingRequested() {
-			// TODO Auto-generated method stub
 			return "/pairing/manual";
 		}
 
