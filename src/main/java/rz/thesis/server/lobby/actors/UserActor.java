@@ -4,8 +4,8 @@ import rz.thesis.server.lobby.LobbyActor;
 
 public abstract class UserActor extends LobbyActor {
 
-	public UserActor(VirtualActor actor) {
-		super(actor);
+	public UserActor(String name, VirtualActor actor) {
+		super(name, actor);
 	}
 
 }

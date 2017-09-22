@@ -8,8 +8,8 @@ import rz.thesis.server.lobby.LobbyActor;
 import rz.thesis.server.sensors.SensorType;
 
 public abstract class LobbyDevice extends LobbyActor {
-	public LobbyDevice(VirtualActor actor, List<SensorType> sensorTypes) {
-		super(actor);
+	public LobbyDevice(String name, VirtualActor actor, List<SensorType> sensorTypes) {
+		super(name, actor);
 		this.sensorTypes = sensorTypes;
 	}
 

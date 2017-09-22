@@ -3,7 +3,6 @@ package rz.thesis.server.serialization.action.management;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.lobby.actors.concrete.SpectatorConcrete;
-import rz.thesis.server.serialization.action.lobby.ConnectedDeviceEvent;
 import rz.thesis.server.serialization.action.lobby.SuccessfulConnectionEvent;
 
 public class SpectatorAnnounceAction extends ActorAnnounceAction {
@@ -15,11 +14,11 @@ public class SpectatorAnnounceAction extends ActorAnnounceAction {
 
 	@Override
 	public void execute(LobbiesManagerInterface router, VirtualActor actor) {
-		SpectatorConcrete spectatorActor = new SpectatorConcrete(actor);
+		SpectatorConcrete spectatorActor = new SpectatorConcrete(this.name, actor);
 		actor.setLobbyActor(spectatorActor);
 		router.addActorToLobby(actor.getUserName(), actor);
 		actor.sendActionToRemote(new SuccessfulConnectionEvent(actor.getUserName()));
-		router.broadcastToWaitingRoom(new ConnectedDeviceEvent(actor.getUserName(), name, spectatorActor.getActorType(), spectatorActor.getSupportedSensors()));
+
 	}
 
 }

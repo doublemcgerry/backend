@@ -9,8 +9,8 @@ import rz.thesis.server.sensors.SensorType;
 
 public class DeviceConcrete extends LobbyDevice {
 
-	public DeviceConcrete(VirtualActor actor, List<SensorType> sensorTypes) {
-		super(actor, sensorTypes);
+	public DeviceConcrete(String name, VirtualActor actor, List<SensorType> sensorTypes) {
+		super(name, actor, sensorTypes);
 	}
 
 	@Override

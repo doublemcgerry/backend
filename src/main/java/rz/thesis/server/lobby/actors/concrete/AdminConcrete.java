@@ -16,8 +16,8 @@ import rz.thesis.server.sensors.SensorType;
  */
 public class AdminConcrete extends LobbyActor {
 
-	public AdminConcrete(VirtualActor actor) {
-		super(actor);
+	public AdminConcrete(String name, VirtualActor actor) {
+		super(name, actor);
 	}
 
 	@Override

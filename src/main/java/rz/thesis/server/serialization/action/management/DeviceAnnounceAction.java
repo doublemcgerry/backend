@@ -6,7 +6,6 @@ import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.lobby.actors.concrete.DeviceConcrete;
 import rz.thesis.server.sensors.SensorType;
-import rz.thesis.server.serialization.action.lobby.ConnectedDeviceEvent;
 import rz.thesis.server.serialization.action.lobby.SuccessfulConnectionEvent;
 
 /**
@@ -28,11 +27,11 @@ public class DeviceAnnounceAction extends ActorAnnounceAction {
 
 	@Override
 	public void execute(LobbiesManagerInterface router, VirtualActor actor) {
-		DeviceConcrete deviceActor = new DeviceConcrete(actor, sensorTypes);
+		DeviceConcrete deviceActor = new DeviceConcrete(this.name, actor, sensorTypes);
 		actor.setLobbyActor(deviceActor);
 		router.addActorToLobby(actor.getUserName(), actor);
 		actor.sendActionToRemote(new SuccessfulConnectionEvent(actor.getUserName()));
-		router.broadcastToWaitingRoom(new ConnectedDeviceEvent(actor.getUserName(), name, deviceActor.getActorType(), sensorTypes));
+
 	}
 
 }

@@ -10,8 +10,8 @@ import rz.thesis.server.sensors.SensorType;
 
 public class SpectatorConcrete extends LobbySpectator {
 
-	public SpectatorConcrete(VirtualActor wrapper) {
-		super(wrapper);
+	public SpectatorConcrete(String name, VirtualActor wrapper) {
+		super(name, wrapper);
 	}
 
 	@Override

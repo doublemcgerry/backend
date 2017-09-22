@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 import rz.thesis.modules.experience.Experience;
 import rz.thesis.modules.experience.ExperienceDevicesStatus;
 import rz.thesis.server.lobby.actors.VirtualActor;
+import rz.thesis.server.serialization.action.lobby.ConnectedDeviceEvent;
+import rz.thesis.server.serialization.action.lobby.DisconnectedDeviceEvent;
 import rz.thesis.server.serialization.action.lobby.LobbyAction;
 import rz.thesis.server.serialization.action.lobby.LobbyEvent;
 
@@ -38,6 +40,8 @@ public class ServerLobby {
 			LOGGER.debug("Added actor :" + actor.getAddress().toString() + " to lobby:" + userName);
 			this.actors.put(actor.getAddress(), actor);
 			actor.setLobby(this);
+			LobbyActor lobbyActor = actor.getLobbyActor();
+			this.broadcastEvent(new ConnectedDeviceEvent(actor.getUserName(), lobbyActor));
 			return true;
 		}
 	}
@@ -79,6 +83,7 @@ public class ServerLobby {
 	 */
 	public void removeActor(VirtualActor actor) {
 		this.actors.remove(actor.getAddress());
+		this.broadcastEvent(new DisconnectedDeviceEvent(this.userName, actor.getLobbyActor()));
 		actor.setLobby(null);
 	}
 

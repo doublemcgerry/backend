@@ -4,8 +4,8 @@ import rz.thesis.server.lobby.LobbyActor;
 
 public abstract class LobbySpectator extends LobbyActor {
 
-	public LobbySpectator(VirtualActor wrapper) {
-		super(wrapper);
+	public LobbySpectator(String name, VirtualActor wrapper) {
+		super(name, wrapper);
 	}
 
 }

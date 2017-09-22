@@ -10,8 +10,8 @@ import rz.thesis.server.sensors.SensorType;
 
 public class MobileScreenActor extends UserActor {
 
-	public MobileScreenActor(VirtualActor actor) {
-		super(actor);
+	public MobileScreenActor(String name, VirtualActor actor) {
+		super(name, actor);
 	}
 
 	@Override
