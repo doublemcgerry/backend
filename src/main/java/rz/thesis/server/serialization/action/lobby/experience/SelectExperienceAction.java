@@ -1,4 +1,4 @@
-package rz.thesis.server.serialization.action.lobby;
+package rz.thesis.server.serialization.action.lobby.experience;
 
 import java.util.UUID;
 
@@ -9,6 +9,7 @@ import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.lobby.actors.concrete.MobileScreenActor;
+import rz.thesis.server.serialization.action.lobby.LobbyAction;
 
 public class SelectExperienceAction extends LobbyAction {
 	private static final long serialVersionUID = 2096847257069776706L;
@@ -19,7 +20,7 @@ public class SelectExperienceAction extends LobbyAction {
 	        VirtualActor actor) {
 		if (actor.hasLobbyActor() && actor.getLobbyActor() instanceof MobileScreenActor) {
 			Experience exp = experiencesModule.getController().getExperience(0, experienceId);
-			ExperienceDevicesStatus status = lobby.initiateExperience(exp);
+			ExperienceDevicesStatus status = lobby.initializeExperience(exp);
 			status.addScreen(actor.getAddress());
 			lobby.broadcastEvent(new SelectedExperienceEvent(status));
 		}

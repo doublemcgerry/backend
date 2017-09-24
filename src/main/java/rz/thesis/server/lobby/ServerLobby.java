@@ -18,16 +18,92 @@ import rz.thesis.server.serialization.action.lobby.DisconnectedDeviceEvent;
 import rz.thesis.server.serialization.action.lobby.LobbyAction;
 import rz.thesis.server.serialization.action.lobby.LobbyEvent;
 import rz.thesis.server.serialization.action.lobby.LobbyMembersListEvent;
+import rz.thesis.server.serialization.action.lobby.LobbyStateChanged;
+import rz.thesis.server.serialization.action.lobby.experience.ExperienceStartedEvent;
 
 public class ServerLobby {
+	public enum LobbyState {
+		NO_EXPERIENCE(0), EXPERIENCE_SELECTED(1), READY_TO_START(2), EXPERIENCE_STARTED(3), EXPERIENCE_ENDED(4);
+		private int index;
+
+		LobbyState(int index) {
+			this.index = index;
+		}
+
+		/**
+		 * returns true if the state is before the given one (exclusive)
+		 * 
+		 * @param state
+		 * @return
+		 */
+		public boolean isBefore(LobbyState state) {
+			return this.index < state.index;
+		}
+
+		/**
+		 * returns true if the state is before the given one (inclusive)
+		 * 
+		 * @param state
+		 * @return
+		 */
+		public boolean isBeforeI(LobbyState state) {
+			return this.index <= state.index;
+		}
+
+		/**
+		 * returns true if the state is after the given one (exclusive)
+		 * 
+		 * @param state
+		 * @return
+		 */
+		public boolean isAfter(LobbyState state) {
+			return this.index > state.index;
+		}
+
+		/**
+		 * returns true if the state is after the given one (inclusive)
+		 * 
+		 * @param state
+		 * @return
+		 */
+		public boolean isAfterI(LobbyState state) {
+			return this.index >= state.index;
+		}
+
+		/**
+		 * returns true if the state is between start and end (exclusive)
+		 * 
+		 * @param start
+		 * @param end
+		 * @return
+		 */
+		public boolean isBetween(LobbyState start, LobbyState end) {
+			return this.isAfter(start) && this.isBefore(end);
+		}
+
+		/**
+		 * returns true if the state is between start and end (inclusive)
+		 * 
+		 * @param start
+		 * @param end
+		 * @return
+		 */
+		public boolean isBetweenI(LobbyState start, LobbyState end) {
+			return this.isAfterI(start) && this.isBeforeI(end);
+		}
+
+	}
+
 	private static final Logger LOGGER = Logger.getLogger(ServerLobby.class.getName());
 	private Map<UUID, VirtualActor> actors = new HashMap<>();
 	private String userName;
 	private Experience currentExperience;
 	private ExperienceDevicesStatus devicesStatus;
+	private LobbyState lobbyState;
 
 	public ServerLobby(String userName) {
 		this.userName = userName;
+		this.lobbyState = LobbyState.NO_EXPERIENCE;
 	}
 
 	/**
@@ -37,6 +113,9 @@ public class ServerLobby {
 	 *            actor to add to the lobby
 	 */
 	public boolean addActor(VirtualActor actor) {
+		if (this.lobbyState.isAfterI(LobbyState.READY_TO_START)) {
+			return false;
+		}
 		if (containsAddress(actor.getAddress())) {
 			LOGGER.debug("trying to reconnect actor :" + actor.getAddress().toString() + " to lobby:" + userName);
 			return reconnectActor(actor);
@@ -82,6 +161,9 @@ public class ServerLobby {
 	 * @param newactor
 	 */
 	public boolean reconnectActor(VirtualActor newactor) {
+		if (this.lobbyState.isAfterI(LobbyState.READY_TO_START)) {
+			return false;
+		}
 		if (this.actors.containsKey(newactor.getAddress())) {
 			VirtualActor oldActor = this.actors.get(newactor.getAddress());
 			if (oldActor.isDisconnected()) {
@@ -125,9 +207,7 @@ public class ServerLobby {
 			LobbyActor lobbyActor = actor.getLobbyActor();
 			this.devicesStatus.removeDevice(new DeviceDefinition(lobbyActor.getName(), lobbyActor.getAddress(),
 					lobbyActor.getActorType(), lobbyActor.getSupportedSensors()));
-
-			this.actors.remove(actor.getAddress());
-
+			this.removeActor(actor);
 		}
 	}
 
@@ -192,13 +272,17 @@ public class ServerLobby {
 		return builder.toString();
 	}
 
-	public ExperienceDevicesStatus initiateExperience(Experience experience) {
+	public ExperienceDevicesStatus initializeExperience(Experience experience) {
+		if (this.lobbyState != LobbyState.NO_EXPERIENCE) {
+			throw new RuntimeException("Cannot initialize new experience if the last one is not complete");
+		}
 		this.currentExperience = experience;
 		try {
 			this.devicesStatus = new ExperienceDevicesStatus(experience.getParameters());
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			LOGGER.error(e);
 		}
+		this.setLobbyState(LobbyState.EXPERIENCE_SELECTED);
 		return this.devicesStatus;
 	}
 
@@ -209,7 +293,7 @@ public class ServerLobby {
 	 * @return
 	 */
 	public boolean isExperienceInitiating() {
-		return this.currentExperience != null && this.devicesStatus != null && !this.devicesStatus.isReady();
+		return this.lobbyState == LobbyState.EXPERIENCE_SELECTED;
 	}
 
 	/**
@@ -218,7 +302,7 @@ public class ServerLobby {
 	 * @return
 	 */
 	public boolean isExperienceSelected() {
-		return this.currentExperience != null;
+		return this.lobbyState == LobbyState.EXPERIENCE_SELECTED;
 	}
 
 	/**
@@ -227,11 +311,62 @@ public class ServerLobby {
 	 * @return
 	 */
 	public boolean isExperienceRunning() {
-		return this.currentExperience != null && this.devicesStatus != null && this.devicesStatus.isReady();
+		return this.lobbyState == LobbyState.EXPERIENCE_STARTED;
+	}
+
+	/**
+	 * returns true is the experience is currently running
+	 * 
+	 * @return
+	 */
+	public boolean isExperienceReadyToStart() {
+		return this.lobbyState == LobbyState.READY_TO_START;
 	}
 
 	public ExperienceDevicesStatus getDeviceStatus() {
 		return this.devicesStatus;
+	}
+
+	public void setLobbyState(LobbyState state) {
+		if (this.lobbyState != state) {
+			this.lobbyState = state;
+			this.broadcastEvent(new LobbyStateChanged(this.lobbyState));
+		}
+
+	}
+
+	public void startExperience() {
+		if (this.lobbyState.isBefore(LobbyState.READY_TO_START)) {
+			LOGGER.error("Lobby:" + this.userName + " has been asked to start before entering "
+					+ LobbyState.READY_TO_START.toString());
+		} else {
+			LOGGER.debug(
+					"Lobby:" + this.userName + " is starting the experience " + currentExperience.getId().toString());
+			this.setLobbyState(LobbyState.EXPERIENCE_STARTED);
+			this.broadcastEvent(new ExperienceStartedEvent(currentExperience, this.devicesStatus));
+		}
+	}
+
+	public void interruptExperience() {
+		if (this.lobbyState.isBefore(LobbyState.EXPERIENCE_STARTED)) {
+			LOGGER.error("Lobby:" + this.userName + " has been asked to stop before entering "
+					+ LobbyState.EXPERIENCE_STARTED.toString());
+		} else {
+			LOGGER.debug(
+					"Lobby:" + this.userName + " is starting the experience " + currentExperience.getId().toString());
+			this.setLobbyState(LobbyState.EXPERIENCE_ENDED);
+		}
+	}
+
+	public void finishExperience() {
+		if (this.lobbyState.isBefore(LobbyState.EXPERIENCE_STARTED)) {
+			LOGGER.error("Lobby:" + this.userName + " has been asked to finish before entering "
+					+ LobbyState.EXPERIENCE_STARTED.toString());
+		} else {
+			LOGGER.debug(
+					"Lobby:" + this.userName + " is starting the experience " + currentExperience.getId().toString());
+			this.setLobbyState(LobbyState.EXPERIENCE_ENDED);
+		}
 	}
 
 }

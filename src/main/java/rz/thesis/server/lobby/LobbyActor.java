@@ -26,4 +26,6 @@ public abstract class LobbyActor {
 	public UUID getAddress() {
 		return this.virtualActor.getAddress();
 	}
+
+	public abstract boolean canStartExperience();
 }

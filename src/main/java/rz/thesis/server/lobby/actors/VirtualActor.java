@@ -38,7 +38,7 @@ public class VirtualActor {
 			LOGGER.debug("<--- sent action:" + action.toString() + " to actor " + address.toString());
 		} else {
 			LOGGER.debug(
-			        "ERROR : sending action to closed tunnel:" + action.toString() + " to actor " + address.toString());
+					"ERROR : sending action to closed tunnel:" + action.toString() + " to actor " + address.toString());
 		}
 
 	}
@@ -106,7 +106,16 @@ public class VirtualActor {
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + " address:" + this.address.toString() + " connected:"
-		        + !this.isDisconnected() + (actor == null ? "" : (" type:" + actor.toString()));
+				+ !this.isDisconnected() + (actor == null ? "" : (" type:" + actor.toString()));
+	}
+
+	public boolean canStartExperience() {
+		if (actor == null) {
+			return false;
+		} else {
+			return actor.canStartExperience();
+		}
+
 	}
 
 }
