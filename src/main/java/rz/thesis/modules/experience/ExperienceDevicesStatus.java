@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import rz.thesis.server.lobby.SubscriberType;
 import rz.thesis.server.sensors.SensorType;
+import rz.thesis.server.serialization.action.lobby.DeviceDefinition;
 
 //TODO maximum numbers check
 public class ExperienceDevicesStatus {
@@ -57,10 +59,12 @@ public class ExperienceDevicesStatus {
 	}
 
 	public void removeSensor(SensorType type, UUID address) {
-		if (!this.sensors.containsKey(type)) {
-			return;
+		synchronized (this.sensors) {
+			if (!this.sensors.containsKey(type)) {
+				return;
+			}
+			this.sensors.get(type).remove(address);
 		}
-		this.sensors.get(type).remove(address);
 	}
 
 	public void addScreen(UUID screen) {
@@ -96,9 +100,20 @@ public class ExperienceDevicesStatus {
 		}
 		for (Map.Entry<SensorType, Integer> neededSensorsEntry : neededSensors.entrySet()) {
 			builder.append(neededSensorsEntry.getKey().toString() + " "
-			        + sensors.get(neededSensorsEntry.getKey()).size() + "/" + neededSensorsEntry.getValue() + "\n");
+					+ sensors.get(neededSensorsEntry.getKey()).size() + "/" + neededSensorsEntry.getValue() + "\n");
 		}
 		return builder.toString();
+	}
+
+	public void removeDevice(DeviceDefinition deviceDefinition) {
+		if (deviceDefinition.getType() == SubscriberType.SCREEN) {
+			this.removeScreen(deviceDefinition.getAddress());
+		}
+		List<SensorType> sensors = deviceDefinition.getSensorTypes();
+		for (SensorType sensorType : sensors) {
+			this.removeSensor(sensorType, deviceDefinition.getAddress());
+		}
+
 	}
 
 }

@@ -1,7 +1,9 @@
 package rz.thesis.server.lobby;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -11,9 +13,11 @@ import rz.thesis.modules.experience.Experience;
 import rz.thesis.modules.experience.ExperienceDevicesStatus;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.serialization.action.lobby.ConnectedDeviceEvent;
+import rz.thesis.server.serialization.action.lobby.DeviceDefinition;
 import rz.thesis.server.serialization.action.lobby.DisconnectedDeviceEvent;
 import rz.thesis.server.serialization.action.lobby.LobbyAction;
 import rz.thesis.server.serialization.action.lobby.LobbyEvent;
+import rz.thesis.server.serialization.action.lobby.LobbyMembersListEvent;
 
 public class ServerLobby {
 	private static final Logger LOGGER = Logger.getLogger(ServerLobby.class.getName());
@@ -41,9 +45,31 @@ public class ServerLobby {
 			this.actors.put(actor.getAddress(), actor);
 			actor.setLobby(this);
 			LobbyActor lobbyActor = actor.getLobbyActor();
+			// send only to the newly connected, the list of members in the lobby
+			actor.sendActionToRemote(new LobbyMembersListEvent(getDevicesDefinitionsList(), this.userName));
+			// broadcast the connected event to the lobby
 			this.broadcastEvent(new ConnectedDeviceEvent(actor.getUserName(), lobbyActor));
 			return true;
 		}
+	}
+
+	/**
+	 * generates a list of device definitions from the current list of actors in the
+	 * lobby
+	 * 
+	 * @return
+	 */
+	private List<DeviceDefinition> getDevicesDefinitionsList() {
+		List<DeviceDefinition> definitions = new ArrayList<>();
+		synchronized (this.actors) {
+			for (Map.Entry<UUID, VirtualActor> actorsEntry : this.actors.entrySet()) {
+				LobbyActor actor = actorsEntry.getValue().getLobbyActor();
+				definitions.add(new DeviceDefinition(actor.getName(), actor.getAddress(), actor.getActorType(),
+						actor.getSupportedSensors()));
+			}
+		}
+		return definitions;
+
 	}
 
 	private boolean containsAddress(UUID address) {
@@ -65,12 +91,12 @@ public class ServerLobby {
 				return true;
 			} else {
 				LOGGER.debug("actor reconnection not possible for :" + newactor.getAddress()
-				        + " because old actor was not disconnected");
+						+ " because old actor was not disconnected");
 			}
 
 		} else {
 			LOGGER.debug("actor reconnection not possible for :" + newactor.getAddress()
-			        + " no actor with that address is present");
+					+ " no actor with that address is present");
 		}
 		return false;
 	}
@@ -95,6 +121,14 @@ public class ServerLobby {
 	 */
 	public void disconnectActor(VirtualActor actor) {
 		this.actors.get(actor.getAddress()).disconnect();
+		if (this.isExperienceInitiating() || this.isExperienceSelected()) {
+			LobbyActor lobbyActor = actor.getLobbyActor();
+			this.devicesStatus.removeDevice(new DeviceDefinition(lobbyActor.getName(), lobbyActor.getAddress(),
+					lobbyActor.getActorType(), lobbyActor.getSupportedSensors()));
+
+			this.actors.remove(actor.getAddress());
+
+		}
 	}
 
 	/**
