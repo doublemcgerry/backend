@@ -10,8 +10,8 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import rz.thesis.modules.experience.Experience;
-import rz.thesis.modules.experience.ExperienceDevicesStatus;
 import rz.thesis.server.lobby.actors.VirtualActor;
+import rz.thesis.server.sensors.SensorType;
 import rz.thesis.server.serialization.action.lobby.ConnectedDeviceEvent;
 import rz.thesis.server.serialization.action.lobby.DeviceDefinition;
 import rz.thesis.server.serialization.action.lobby.DisconnectedDeviceEvent;
@@ -20,6 +20,7 @@ import rz.thesis.server.serialization.action.lobby.LobbyEvent;
 import rz.thesis.server.serialization.action.lobby.LobbyMembersListEvent;
 import rz.thesis.server.serialization.action.lobby.LobbyStateChanged;
 import rz.thesis.server.serialization.action.lobby.experience.ExperienceStartedEvent;
+import rz.thesis.server.serialization.action.lobby.experience.ExperienceStatusChangeEvent;
 
 public class ServerLobby {
 	public enum LobbyState {
@@ -107,7 +108,8 @@ public class ServerLobby {
 	}
 
 	/**
-	 * adds the actor to the specific list depending on the base class
+	 * adds the actor to the specific list depending on the base class (during any
+	 * state after {@link LobbyState#READY_TO_START}, no actor can be added)
 	 * 
 	 * @param actor
 	 *            actor to add to the lobby
@@ -335,6 +337,11 @@ public class ServerLobby {
 
 	}
 
+	/**
+	 * if the lobby is in the {@link LobbyState#READY_TO_START}, communicates to
+	 * everyone to start the experience and move the state into
+	 * {@link LobbyState#EXPERIENCE_STARTED}
+	 */
 	public void startExperience() {
 		if (this.lobbyState.isBefore(LobbyState.READY_TO_START)) {
 			LOGGER.error("Lobby:" + this.userName + " has been asked to start before entering "
@@ -347,6 +354,10 @@ public class ServerLobby {
 		}
 	}
 
+	/**
+	 * Forcefully stops the experience moving into the
+	 * {@link LobbyState#EXPERIENCE_ENDED}
+	 */
 	public void interruptExperience() {
 		if (this.lobbyState.isBefore(LobbyState.EXPERIENCE_STARTED)) {
 			LOGGER.error("Lobby:" + this.userName + " has been asked to stop before entering "
@@ -358,6 +369,10 @@ public class ServerLobby {
 		}
 	}
 
+	/**
+	 * Gracefully stops the experience moving into the
+	 * {@link LobbyState#EXPERIENCE_ENDED}
+	 */
 	public void finishExperience() {
 		if (this.lobbyState.isBefore(LobbyState.EXPERIENCE_STARTED)) {
 			LOGGER.error("Lobby:" + this.userName + " has been asked to finish before entering "
@@ -367,6 +382,31 @@ public class ServerLobby {
 					"Lobby:" + this.userName + " is starting the experience " + currentExperience.getId().toString());
 			this.setLobbyState(LobbyState.EXPERIENCE_ENDED);
 		}
+	}
+
+	/**
+	 * Checks if the sensors of that type are needed
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public boolean canBindExperienceSensor(SensorType type) {
+		return this.devicesStatus.canAddSensor(type);
+	}
+
+	/**
+	 * adds the address of the device as sensor for the given type and broadcasts an
+	 * {@link ExperienceStatusChangeEvent} event
+	 * 
+	 * @param type
+	 *            type of sensor to bind the device to
+	 * @param address
+	 *            address of the sensor
+	 */
+	public void bindExperienceSensor(SensorType type, UUID address) {
+		this.devicesStatus.addSensor(type, address);
+		ExperienceStatusChangeEvent changeEvent = new ExperienceStatusChangeEvent(this.devicesStatus);
+		broadcastEvent(changeEvent);
 	}
 
 }

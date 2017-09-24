@@ -1,4 +1,4 @@
-package rz.thesis.modules.experience;
+package rz.thesis.server.lobby;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import rz.thesis.server.lobby.SubscriberType;
+import rz.thesis.modules.experience.ExperienceDefinitionParameters;
 import rz.thesis.server.sensors.SensorType;
 import rz.thesis.server.serialization.action.lobby.DeviceDefinition;
 
@@ -42,14 +42,14 @@ public class ExperienceDevicesStatus {
 		return neededSensors;
 	}
 
-	public void addSensor(SensorType type, UUID address) {
+	protected void addSensor(SensorType type, UUID address) {
 		if (!this.sensors.containsKey(type)) {
 			this.sensors.put(type, new ArrayList<UUID>());
 		}
 		this.sensors.get(type).add(address);
 	}
 
-	public boolean canAddSensor(SensorType type) {
+	protected boolean canAddSensor(SensorType type) {
 		if (!this.neededSensors.containsKey(type)) {
 			return false;
 		} else {
@@ -58,7 +58,7 @@ public class ExperienceDevicesStatus {
 
 	}
 
-	public void removeSensor(SensorType type, UUID address) {
+	protected void removeSensor(SensorType type, UUID address) {
 		synchronized (this.sensors) {
 			if (!this.sensors.containsKey(type)) {
 				return;

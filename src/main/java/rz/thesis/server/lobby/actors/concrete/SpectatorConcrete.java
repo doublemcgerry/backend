@@ -24,4 +24,9 @@ public class SpectatorConcrete extends LobbySpectator {
 		return new ArrayList<>();
 	}
 
+	@Override
+	public boolean canStartExperience() {
+		return false;
+	}
+
 }

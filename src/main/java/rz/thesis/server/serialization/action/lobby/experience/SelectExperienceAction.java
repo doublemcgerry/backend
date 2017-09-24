@@ -3,8 +3,8 @@ package rz.thesis.server.serialization.action.lobby.experience;
 import java.util.UUID;
 
 import rz.thesis.modules.experience.Experience;
-import rz.thesis.modules.experience.ExperienceDevicesStatus;
 import rz.thesis.modules.experience.ExperiencesModule;
+import rz.thesis.server.lobby.ExperienceDevicesStatus;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.lobby.actors.VirtualActor;

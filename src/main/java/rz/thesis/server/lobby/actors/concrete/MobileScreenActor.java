@@ -23,4 +23,9 @@ public class MobileScreenActor extends UserActor {
 	public List<SensorType> getSupportedSensors() {
 		return new ArrayList<>();
 	}
+
+	@Override
+	public boolean canStartExperience() {
+		return false;
+	}
 }

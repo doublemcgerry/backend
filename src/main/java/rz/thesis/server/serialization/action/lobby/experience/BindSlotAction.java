@@ -2,7 +2,6 @@ package rz.thesis.server.serialization.action.lobby.experience;
 
 import java.util.UUID;
 
-import rz.thesis.modules.experience.ExperienceDevicesStatus;
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.ServerLobby;
@@ -17,13 +16,10 @@ public class BindSlotAction extends LobbyAction {
 
 	@Override
 	public void execute(LobbiesManagerInterface lobbyManager, ExperiencesModule experiencesModule, ServerLobby lobby,
-	        VirtualActor actor) {
+			VirtualActor actor) {
 		if (lobby.isExperienceInitiating()) {
-			ExperienceDevicesStatus devicesStatus = lobby.getDeviceStatus();
-			if (devicesStatus.canAddSensor(type)) {
-				lobby.getDeviceStatus().addSensor(type, this.address);
-				ExperienceStatusChangeEvent changeEvent = new ExperienceStatusChangeEvent(devicesStatus);
-				lobby.broadcastEvent(changeEvent);
+			if (lobby.canBindExperienceSensor(type)) {
+				lobby.bindExperienceSensor(type, this.address);
 			}
 		}
 	}

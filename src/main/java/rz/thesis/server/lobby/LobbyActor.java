@@ -27,5 +27,11 @@ public abstract class LobbyActor {
 		return this.virtualActor.getAddress();
 	}
 
+	/**
+	 * Returns true if the actor has the permission to start the experience, false
+	 * otherwise
+	 * 
+	 * @return
+	 */
 	public abstract boolean canStartExperience();
 }

@@ -45,4 +45,9 @@ public class DeviceConcrete extends LobbyDevice {
 		return this.sensorTypes;
 	}
 
+	@Override
+	public boolean canStartExperience() {
+		return false;
+	}
+
 }

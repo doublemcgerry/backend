@@ -1,7 +1,7 @@
 package rz.thesis.server.serialization.action.lobby.experience;
 
 import rz.thesis.modules.experience.Experience;
-import rz.thesis.modules.experience.ExperienceDevicesStatus;
+import rz.thesis.server.lobby.ExperienceDevicesStatus;
 import rz.thesis.server.serialization.action.lobby.LobbyEvent;
 
 public class ExperienceStartedEvent extends LobbyEvent {

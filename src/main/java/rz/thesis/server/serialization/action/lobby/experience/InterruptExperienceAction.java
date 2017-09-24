@@ -1,9 +1,10 @@
-package rz.thesis.server.serialization.action.lobby;
+package rz.thesis.server.serialization.action.lobby.experience;
 
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.lobby.actors.VirtualActor;
+import rz.thesis.server.serialization.action.lobby.LobbyAction;
 
 public class InterruptExperienceAction extends LobbyAction {
 

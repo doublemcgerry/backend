@@ -30,4 +30,9 @@ public class AdminConcrete extends LobbyActor {
 		return new ArrayList<>();
 	}
 
+	@Override
+	public boolean canStartExperience() {
+		return true;
+	}
+
 }
