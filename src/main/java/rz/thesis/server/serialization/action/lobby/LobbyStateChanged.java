@@ -15,4 +15,9 @@ public class LobbyStateChanged extends LobbyEvent {
 		return state;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " state:" + state.toString();
+	}
+
 }

@@ -8,7 +8,7 @@ import rz.thesis.server.lobby.ExperienceDevicesStatus;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
 import rz.thesis.server.lobby.ServerLobby;
 import rz.thesis.server.lobby.actors.VirtualActor;
-import rz.thesis.server.lobby.actors.concrete.MobileScreenActor;
+import rz.thesis.server.lobby.actors.concrete.AdminConcrete;
 import rz.thesis.server.serialization.action.lobby.LobbyAction;
 
 public class SelectExperienceAction extends LobbyAction {
@@ -17,8 +17,8 @@ public class SelectExperienceAction extends LobbyAction {
 
 	@Override
 	public void execute(LobbiesManagerInterface lobbyManager, ExperiencesModule experiencesModule, ServerLobby lobby,
-	        VirtualActor actor) {
-		if (actor.hasLobbyActor() && actor.getLobbyActor() instanceof MobileScreenActor) {
+			VirtualActor actor) {
+		if (actor.hasLobbyActor() && actor.getLobbyActor() instanceof AdminConcrete) {
 			Experience exp = experiencesModule.getController().getExperience(0, experienceId);
 			ExperienceDevicesStatus status = lobby.initializeExperience(exp);
 			status.addScreen(actor.getAddress());

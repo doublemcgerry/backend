@@ -2,13 +2,17 @@ package rz.thesis.server.serialization.action.lobby;
 
 import java.util.List;
 
-public class LobbyMembersListEvent extends LobbyEvent {
+import rz.thesis.server.lobby.ServerLobby.LobbyState;
+
+public class LobbyStatusCommunication extends LobbyEvent {
 	private static final long serialVersionUID = -2709952093019777438L;
+	private LobbyState state;
 	private List<DeviceDefinition> devices;
 	private String lobbyName;
 
-	public LobbyMembersListEvent(List<DeviceDefinition> devices, String lobbyName) {
+	public LobbyStatusCommunication(LobbyState state, List<DeviceDefinition> devices, String lobbyName) {
 		super();
+		this.state = state;
 		this.devices = devices;
 		this.lobbyName = lobbyName;
 	}
@@ -19,6 +23,10 @@ public class LobbyMembersListEvent extends LobbyEvent {
 
 	public String getLobbyName() {
 		return lobbyName;
+	}
+
+	public LobbyState getState() {
+		return state;
 	}
 
 }

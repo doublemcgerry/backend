@@ -43,14 +43,7 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 	@Override
 	protected void onClose(CloseCode code, String reason, boolean initiatedByRemote) {
 		super.onClose(code, reason, initiatedByRemote);
-		for (Map.Entry<UUID, VirtualActor> virtualActor : virtualActors.entrySet()) {
-			if (virtualActor.getValue().hasLobbyActor()) {
-				virtualActor.getValue().getLobby().disconnectActor(virtualActor.getValue());
-			} else {
-				lobbyManager.getAuthenticator().removeFromWaitingRoom(virtualActor.getValue());
-			}
-		}
-		this.virtualActors.clear();
+		executeClose();
 	}
 
 	@Override
@@ -80,7 +73,17 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 
 	@Override
 	protected void onMessage(WebSocketFrame arg0) {
-		Action action = StringSerializer.getSerializer().fromJson(arg0.getTextPayload(), Action.class);
+
+		Action action = null;
+		// on deserialization error simply close the connection
+		try {
+			action = StringSerializer.getSerializer().fromJson(arg0.getTextPayload(), Action.class);
+		} catch (Exception ex) {
+			LOGGER.error("Error while deserializing: " + ex.getMessage());
+			executeClose();
+			return;
+		}
+
 		VirtualActor actor; // todo uniqueness of the source
 		if (!containsActor(action.getSource())) {
 			actor = new VirtualActor(action.getSource(), this);
@@ -161,6 +164,17 @@ public class WebSocket extends RZWebSocket implements Tunnel {
 			}
 		}
 		return false;
+	}
+
+	private void executeClose() {
+		for (Map.Entry<UUID, VirtualActor> virtualActor : virtualActors.entrySet()) {
+			if (virtualActor.getValue().hasLobbyActor()) {
+				virtualActor.getValue().getLobby().disconnectActor(virtualActor.getValue());
+			} else {
+				lobbyManager.getAuthenticator().removeFromWaitingRoom(virtualActor.getValue());
+			}
+		}
+		this.virtualActors.clear();
 	}
 
 }

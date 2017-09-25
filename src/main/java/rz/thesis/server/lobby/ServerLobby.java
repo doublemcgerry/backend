@@ -17,10 +17,11 @@ import rz.thesis.server.serialization.action.lobby.DeviceDefinition;
 import rz.thesis.server.serialization.action.lobby.DisconnectedDeviceEvent;
 import rz.thesis.server.serialization.action.lobby.LobbyAction;
 import rz.thesis.server.serialization.action.lobby.LobbyEvent;
-import rz.thesis.server.serialization.action.lobby.LobbyMembersListEvent;
 import rz.thesis.server.serialization.action.lobby.LobbyStateChanged;
+import rz.thesis.server.serialization.action.lobby.LobbyStatusCommunication;
 import rz.thesis.server.serialization.action.lobby.experience.ExperienceStartedEvent;
 import rz.thesis.server.serialization.action.lobby.experience.ExperienceStatusChangeEvent;
+import rz.thesis.server.serialization.action.lobby.experience.SelectedExperienceEvent;
 
 public class ServerLobby {
 	public enum LobbyState {
@@ -123,11 +124,17 @@ public class ServerLobby {
 			return reconnectActor(actor);
 		} else {
 			LOGGER.debug("Added actor :" + actor.getAddress().toString() + " to lobby:" + userName);
-			this.actors.put(actor.getAddress(), actor);
+			synchronized (actors) {
+				this.actors.put(actor.getAddress(), actor);
+			}
 			actor.setLobby(this);
 			LobbyActor lobbyActor = actor.getLobbyActor();
 			// send only to the newly connected, the list of members in the lobby
-			actor.sendActionToRemote(new LobbyMembersListEvent(getDevicesDefinitionsList(), this.userName));
+			actor.sendActionToRemote(
+					new LobbyStatusCommunication(this.lobbyState, getDevicesDefinitionsList(), this.userName));
+			if (this.lobbyState.isBetween(LobbyState.NO_EXPERIENCE, LobbyState.READY_TO_START)) {
+				actor.sendActionToRemote(new SelectedExperienceEvent(devicesStatus));
+			}
 			// broadcast the connected event to the lobby
 			this.broadcastEvent(new ConnectedDeviceEvent(actor.getUserName(), lobbyActor));
 			return true;
@@ -170,7 +177,9 @@ public class ServerLobby {
 			VirtualActor oldActor = this.actors.get(newactor.getAddress());
 			if (oldActor.isDisconnected()) {
 				oldActor.addInfoToNewActor(newactor);
-				this.actors.put(newactor.getAddress(), newactor);
+				synchronized (actors) {
+					this.actors.put(newactor.getAddress(), newactor);
+				}
 				LOGGER.debug("reconnected actor:" + newactor.getAddress() + " to lobby: " + userName);
 				return true;
 			} else {
@@ -192,7 +201,9 @@ public class ServerLobby {
 	 *            actor to remove from the lobby
 	 */
 	public void removeActor(VirtualActor actor) {
-		this.actors.remove(actor.getAddress());
+		synchronized (actors) {
+			this.actors.remove(actor.getAddress());
+		}
 		this.broadcastEvent(new DisconnectedDeviceEvent(this.userName, actor.getLobbyActor()));
 		actor.setLobby(null);
 	}
@@ -204,11 +215,14 @@ public class ServerLobby {
 	 *            actor to set as disconnected
 	 */
 	public void disconnectActor(VirtualActor actor) {
-		this.actors.get(actor.getAddress()).disconnect();
+		synchronized (actors) {
+			this.actors.get(actor.getAddress()).disconnect();
+		}
 		if (this.isExperienceInitiating() || this.isExperienceSelected()) {
 			LobbyActor lobbyActor = actor.getLobbyActor();
 			this.devicesStatus.removeDevice(new DeviceDefinition(lobbyActor.getName(), lobbyActor.getAddress(),
 					lobbyActor.getActorType(), lobbyActor.getSupportedSensors()));
+			this.broadcastEvent(new ExperienceStatusChangeEvent(devicesStatus));
 			this.removeActor(actor);
 		}
 	}
@@ -222,10 +236,13 @@ public class ServerLobby {
 	 *            action to send to the client
 	 */
 	public void sendActionToSpecificClient(UUID destination, LobbyAction action) {
-		if (this.actors.containsKey(destination)) {
-			VirtualActor destinationActor = this.actors.get(destination);
-			destinationActor.sendActionToRemote(action);
+		synchronized (actors) {
+			if (this.actors.containsKey(destination)) {
+				VirtualActor destinationActor = this.actors.get(destination);
+				destinationActor.sendActionToRemote(action);
+			}
 		}
+
 	}
 
 	/**
@@ -364,7 +381,7 @@ public class ServerLobby {
 					+ LobbyState.EXPERIENCE_STARTED.toString());
 		} else {
 			LOGGER.debug(
-					"Lobby:" + this.userName + " is starting the experience " + currentExperience.getId().toString());
+					"Lobby:" + this.userName + " INTERRUPTED the experience " + currentExperience.getId().toString());
 			this.setLobbyState(LobbyState.EXPERIENCE_ENDED);
 		}
 	}
@@ -378,9 +395,9 @@ public class ServerLobby {
 			LOGGER.error("Lobby:" + this.userName + " has been asked to finish before entering "
 					+ LobbyState.EXPERIENCE_STARTED.toString());
 		} else {
-			LOGGER.debug(
-					"Lobby:" + this.userName + " is starting the experience " + currentExperience.getId().toString());
+			LOGGER.debug("Lobby:" + this.userName + " finished the experience " + currentExperience.getId().toString());
 			this.setLobbyState(LobbyState.EXPERIENCE_ENDED);
+			this.setLobbyState(LobbyState.NO_EXPERIENCE);
 		}
 	}
 
@@ -404,9 +421,18 @@ public class ServerLobby {
 	 *            address of the sensor
 	 */
 	public void bindExperienceSensor(SensorType type, UUID address) {
+		synchronized (actors) {
+			if (!this.actors.containsKey(address)) {
+				LOGGER.error("Lobby:" + this.userName + " Trying to bind sensor slot to inexistent address ");
+				return;
+			}
+		}
 		this.devicesStatus.addSensor(type, address);
 		ExperienceStatusChangeEvent changeEvent = new ExperienceStatusChangeEvent(this.devicesStatus);
 		broadcastEvent(changeEvent);
+		if (this.devicesStatus.isReady()) {
+			this.setLobbyState(LobbyState.READY_TO_START);
+		}
 	}
 
 }
