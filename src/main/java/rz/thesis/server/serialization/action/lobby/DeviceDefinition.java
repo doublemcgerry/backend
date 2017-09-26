@@ -39,4 +39,10 @@ public class DeviceDefinition {
 		return address;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " Device, type:" + type + " deviceName:" + deviceName + " address:" + this.address
+				+ "{" + this.sensorTypes.toString() + "}";
+	}
+
 }

@@ -215,16 +215,16 @@ public class ServerLobby {
 	 *            actor to set as disconnected
 	 */
 	public void disconnectActor(VirtualActor actor) {
-		synchronized (actors) {
-			this.actors.get(actor.getAddress()).disconnect();
-		}
-		if (this.isExperienceInitiating() || this.isExperienceSelected()) {
+		this.removeActor(actor);
+		if (this.lobbyState.isAfterI(LobbyState.EXPERIENCE_SELECTED)) {
 			LobbyActor lobbyActor = actor.getLobbyActor();
-			this.devicesStatus.removeDevice(new DeviceDefinition(lobbyActor.getName(), lobbyActor.getAddress(),
-					lobbyActor.getActorType(), lobbyActor.getSupportedSensors()));
-			this.broadcastEvent(new ExperienceStatusChangeEvent(devicesStatus));
-			this.removeActor(actor);
+			if (lobbyActor != null) {
+				this.devicesStatus.removeDevice(new DeviceDefinition(lobbyActor.getName(), lobbyActor.getAddress(),
+						lobbyActor.getActorType(), lobbyActor.getSupportedSensors()));
+				this.broadcastEvent(new ExperienceStatusChangeEvent(devicesStatus));
+			}
 		}
+
 	}
 
 	/**

@@ -22,7 +22,7 @@ public class AdminConcrete extends LobbyActor {
 
 	@Override
 	public SubscriberType getActorType() {
-		return SubscriberType.USER;
+		return SubscriberType.ADMIN;
 	}
 
 	@Override

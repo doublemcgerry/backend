@@ -29,4 +29,10 @@ public class LobbyStatusCommunication extends LobbyEvent {
 		return state;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " name " + this.lobbyName + " state:" + this.state + " devices:"
+				+ this.devices.toString();
+	}
+
 }

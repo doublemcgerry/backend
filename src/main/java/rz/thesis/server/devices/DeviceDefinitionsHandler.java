@@ -26,6 +26,11 @@ public class DeviceDefinitionsHandler extends MappingsProvider {
 		}
 
 		@Override
+		protected boolean needAuthentication() {
+			return false;
+		}
+
+		@Override
 		protected Response onPost(UriResource uriResource, Map<String, String> urlParams, IHTTPSession session) {
 			return null;
 		}
@@ -33,7 +38,7 @@ public class DeviceDefinitionsHandler extends MappingsProvider {
 		@Override
 		protected Response onGet(UriResource uriResource, Map<String, String> urlParams, IHTTPSession session) {
 			String id = urlParams.get("id"); // TODO remove path trasversal
-			                                 // attack
+												// attack
 			if (id != null) {
 				Core core = uriResource.initParameter(0, Core.class);
 				File fileobj = new File(core.getProjectFolder() + "/drivers/", id);

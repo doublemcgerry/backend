@@ -38,4 +38,9 @@ public class ConnectedDeviceEvent extends LobbyEvent {
 		this.lobbyName = lobbyName;
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() + " " + this.device.toString();
+	}
+
 }
