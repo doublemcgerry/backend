@@ -48,15 +48,16 @@ public class PairingHandler extends MappingsProvider {
 				ServerModule module = core.getModule(ServerModule.class);
 				LobbiesManagerInterface lobbiesManager = module.getRouter();
 				String deviceKey = urlParams.get("code");
+				deviceKey = deviceKey.toUpperCase();
 				final AuthenticationInformation info = lobbiesManager.getAuthenticator().authenticate(serverSession,
-				        deviceKey);
+						deviceKey);
 				if (info == null) {
 					return null;
 				}
 				lobbiesManager.getAuthenticator().removeFromWaitingRoom(deviceKey);
 				info.getactor().authenticate(info.getUsername());
 				final PairingConfirmationAction confirmation = new PairingConfirmationAction(deviceKey,
-				        info.getUsername(), info.getactor().getAddress().toString());
+						info.getUsername(), info.getactor().getAddress().toString());
 				final AnnounceDemandAction demandAction = new AnnounceDemandAction();
 				new Thread(new Runnable() {
 					@Override
