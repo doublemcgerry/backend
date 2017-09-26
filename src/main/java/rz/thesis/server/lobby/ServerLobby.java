@@ -118,7 +118,7 @@ public class ServerLobby {
 	 *            actor to add to the lobby
 	 */
 	public boolean addActor(VirtualActor actor) {
-		if (this.lobbyState.isAfterI(LobbyState.READY_TO_START)) {
+		if (this.lobbyState.isAfterI(LobbyState.READY_TO_START) && actor.getLobbyActor().getActorType()!=SubscriberType.ADMIN ) {
 			return false;
 		}
 		if (containsAddress(actor.getAddress())) {
