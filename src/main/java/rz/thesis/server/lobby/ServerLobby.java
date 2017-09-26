@@ -21,8 +21,10 @@ import rz.thesis.server.serialization.action.lobby.LobbyEvent;
 import rz.thesis.server.serialization.action.lobby.LobbyStateChanged;
 import rz.thesis.server.serialization.action.lobby.LobbyStatusCommunication;
 import rz.thesis.server.serialization.action.lobby.experience.BindSlotConfirmationEvent;
+import rz.thesis.server.serialization.action.lobby.experience.ExperienceEndedEvent;
 import rz.thesis.server.serialization.action.lobby.experience.ExperienceStartedEvent;
 import rz.thesis.server.serialization.action.lobby.experience.ExperienceStatusChangeEvent;
+import rz.thesis.server.serialization.action.lobby.experience.FinishExperienceAction;
 import rz.thesis.server.serialization.action.lobby.experience.SelectedExperienceEvent;
 
 public class ServerLobby {
@@ -386,6 +388,7 @@ public class ServerLobby {
 					"Lobby:" + this.userName + " INTERRUPTED the experience " + currentExperience.getId().toString());
 			this.setLobbyState(LobbyState.EXPERIENCE_ENDED);
 			this.setLobbyState(LobbyState.NO_EXPERIENCE);
+			this.broadcastEvent(new ExperienceEndedEvent());
 		}
 	}
 
@@ -401,6 +404,7 @@ public class ServerLobby {
 			LOGGER.debug("Lobby:" + this.userName + " finished the experience " + currentExperience.getId().toString());
 			this.setLobbyState(LobbyState.EXPERIENCE_ENDED);
 			this.setLobbyState(LobbyState.NO_EXPERIENCE);
+			this.broadcastEvent(new ExperienceEndedEvent());
 		}
 	}
 
