@@ -34,4 +34,12 @@ public abstract class LobbyActor {
 	 * @return
 	 */
 	public abstract boolean canStartExperience();
+
+	/**
+	 * Return true is the actor can stop or interrupt the experience
+	 * 
+	 * @return
+	 */
+	public abstract boolean canStopExperience();
+
 }

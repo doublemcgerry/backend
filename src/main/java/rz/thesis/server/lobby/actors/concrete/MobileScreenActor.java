@@ -28,4 +28,9 @@ public class MobileScreenActor extends UserActor {
 	public boolean canStartExperience() {
 		return false;
 	}
+
+	@Override
+	public boolean canStopExperience() {
+		return true;
+	}
 }

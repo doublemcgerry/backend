@@ -13,8 +13,8 @@ public class InterruptExperienceAction extends LobbyAction {
 	@Override
 	public void execute(LobbiesManagerInterface lobbyManager, ExperiencesModule experiencesModule, ServerLobby lobby,
 			VirtualActor actor) {
-		if (actor.canStartExperience()) {
-			lobby.startExperience();
+		if (actor.canStopExperience()) {
+			lobby.interruptExperience();
 		}
 	}
 

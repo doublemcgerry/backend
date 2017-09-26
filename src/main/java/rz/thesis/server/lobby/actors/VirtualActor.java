@@ -118,4 +118,12 @@ public class VirtualActor {
 
 	}
 
+	public boolean canStopExperience() {
+		if (actor == null) {
+			return false;
+		} else {
+			return actor.canStopExperience();
+		}
+	}
+
 }

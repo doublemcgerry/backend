@@ -35,4 +35,9 @@ public class AdminConcrete extends LobbyActor {
 		return true;
 	}
 
+	@Override
+	public boolean canStopExperience() {
+		return true;
+	}
+
 }

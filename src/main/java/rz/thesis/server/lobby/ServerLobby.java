@@ -383,6 +383,7 @@ public class ServerLobby {
 			LOGGER.debug(
 					"Lobby:" + this.userName + " INTERRUPTED the experience " + currentExperience.getId().toString());
 			this.setLobbyState(LobbyState.EXPERIENCE_ENDED);
+			this.setLobbyState(LobbyState.NO_EXPERIENCE);
 		}
 	}
 

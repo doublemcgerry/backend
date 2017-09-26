@@ -29,4 +29,9 @@ public class SpectatorConcrete extends LobbySpectator {
 		return false;
 	}
 
+	@Override
+	public boolean canStopExperience() {
+		return false;
+	}
+
 }

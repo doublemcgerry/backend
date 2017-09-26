@@ -50,4 +50,9 @@ public class DeviceConcrete extends LobbyDevice {
 		return false;
 	}
 
+	@Override
+	public boolean canStopExperience() {
+		return false;
+	}
+
 }
