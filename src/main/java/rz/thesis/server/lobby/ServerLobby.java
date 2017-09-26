@@ -24,7 +24,6 @@ import rz.thesis.server.serialization.action.lobby.experience.BindSlotConfirmati
 import rz.thesis.server.serialization.action.lobby.experience.ExperienceEndedEvent;
 import rz.thesis.server.serialization.action.lobby.experience.ExperienceStartedEvent;
 import rz.thesis.server.serialization.action.lobby.experience.ExperienceStatusChangeEvent;
-import rz.thesis.server.serialization.action.lobby.experience.FinishExperienceAction;
 import rz.thesis.server.serialization.action.lobby.experience.SelectedExperienceEvent;
 
 public class ServerLobby {
@@ -120,7 +119,8 @@ public class ServerLobby {
 	 *            actor to add to the lobby
 	 */
 	public boolean addActor(VirtualActor actor) {
-		if (this.lobbyState.isAfterI(LobbyState.READY_TO_START) && actor.getLobbyActor().getActorType()!=SubscriberType.ADMIN ) {
+		if (this.lobbyState.isAfterI(LobbyState.READY_TO_START)
+				&& actor.getLobbyActor().getActorType() != SubscriberType.ADMIN) {
 			return false;
 		}
 		if (containsAddress(actor.getAddress())) {
@@ -137,7 +137,7 @@ public class ServerLobby {
 			actor.sendActionToRemote(
 					new LobbyStatusCommunication(this.lobbyState, getDevicesDefinitionsList(), this.userName));
 			if (this.lobbyState.isBetween(LobbyState.NO_EXPERIENCE, LobbyState.READY_TO_START)) {
-				actor.sendActionToRemote(new SelectedExperienceEvent(devicesStatus));
+				actor.sendActionToRemote(new SelectedExperienceEvent(currentExperience, devicesStatus));
 			}
 			// broadcast the connected event to the lobby
 			this.broadcastEvent(new ConnectedDeviceEvent(actor.getUserName(), lobbyActor));

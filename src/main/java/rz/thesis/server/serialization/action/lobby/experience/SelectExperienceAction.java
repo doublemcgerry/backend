@@ -22,7 +22,7 @@ public class SelectExperienceAction extends LobbyAction {
 			Experience exp = experiencesModule.getController().getExperience(0, experienceId);
 			ExperienceDevicesStatus status = lobby.initializeExperience(exp);
 			status.addScreen(actor.getAddress());
-			lobby.broadcastEvent(new SelectedExperienceEvent(status));
+			lobby.broadcastEvent(new SelectedExperienceEvent(exp, status));
 		}
 	}
 
