@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import rz.thesis.modules.experience.Experience;
 import rz.thesis.server.lobby.actors.VirtualActor;
 import rz.thesis.server.sensors.SensorType;
+import rz.thesis.server.serialization.action.Action;
 import rz.thesis.server.serialization.action.lobby.ConnectedDeviceEvent;
 import rz.thesis.server.serialization.action.lobby.DeviceDefinition;
 import rz.thesis.server.serialization.action.lobby.DisconnectedDeviceEvent;
@@ -19,6 +20,7 @@ import rz.thesis.server.serialization.action.lobby.LobbyAction;
 import rz.thesis.server.serialization.action.lobby.LobbyEvent;
 import rz.thesis.server.serialization.action.lobby.LobbyStateChanged;
 import rz.thesis.server.serialization.action.lobby.LobbyStatusCommunication;
+import rz.thesis.server.serialization.action.lobby.experience.BindSlotConfirmationEvent;
 import rz.thesis.server.serialization.action.lobby.experience.ExperienceStartedEvent;
 import rz.thesis.server.serialization.action.lobby.experience.ExperienceStatusChangeEvent;
 import rz.thesis.server.serialization.action.lobby.experience.SelectedExperienceEvent;
@@ -235,7 +237,7 @@ public class ServerLobby {
 	 * @param action
 	 *            action to send to the client
 	 */
-	public void sendActionToSpecificClient(UUID destination, LobbyAction action) {
+	public void sendActionToSpecificClient(UUID destination, Action action) {
 		synchronized (actors) {
 			if (this.actors.containsKey(destination)) {
 				VirtualActor destinationActor = this.actors.get(destination);
@@ -431,6 +433,7 @@ public class ServerLobby {
 		this.devicesStatus.addSensor(type, address);
 		ExperienceStatusChangeEvent changeEvent = new ExperienceStatusChangeEvent(this.devicesStatus);
 		broadcastEvent(changeEvent);
+		sendActionToSpecificClient(address, new BindSlotConfirmationEvent());
 		if (this.devicesStatus.isReady()) {
 			this.setLobbyState(LobbyState.READY_TO_START);
 		}
