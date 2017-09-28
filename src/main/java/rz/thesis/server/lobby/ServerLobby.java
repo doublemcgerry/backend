@@ -437,7 +437,10 @@ public class ServerLobby {
 		this.devicesStatus.addSensor(type, address);
 		ExperienceStatusChangeEvent changeEvent = new ExperienceStatusChangeEvent(this.devicesStatus);
 		broadcastEvent(changeEvent);
-		sendActionToSpecificClient(address, new BindSlotConfirmationEvent());
+		LobbyActor actor = this.actors.get(address).getLobbyActor();
+		DeviceDefinition def = new DeviceDefinition(actor.getName(), actor.getAddress(), actor.getActorType(),
+				actor.getSupportedSensors());
+		sendActionToSpecificClient(address, new BindSlotConfirmationEvent(def));
 		if (this.devicesStatus.isReady()) {
 			this.setLobbyState(LobbyState.READY_TO_START);
 		}
