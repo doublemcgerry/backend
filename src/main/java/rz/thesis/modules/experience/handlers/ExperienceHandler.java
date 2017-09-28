@@ -99,6 +99,11 @@ public class ExperienceHandler extends MappingsProvider {
 		}
 
 		@Override
+		protected boolean needAuthentication() {
+			return false;
+		}
+
+		@Override
 		protected Response onPost(UriResource uriResource, Map<String, String> urlParams, IHTTPSession session) {
 			return null;
 		}
