@@ -239,11 +239,19 @@ public class ServerLobby {
 	 * @param action
 	 *            action to send to the client
 	 */
-	public void sendActionToSpecificClient(UUID destination, Action action) {
+	public void sendActionToSpecificClient(final UUID destination, final Action action) {
 		synchronized (actors) {
 			if (this.actors.containsKey(destination)) {
-				VirtualActor destinationActor = this.actors.get(destination);
-				destinationActor.sendActionToRemote(action);
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						VirtualActor destinationActor = actors.get(destination);
+						destinationActor.sendActionToRemote(action);
+					}
+				}).start();
+
 			}
 		}
 
@@ -296,9 +304,7 @@ public class ServerLobby {
 	}
 
 	public ExperienceDevicesStatus initializeExperience(Experience experience) {
-		if (this.lobbyState != LobbyState.NO_EXPERIENCE) {
-			throw new RuntimeException("Cannot initialize new experience if the last one is not complete");
-		}
+
 		this.currentExperience = experience;
 		try {
 			this.devicesStatus = new ExperienceDevicesStatus(experience.getParameters());
@@ -440,7 +446,7 @@ public class ServerLobby {
 		LobbyActor actor = this.actors.get(address).getLobbyActor();
 		DeviceDefinition def = new DeviceDefinition(actor.getName(), actor.getAddress(), actor.getActorType(),
 				actor.getSupportedSensors());
-		sendActionToSpecificClient(address, new BindSlotConfirmationEvent(def));
+		broadcastEvent(new BindSlotConfirmationEvent(type, def));
 		if (this.devicesStatus.isReady()) {
 			this.setLobbyState(LobbyState.READY_TO_START);
 		}

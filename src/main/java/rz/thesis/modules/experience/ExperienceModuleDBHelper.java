@@ -27,14 +27,13 @@ public class ExperienceModuleDBHelper {
 	private String projectPath;
 
 	/**
-	 * Creates a new database helper, it requires project path and base settings
-	 * to load the database and the storage
+	 * Creates a new database helper, it requires project path and base settings to
+	 * load the database and the storage
 	 * 
 	 * @param projectPath
 	 *            base path of the project (retrieve it from core)
 	 * @param settings
-	 *            specific settings for the database and storage (relative
-	 *            paths)
+	 *            specific settings for the database and storage (relative paths)
 	 */
 	public ExperienceModuleDBHelper(String projectPath, ExperiencesModuleSettings settings) {
 		this.experiencesDBFilename = settings.getDBFilename();
@@ -46,11 +45,11 @@ public class ExperienceModuleDBHelper {
 			try {
 				this.DBConnection = DriverManager.getConnection(url);
 				String createExperiencesTableSql = "CREATE TABLE IF NOT EXISTS experiences ( id text PRIMARY KEY,"
-				        + " dataFilename text, infoFilename text)";
+						+ " dataFilename text, infoFilename text)";
 				Statement stmt = this.DBConnection.createStatement();
 				stmt.execute(createExperiencesTableSql);
 				String createAssociationsTableSql = "CREATE TABLE IF NOT EXISTS associations ( userId INTEGER PRIMARY KEY,"
-				        + " experienceId text)";
+						+ " experienceId text)";
 				stmt.execute(createAssociationsTableSql);
 			} catch (SQLException e) {
 				LOGGER.error(e);
@@ -92,8 +91,8 @@ public class ExperienceModuleDBHelper {
 	 */
 	public Experience retrieveExperience(int userId, UUID id) {
 
-		String sql = "SELECT * FROM experiences"; // TODO also check
-		                                          // permissions
+		String sql = "SELECT * FROM experiences WHERE id='" + id + "'"; // TODO also check
+		// permissions
 		try {
 			PreparedStatement stmt = this.DBConnection.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
@@ -101,11 +100,11 @@ public class ExperienceModuleDBHelper {
 				String dataFilename = rs.getString(2);
 				String infoFilename = rs.getString(3);
 				long dataTimestamp = getTimestampFromFilename(projectPath + File.separatorChar
-				        + experiencesStorageLocation + File.separatorChar + dataFilename);
+						+ experiencesStorageLocation + File.separatorChar + dataFilename);
 				long infoTimestamp = getTimestampFromFilename(projectPath + File.separatorChar
-				        + experiencesStorageLocation + File.separatorChar + infoFilename);
+						+ experiencesStorageLocation + File.separatorChar + infoFilename);
 				return new Experience(projectPath + File.separatorChar + experiencesStorageLocation, id, dataFilename,
-				        infoFilename, dataTimestamp, infoTimestamp);
+						infoFilename, dataTimestamp, infoTimestamp);
 			}
 		} catch (SQLException e) {
 			LOGGER.error(e);
@@ -146,7 +145,7 @@ public class ExperienceModuleDBHelper {
 	public List<Experience> getExperiencesList(int userId) {
 		List<Experience> retList = new ArrayList<>();
 		String sql = "SELECT * FROM experiences"; // TODO also check
-		                                          // permissions
+													// permissions
 		try {
 			PreparedStatement stmt = this.DBConnection.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
@@ -155,11 +154,11 @@ public class ExperienceModuleDBHelper {
 				String dataFilename = rs.getString(2);
 				String infoFilename = rs.getString(3);
 				long dataTimestamp = getTimestampFromFilename(projectPath + File.separatorChar
-				        + experiencesStorageLocation + File.separatorChar + dataFilename);
+						+ experiencesStorageLocation + File.separatorChar + dataFilename);
 				long infoTimestamp = getTimestampFromFilename(projectPath + File.separatorChar
-				        + experiencesStorageLocation + File.separatorChar + infoFilename);
+						+ experiencesStorageLocation + File.separatorChar + infoFilename);
 				retList.add(new Experience(projectPath + File.separatorChar + experiencesStorageLocation, id,
-				        dataFilename, infoFilename, dataTimestamp, infoTimestamp));
+						dataFilename, infoFilename, dataTimestamp, infoTimestamp));
 			}
 		} catch (SQLException e) {
 			LOGGER.error(e);
