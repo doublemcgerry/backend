@@ -20,6 +20,10 @@ public class CameraUpdateAction extends LobbyAction {
 	private List<Quaternion> lastValues;
 	private List<Integer> lastDeltas;
 
+	public CameraUpdateAction() {
+		this.debuggable = false;
+	}
+
 	@Override
 	public void execute(LobbiesManagerInterface lobbyManager, ExperiencesModule experiencesModule, ServerLobby lobby,
 			VirtualActor actor) {

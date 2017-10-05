@@ -11,6 +11,7 @@ public abstract class Action implements Serializable {
 
 	protected UUID source = LOCAL_LOBBY;
 	protected UUID destination = LOCAL_LOBBY;
+	protected boolean debuggable = true;
 
 	protected Action() {
 
@@ -36,6 +37,10 @@ public abstract class Action implements Serializable {
 	public String toString() {
 		return this.getClass().getSimpleName() + " source:" + (source == null ? "nosource" : source.toString())
 				+ " destination:" + (destination == null ? "nodestination" : destination.toString());
+	}
+
+	public boolean isDebuggable() {
+		return debuggable;
 	}
 
 }

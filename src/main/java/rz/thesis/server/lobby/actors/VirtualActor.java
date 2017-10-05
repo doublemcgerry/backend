@@ -35,7 +35,9 @@ public class VirtualActor {
 		action.setDestination(address);
 		if (tunnel != null) {
 			tunnel.sendAction(action);
-			LOGGER.debug("<--- sent action:" + action.toString() + " to actor " + address.toString());
+			if (action.isDebuggable()) {
+				LOGGER.debug("<--- sent action:" + action.toString() + " to actor " + address.toString());
+			}
 		} else {
 			LOGGER.debug(
 					"ERROR : sending action to closed tunnel:" + action.toString() + " to actor " + address.toString());

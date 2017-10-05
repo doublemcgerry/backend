@@ -17,6 +17,7 @@ public class ExperienceDevicesStatus {
 	private int maxScreens = 1;
 	private Map<SensorType, List<UUID>> sensors = new HashMap<>();
 	private Map<SensorType, Integer> neededSensors;
+	private boolean ready = false;
 
 	public ExperienceDevicesStatus(ExperienceDefinitionParameters params) {
 		this.neededSensors = params.getRequiredSensors();
@@ -47,6 +48,7 @@ public class ExperienceDevicesStatus {
 			this.sensors.put(type, new ArrayList<UUID>());
 		}
 		this.sensors.get(type).add(address);
+		this.setReady(calculateReadysness());
 	}
 
 	protected boolean canAddSensor(SensorType type) {
@@ -65,17 +67,20 @@ public class ExperienceDevicesStatus {
 			}
 			this.sensors.get(type).remove(address);
 		}
+		this.setReady(calculateReadysness());
 	}
 
 	public void addScreen(UUID screen) {
 		this.screens.add(screen);
+		this.setReady(calculateReadysness());
 	}
 
 	public void removeScreen(UUID screen) {
 		this.screens.remove(screen);
+		this.setReady(calculateReadysness());
 	}
 
-	public boolean isReady() {
+	public boolean calculateReadysness() {
 		if (screens.size() != maxScreens) {
 			return false;
 		}
@@ -114,6 +119,14 @@ public class ExperienceDevicesStatus {
 			this.removeSensor(sensorType, deviceDefinition.getAddress());
 		}
 
+	}
+
+	public boolean isReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
 	}
 
 }

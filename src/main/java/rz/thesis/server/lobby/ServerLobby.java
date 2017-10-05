@@ -119,10 +119,6 @@ public class ServerLobby {
 	 *            actor to add to the lobby
 	 */
 	public boolean addActor(VirtualActor actor) {
-		if (this.lobbyState.isAfterI(LobbyState.READY_TO_START)
-				&& actor.getLobbyActor().getActorType() != SubscriberType.ADMIN) {
-			return false;
-		}
 		if (containsAddress(actor.getAddress())) {
 			LOGGER.debug("trying to reconnect actor :" + actor.getAddress().toString() + " to lobby:" + userName);
 			return reconnectActor(actor);
@@ -136,7 +132,7 @@ public class ServerLobby {
 			// send only to the newly connected, the list of members in the lobby
 			actor.sendActionToRemote(
 					new LobbyStatusCommunication(this.lobbyState, getDevicesDefinitionsList(), this.userName));
-			if (this.lobbyState.isBetween(LobbyState.NO_EXPERIENCE, LobbyState.READY_TO_START)) {
+			if (!(this.currentExperience == null)) {
 				actor.sendActionToRemote(new SelectedExperienceEvent(currentExperience, devicesStatus));
 			}
 			// broadcast the connected event to the lobby
@@ -268,7 +264,9 @@ public class ServerLobby {
 				vActorEntry.getValue().sendActionToRemote(lobbyAction);
 			}
 		}
-		LOGGER.debug(lobbyAction.toString());
+		if (lobbyAction.isDebuggable()) {
+			LOGGER.debug(lobbyAction.toString());
+		}
 	}
 
 	/**
@@ -394,6 +392,8 @@ public class ServerLobby {
 					"Lobby:" + this.userName + " INTERRUPTED the experience " + currentExperience.getId().toString());
 			this.setLobbyState(LobbyState.EXPERIENCE_ENDED);
 			this.setLobbyState(LobbyState.NO_EXPERIENCE);
+			this.currentExperience = null;
+			this.devicesStatus = null;
 			this.broadcastEvent(new ExperienceEndedEvent());
 		}
 	}
@@ -410,6 +410,8 @@ public class ServerLobby {
 			LOGGER.debug("Lobby:" + this.userName + " finished the experience " + currentExperience.getId().toString());
 			this.setLobbyState(LobbyState.EXPERIENCE_ENDED);
 			this.setLobbyState(LobbyState.NO_EXPERIENCE);
+			this.currentExperience = null;
+			this.devicesStatus = null;
 			this.broadcastEvent(new ExperienceEndedEvent());
 		}
 	}
@@ -446,8 +448,8 @@ public class ServerLobby {
 		LobbyActor actor = this.actors.get(address).getLobbyActor();
 		DeviceDefinition def = new DeviceDefinition(actor.getName(), actor.getAddress(), actor.getActorType(),
 				actor.getSupportedSensors());
-		broadcastEvent(new BindSlotConfirmationEvent(type, def));
-		if (this.devicesStatus.isReady()) {
+		broadcastEvent(new BindSlotConfirmationEvent(type, def, this.currentExperience));
+		if (this.devicesStatus.calculateReadysness()) {
 			this.setLobbyState(LobbyState.READY_TO_START);
 		}
 	}
