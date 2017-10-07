@@ -26,8 +26,8 @@ public class MobileScreenAnnounceAction extends ActorAnnounceAction {
 	public void execute(LobbiesManagerInterface router, VirtualActor actor) {
 		MobileScreenActor mobileactor = new MobileScreenActor(this.name, actor);
 		actor.setLobbyActor(mobileactor);
-		router.addActorToLobby(actor.getUserName(), actor);
 		actor.sendActionToRemote(new SuccessfulConnectionEvent(actor.getUserName()));
+		router.addActorToLobby(actor.getUserName(), actor);
 
 	}
 
