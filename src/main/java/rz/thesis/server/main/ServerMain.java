@@ -21,8 +21,14 @@ import rz.thesis.core.options.SoftwareOptionsReader;
 import rz.thesis.core.project.images.ImagesModule;
 import rz.thesis.core.project.security.UserAuthentication;
 import rz.thesis.core.save.SaveModule;
+import rz.thesis.modules.experience.ExperiencesModule;
+import rz.thesis.modules.experience.ExperiencesModuleSettings;
+import rz.thesis.modules.experience.handlers.ExperienceHandler;
+import rz.thesis.server.devices.DeviceDefinitionsHandler;
 import rz.thesis.server.modules.ServerModule;
 import rz.thesis.server.modules.ServerSettings;
+import rz.thesis.server.modules.http.handlers.PairingHandler;
+import rz.thesis.server.modules.http.handlers.ServerDebugHandler;
 import rz.thesis.server.websocket.WebSocketFactory;
 
 public class ServerMain {
@@ -33,7 +39,6 @@ public class ServerMain {
 		Logger.getRootLogger().addAppender(new LogAppender());
 		ServerMain main = new ServerMain();
 		main.initialize();
-		SaveModule sm = main.core.getModule(SaveModule.class);
 		Scanner sc = new Scanner(System.in);
 		while (sc.hasNext()) {
 			String command = sc.nextLine();
@@ -74,6 +79,10 @@ public class ServerMain {
 		WebSocketFactory websocketFactory = new WebSocketFactory(serverModule);
 		List<Class<? extends MappingsProvider>> handlers = new ArrayList<>();
 		handlers.add(LoginHttpHandler.class);
+		handlers.add(DeviceDefinitionsHandler.class);
+		handlers.add(ExperienceHandler.class);
+		handlers.add(PairingHandler.class);
+		handlers.add(ServerDebugHandler.class);
 		HttpModule httpmodule = new HttpModule(core, new HttpModuleSettings(8010, "../Framework/"), authentication,
 				handlers, websocketFactory);
 		core.addModule(httpmodule);
@@ -83,6 +92,10 @@ public class ServerMain {
 		DiscoveryModuleSettings dmSettings = new DiscoveryModuleSettings(9000, "DISCOVER_SERVICES");
 		DiscoveryModule discoveryModule = new DiscoveryModule(core, dmSettings);
 		core.addModule(discoveryModule);
+
+		ExperiencesModuleSettings expModuleSettings = new ExperiencesModuleSettings("experiences.db", "expStorage");
+		ExperiencesModule expModule = new ExperiencesModule(core, expModuleSettings);
+		core.addModule(expModule);
 
 		core.start();
 	}

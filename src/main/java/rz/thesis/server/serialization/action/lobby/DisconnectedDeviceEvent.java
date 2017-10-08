@@ -1,35 +1,46 @@
 package rz.thesis.server.serialization.action.lobby;
 
+import rz.thesis.server.lobby.LobbyActor;
 import rz.thesis.server.lobby.SubscriberType;
 
 public class DisconnectedDeviceEvent extends LobbyEvent {
 
 	private static final long serialVersionUID = 3826952011751893194L;
-	private SubscriberType type;
-	private String sender;
-	private String senderName;
+	private String lobbyName;
+	private DeviceDefinition device;
 
-	public DisconnectedDeviceEvent(String sender, String senderName, SubscriberType type) {
+	public DisconnectedDeviceEvent(String lobbyName, DeviceDefinition device) {
 		super();
-		this.senderName = senderName;
-		this.type = type;
-		this.sender = sender;
+		this.device = device;
+		this.lobbyName = lobbyName;
+	}
+
+	public DisconnectedDeviceEvent(String lobbyName, LobbyActor lobbyActor) {
+		this.device = new DeviceDefinition(lobbyActor.getName(), lobbyActor.getAddress(), lobbyActor.getActorType(),
+				lobbyActor.getSupportedSensors());
+		this.lobbyName = lobbyName;
+
 	}
 
 	public SubscriberType getType() {
-		return type;
+		return this.device.getType();
 	}
 
 	public void setType(SubscriberType type) {
-		this.type = type;
+		this.device.setType(type);
 	}
 
-	public String getSender() {
-		return sender;
+	public String getLobbyName() {
+		return lobbyName;
 	}
 
-	public void setSender(String sender) {
-		this.sender = sender;
+	public void setLobbyName(String lobbyName) {
+		this.lobbyName = lobbyName;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + " " + this.device.toString();
 	}
 
 }
