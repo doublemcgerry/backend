@@ -11,8 +11,8 @@ import rz.thesis.server.serialization.action.Action;
 public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 	/**
 	 * map of the lobby actors that are currently waiting associations<br/>
-	 * the key is the pairing token, the value is the actor that is associated
-	 * to the device
+	 * the key is the pairing token, the value is the actor that is associated to
+	 * the device
 	 */
 	private Map<String, VirtualActor> waitingRoom;
 
@@ -77,7 +77,7 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 	}
 
 	private static final Random random = new Random();
-	private static final String CHARS = "ABCDEFGHJKLMNOPQRSTUVWXYZ23456789";
+	private static final String CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 	private static String getToken(int length) {
 		StringBuilder token = new StringBuilder(length);
