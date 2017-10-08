@@ -2,7 +2,7 @@ package rz.thesis.server.serialization.action.lobby;
 
 import java.util.List;
 
-import rz.thesis.server.lobby.ServerLobby.LobbyState;
+import rz.thesis.server.lobby.LobbyState;
 
 public class LobbyStatusCommunication extends LobbyEvent {
 	private static final long serialVersionUID = -2709952093019777438L;

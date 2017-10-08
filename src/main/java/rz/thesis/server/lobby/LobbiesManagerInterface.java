@@ -20,4 +20,6 @@ public interface LobbiesManagerInterface {
 
 	public String getLobbiesStatus();
 
+	void disconnectFromLobby(VirtualActor actor);
+
 }

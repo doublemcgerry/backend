@@ -82,4 +82,20 @@ public class LobbiesManager implements LobbiesManagerInterface {
 	public String getLobbiesStatus() {
 		return this.container.getLobbyStatus();
 	}
+
+	@Override
+	public void disconnectFromLobby(VirtualActor actor) {
+		if (!actor.hasLobbyActor()) {
+			this.authenticator.removeFromWaitingRoom(actor);
+		} else {
+			if (actor.getLobby() != null) {
+				LOGGER.debug("removing actor " + actor.getAddress().toString() + " from lobby:"
+						+ actor.getLobby().getLobbyName());
+				actor.getLobby().removeActor(actor);
+			} else {
+				LOGGER.error(
+						"attemping to remove actor " + actor.getAddress().toString() + "  from lobby but it isn't");
+			}
+		}
+	}
 }
