@@ -9,7 +9,6 @@ import rz.thesis.core.modules.CoreDependency;
 import rz.thesis.core.modules.CoreModule;
 import rz.thesis.core.modules.ServiceDefinition;
 import rz.thesis.core.modules.http.HttpModule;
-import rz.thesis.core.save.SaveModule;
 import rz.thesis.modules.experience.ExperiencesModule;
 import rz.thesis.server.lobby.LobbiesManager;
 import rz.thesis.server.lobby.LobbiesManagerInterface;
@@ -18,7 +17,6 @@ public class ServerModule extends CoreModule {
 	private final static List<CoreDependency> DEPENDENCIES = new ArrayList<>(
 			Arrays.asList(new CoreDependency(HttpModule.class), new CoreDependency(ExperiencesModule.class)));
 	private static final String NAME = ServerModule.class.getSimpleName();
-	private SaveModule save;
 	private LobbiesManagerInterface router;
 
 	public ServerModule(Core core, ServerSettings settings) {
@@ -27,7 +25,7 @@ public class ServerModule extends CoreModule {
 
 	@Override
 	public void initializeModule() {
-		save = this.getCore().getModule(SaveModule.class);
+
 	}
 
 	@Override

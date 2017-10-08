@@ -22,4 +22,12 @@ public class RelayDemux {
 		this.lobbiesManager = lobbyManager;
 	}
 
+	public LobbiesManagerInterface getLobbiesManager() {
+		return lobbiesManager;
+	}
+
+	public Map<UUID, Tunnel> getSubscribers() {
+		return subscribers;
+	}
+
 }

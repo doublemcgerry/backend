@@ -14,7 +14,6 @@ public class RelayModule extends CoreModule {
 	private final static List<CoreDependency> DEPENDENCIES = new ArrayList<>(
 			Arrays.asList(new CoreDependency(SaveModule.class)));
 	private static final String NAME = RelayModule.class.getSimpleName();
-	private SaveModule save;
 
 	public RelayModule(Core core, RelayServerSettings settings) {
 		super(NAME, core, settings, DEPENDENCIES);

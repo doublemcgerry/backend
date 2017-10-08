@@ -12,4 +12,13 @@ public class ExperienceStatusChangeEvent extends LobbyEvent {
 		this.status = status;
 		this.ready = status.calculateReadysness();
 	}
+
+	public ExperienceDevicesStatus getStatus() {
+		return status;
+	}
+
+	public boolean isReady() {
+		return ready;
+	}
+
 }

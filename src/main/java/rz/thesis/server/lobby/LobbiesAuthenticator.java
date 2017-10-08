@@ -26,7 +26,6 @@ public class LobbiesAuthenticator implements LobbiesAuthenticationInterface {
 			String username = session.getUsername();
 
 			if (containsTokenInWaitingRoom(deviceKey)) {
-				final VirtualActor sub = retrieveFromWaitingRoom(deviceKey);
 				VirtualActor authenticatedActor = removeFromWaitingRoom(deviceKey);
 				return new AuthenticationInformation(username, deviceKey, session, authenticatedActor);
 			}

@@ -39,7 +39,6 @@ public class ServerMain {
 		Logger.getRootLogger().addAppender(new LogAppender());
 		ServerMain main = new ServerMain();
 		main.initialize();
-		SaveModule sm = main.core.getModule(SaveModule.class);
 		Scanner sc = new Scanner(System.in);
 		while (sc.hasNext()) {
 			String command = sc.nextLine();
@@ -85,7 +84,7 @@ public class ServerMain {
 		handlers.add(PairingHandler.class);
 		handlers.add(ServerDebugHandler.class);
 		HttpModule httpmodule = new HttpModule(core, new HttpModuleSettings(8010, "../Framework/"), authentication,
-		        handlers, websocketFactory);
+				handlers, websocketFactory);
 		core.addModule(httpmodule);
 
 		ImagesModule imagesModule = new ImagesModule(core);

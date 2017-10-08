@@ -47,4 +47,8 @@ public class CameraUpdateAction extends LobbyAction {
 		return lastValues;
 	}
 
+	public List<Integer> getLastDeltas() {
+		return lastDeltas;
+	}
+
 }

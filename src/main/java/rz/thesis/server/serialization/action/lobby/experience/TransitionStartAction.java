@@ -18,4 +18,8 @@ public class TransitionStartAction extends LobbyAction {
 		lobby.broadcastAction(this);
 	}
 
+	public String getTransitionName() {
+		return transitionName;
+	}
+
 }
