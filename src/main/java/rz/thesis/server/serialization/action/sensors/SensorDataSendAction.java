@@ -10,16 +10,15 @@ public class SensorDataSendAction extends SensorsAction {
 
 	private static final long serialVersionUID = 6442731397402415499L;
 	private SensorData data;
-	private String sender;
 
 	@Override
 	public String toString() {
-		return sender + " has sent a new SensorDataSendAction [data=" + data + "]";
+		return this.source.toString() + " has sent a new SensorDataSendAction [data=" + data + "]";
 	}
 
 	@Override
 	public void execute(LobbiesManagerInterface lobbyManager, ExperiencesModule expModule, ServerLobby lobby,
-	        VirtualActor actor) {
+			VirtualActor actor) {
 		lobby.broadcastAction(this);
 	}
 
