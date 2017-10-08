@@ -1,4 +1,4 @@
-package rz.thesis.server.modules;
+package rz.thesis.server.modules.relay;
 
 import rz.thesis.core.modules.CoreModuleSettings;
 

@@ -1,4 +1,4 @@
-package rz.thesis.server.modules;
+package rz.thesis.server.modules.relay;
 
 import java.util.ArrayList;
 import java.util.Arrays;
